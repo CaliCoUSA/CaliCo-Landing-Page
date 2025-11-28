@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CaliCo | AI Driven, Artist Approved</title>
+    <!-- Tailwind CSS (via CDN for immediate rendering) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calico: {
+                            purple: '#4B0082', // Royal Purple base
+                            darkPurple: '#2E0057',
+                            yellow: '#FFD700', // Bright Gold/Yellow
+                            lightYellow: '#FFFACD',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Base Typographic Settings */
+        body { font-family: 'Open Sans', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+        
+        /* Custom Gradients */
+        .hero-gradient {
+            background: linear-gradient(135deg, #2E0057 0%, #4B0082 50%, #1a0b2e 100%);
+        }
+        
+        /* Visual Effects */
+        .text-glow {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Calculator Checkbox Logic */
+        .service-checkbox:checked + div {
+            border-color: #FFD700;
+            background-color: rgba(75, 0, 130, 0.1);
+        }
+        .service-checkbox:checked + div .check-icon {
+            opacity: 1;
+        }
+        
+        /* Fallback Logic: Hide broken images to let the fallback div behind them show */
+        img[style*="display: none"] + .fallback-content {
+            display: flex !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-calico-darkPurple text-white sticky top-0 z-50 shadow-lg border-b-2 border-calico-yellow">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- Logo with Text Fallback -->
+                <div class="relative h-12 flex items-center">
+                    <img src="1000001244.png" alt="CaliCo Logo" class="h-full w-auto object-contain" onerror="this.style.display='none'">
+                    <!-- Fallback if image fails -->
+                    <div class="fallback-content hidden text-3xl font-black text-calico-yellow tracking-tighter italic">
+                        CaliCo
+                    </div>
+                </div>
+            </div>
+            <!-- Desktop Menu -->
+            <div class="flex items-center space-x-8">
+                <a href="#services" class="hover:text-calico-yellow transition font-semibold text-sm uppercase tracking-wide hidden md:block">Services</a>
+                <a href="#calculator" class="hover:text-calico-yellow transition font-semibold text-sm uppercase tracking-wide hidden md:block">Time Calculator</a>
+                <a href="#values" class="hover:text-calico-yellow transition font-semibold text-sm uppercase tracking-wide hidden md:block">Our Values</a>
+                <a href="mailto:customerservice@calico-usa.com?subject=Free Workflow Audit Request" class="bg-calico-yellow text-calico-darkPurple px-5 py-2 rounded-full font-bold hover:bg-white hover:scale-105 transition transform shadow-md text-sm">
+                    Book Consultation
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-gradient text-white min-h-[85vh] flex items-center relative overflow-hidden">
+        <!-- Abstract Background Shape (Mascot) -->
+        <div class="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none flex items-center justify-center overflow-hidden">
+            <img src="1000005116.png" alt="CaliCo Mascot" class="object-cover h-full scale-150 translate-x-1/4" onerror="this.style.display='none'">
+            <!-- Fallback Icon if mascot fails -->
+            <i class="fallback-content hidden fa-solid fa-dragon text-9xl opacity-20 transform rotate-12"></i>
+        </div>
+
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="space-y-6 animate-fade-in-up">
+                <div class="inline-block bg-calico-yellow text-calico-darkPurple text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                    AI Driven, Artist Approved
+                </div>
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
+                    Stop Juggling Freelancers. <br>
+                    <span class="text-calico-yellow text-glow">Start Saving Weeks.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-200 font-light max-w-lg">
+                    Streamlined project management for the content-first entrepreneur. We bundle services to eliminate vendor headaches and save you 30-40+ hours per project.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    <a href="#calculator" class="bg-calico-yellow text-calico-darkPurple px-8 py-4 rounded-lg font-bold text-center hover:bg-white transition transform hover:-translate-y-1 shadow-[0_0_15px_rgba(255,215,0,0.4)]">
+                        Calculate Savings
+                    </a>
+                    <a href="#services" class="border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-center hover:bg-white hover:text-calico-purple transition">
+                        Our Services
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Hero Image/Graphic -->
+            <div class="hidden md:block relative">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-calico-purple/30 bg-calico-darkPurple aspect-video flex items-center justify-center">
+                    <img src="1000005114.png" alt="CaliCo Creative Workspace" class="w-full h-full object-cover hover:scale-105 transition duration-700" onerror="this.style.display='none'">
+                    
+                    <!-- Robust Fallback for Hero Image -->
+                    <div class="fallback-content hidden flex-col items-center justify-center text-center p-8 w-full h-full bg-gradient-to-br from-calico-darkPurple to-black">
+                        <i class="fa-solid fa-layer-group text-6xl text-calico-yellow mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white">Full Stack Creative Agency</h3>
+                        <p class="text-gray-300 mt-2">Design. Audio. Video. One Workflow.</p>
+                    </div>
+
+                    <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-6 pointer-events-none">
+                        <p class="text-calico-yellow font-bold text-lg"><i class="fa-solid fa-check-circle mr-2"></i> Integrity Driven</p>
+                        <p class="text-white text-sm">Transparent workflows, every step of the way.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- The Time-Back Calculator Section -->
+    <section id="calculator" class="py-20 bg-white relative">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-calico-darkPurple mb-4">The "Time-Back" Calculator</h2>
+                <p class="text-gray-600 text-lg">Select the services you need. See exactly how much management time we save you by bundling.</p>
+            </div>
+
+            <div class="bg-gray-50 rounded-3xl shadow-xl border border-gray-200 overflow-hidden flex flex-col md:flex-row">
+                
+                <!-- Inputs -->
+                <div class="p-8 md:w-3/5 space-y-4">
+                    <h3 class="font-bold text-xl text-calico-purple mb-6 border-b pb-2 border-gray-200">Select Project Requirements:</h3>
+                    
+                    <!-- Service Item: Logo -->
+                    <label class="cursor-pointer block relative group">
+                        <input type="checkbox" class="service-checkbox hidden" data-hours="12" onchange="calculateTime()">
+                        <div class="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-calico-purple/50 transition">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-calico-purple/10 p-2 rounded-lg text-calico-purple w-10 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-pen-nib"></i>
+                                </div>
+                                <span class="font-bold text-gray-700">Logo & Branding Design</span>
+                            </div>
+                            <i class="fa-solid fa-circle-check text-calico-yellow text-xl opacity-0 check-icon transition"></i>
+                        </div>
+                    </label>
+
+                    <!-- Service Item: Jingle -->
+                    <label class="cursor-pointer block relative group">
+                        <input type="checkbox" class="service-checkbox hidden" data-hours="15" onchange="calculateTime()">
+                        <div class="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-calico-purple/50 transition">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-calico-purple/10 p-2 rounded-lg text-calico-purple w-10 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-music"></i>
+                                </div>
+                                <span class="font-bold text-gray-700">Jingle & Audio Identity</span>
+                            </div>
+                            <i class="fa-solid fa-circle-check text-calico-yellow text-xl opacity-0 check-icon transition"></i>
+                        </div>
+                    </label>
+
+                    <!-- Service Item: Video -->
+                    <label class="cursor-pointer block relative group">
+                        <input type="checkbox" class="service-checkbox hidden" data-hours="20" onchange="calculateTime()">
+                        <div class="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-calico-purple/50 transition">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-calico-purple/10 p-2 rounded-lg text-calico-purple w-10 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-video"></i>
+                                </div>
+                                <span class="font-bold text-gray-700">Video Content Creation</span>
+                            </div>
+                            <i class="fa-solid fa-circle-check text-calico-yellow text-xl opacity-0 check-icon transition"></i>
+                        </div>
+                    </label>
+
+                    <!-- Service Item: Voiceover -->
+                    <label class="cursor-pointer block relative group">
+                        <input type="checkbox" class="service-checkbox hidden" data-hours="8" onchange="calculateTime()">
+                        <div class="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-calico-purple/50 transition">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-calico-purple/10 p-2 rounded-lg text-calico-purple w-10 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-microphone-lines"></i>
+                                </div>
+                                <span class="font-bold text-gray-700">Professional Voiceover</span>
+                            </div>
+                            <i class="fa-solid fa-circle-check text-calico-yellow text-xl opacity-0 check-icon transition"></i>
+                        </div>
+                    </label>
+
+                    <!-- Service Item: Ad Management -->
+                    <label class="cursor-pointer block relative group">
+                        <input type="checkbox" class="service-checkbox hidden" data-hours="10" onchange="calculateTime()">
+                        <div class="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-calico-purple/50 transition">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-calico-purple/10 p-2 rounded-lg text-calico-purple w-10 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-rectangle-ad"></i>
+                                </div>
+                                <span class="font-bold text-gray-700">AD Copy & Management</span>
+                            </div>
+                            <i class="fa-solid fa-circle-check text-calico-yellow text-xl opacity-0 check-icon transition"></i>
+                        </div>
+                    </label>
+
+                </div>
+
+                <!-- Results Panel -->
+                <div class="bg-calico-darkPurple md:w-2/5 p-8 flex flex-col justify-center items-center text-center text-white relative overflow-hidden">
+                    <div class="absolute inset-0 bg-calico-purple opacity-50"></div>
+                    <!-- Mascot background fallback -->
+                     <i class="fa-solid fa-clock absolute -bottom-10 -right-10 text-9xl text-white opacity-5 rotate-12"></i>
+                    
+                    <div class="relative z-10">
+                        <h4 class="text-calico-yellow font-bold uppercase tracking-widest text-sm mb-4">Management Time Saved</h4>
+                        <div class="text-7xl font-extrabold mb-2 text-calico-yellow flex items-baseline justify-center">
+                            <span id="hours-display">0</span><span class="text-3xl ml-1">hrs</span>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-8">That's approximately <span id="weeks-display" class="font-bold text-white">0</span> weeks of your life back.</p>
+                        
+                        <div class="p-4 bg-white/10 rounded-lg backdrop-blur-sm border border-white/10">
+                            <p class="text-xs text-gray-200 italic">"We eliminate the hassle of sourcing multiple vendors."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-calico-purple font-bold tracking-wider uppercase text-sm">Full Service Agency</span>
+                <h2 class="text-4xl font-extrabold text-gray-900 mt-2">Services Built for Speed & Quality</h2>
+                <p class="mt-4 text-gray-600 max-w-2xl mx-auto">We leverage advanced AI tools to draft concepts instantly, then refine them with human artistry.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Service Card 1: Jingle -->
+                <div id="service-jingle" class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-calico-purple/20 hover:-translate-y-2 transition-all duration-300 group border border-gray-100 flex flex-col">
+                    <div class="h-40 bg-calico-darkPurple flex items-center justify-center p-6 relative overflow-hidden shrink-0">
+                        <div class="absolute inset-0 bg-calico-purple opacity-50 group-hover:opacity-70 transition"></div>
+                        <!-- Image with Fallback -->
+                        <img src="1000001198.png" alt="Company Jingle" class="relative z-10 h-16 object-contain filter drop-shadow-lg transform group-hover:scale-110 transition duration-500" onerror="this.style.display='none'">
+                        <!-- Fallback Content -->
+                        <div class="fallback-content hidden flex-col items-center z-20">
+                            <i class="fa-solid fa-music text-5xl text-calico-yellow mb-2"></i>
+                            <span class="text-white font-heading font-bold uppercase tracking-wider">Jingle</span>
+                        </div>
+                    </div>
+                    <div class="p-8 flex-grow">
+                        <h3 class="font-bold text-xl text-gray-900 mb-3">Audio Identity</h3>
+                        <p class="text-gray-600 text-sm mb-4">Catchy, memorable jingles created with AI composition assistance and polished by professional musicians.</p>
+                        <ul class="text-sm text-gray-500 space-y-2 mt-auto">
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>Rapid concept generation</span></li>
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>Full commercial rights</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Service Card 2: Logo -->
+                <div id="service-logo" class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-calico-purple/20 hover:-translate-y-2 transition-all duration-300 group border border-gray-100 flex flex-col">
+                    <div class="h-40 bg-calico-darkPurple flex items-center justify-center p-6 relative overflow-hidden shrink-0">
+                        <div class="absolute inset-0 bg-calico-purple opacity-50 group-hover:opacity-70 transition"></div>
+                        <!-- Image with Fallback -->
+                        <img src="1000001194.png" alt="Logo Design" class="relative z-10 h-24 object-contain filter drop-shadow-lg transform group-hover:scale-110 transition duration-500" onerror="this.style.display='none'">
+                        <!-- Fallback Content -->
+                        <div class="fallback-content hidden flex-col items-center z-20">
+                            <i class="fa-solid fa-pen-nib text-5xl text-calico-yellow mb-2"></i>
+                            <span class="text-white font-heading font-bold uppercase tracking-wider">Logo</span>
+                        </div>
+                    </div>
+                    <div class="p-8 flex-grow">
+                        <h3 class="font-bold text-xl text-gray-900 mb-3">Brand Visuals</h3>
+                        <p class="text-gray-600 text-sm mb-4">Distinctive logos and branding kits. We iterate 10x faster than traditional agencies using generative design.</p>
+                        <ul class="text-sm text-gray-500 space-y-2 mt-auto">
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>Multiple variations in 24h</span></li>
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>Vector & Social Ready</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Service Card 3: Video -->
+                <div id="service-video" class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-calico-purple/20 hover:-translate-y-2 transition-all duration-300 group border border-gray-100 flex flex-col">
+                    <div class="h-40 bg-calico-darkPurple flex items-center justify-center p-6 relative overflow-hidden shrink-0">
+                        <div class="absolute inset-0 bg-calico-purple opacity-50 group-hover:opacity-70 transition"></div>
+                        <!-- Image with Fallback -->
+                        <img src="1000001197.png" alt="Explainer Video" class="relative z-10 h-14 object-contain filter drop-shadow-lg transform group-hover:scale-110 transition duration-500" onerror="this.style.display='none'">
+                        <!-- Fallback Content -->
+                        <div class="fallback-content hidden flex-col items-center z-20">
+                            <i class="fa-solid fa-video text-5xl text-calico-yellow mb-2"></i>
+                            <span class="text-white font-heading font-bold uppercase tracking-wider">Video</span>
+                        </div>
+                    </div>
+                    <div class="p-8 flex-grow">
+                        <h3 class="font-bold text-xl text-gray-900 mb-3">Video Production</h3>
+                        <p class="text-gray-600 text-sm mb-4">High-conversion explainers and social clips. AI handles the editing grunt work; we handle the storytelling.</p>
+                        <ul class="text-sm text-gray-500 space-y-2 mt-auto">
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>Script-to-Screen efficiency</span></li>
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>Optimized for ROI</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Service Card 4: Voiceover -->
+                <div id="service-voiceover" class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-calico-purple/20 hover:-translate-y-2 transition-all duration-300 group border border-gray-100 flex flex-col">
+                    <div class="h-40 bg-calico-darkPurple flex items-center justify-center p-6 relative overflow-hidden shrink-0">
+                        <div class="absolute inset-0 bg-calico-purple opacity-50 group-hover:opacity-70 transition"></div>
+                        <!-- Image with Fallback -->
+                        <img src="1000001196.png" alt="Voiceover" class="relative z-10 h-16 object-contain filter drop-shadow-lg transform group-hover:scale-110 transition duration-500" onerror="this.style.display='none'">
+                        <!-- Fallback Content -->
+                        <div class="fallback-content hidden flex-col items-center z-20">
+                            <i class="fa-solid fa-microphone-lines text-5xl text-calico-yellow mb-2"></i>
+                            <span class="text-white font-heading font-bold uppercase tracking-wider">Voiceover</span>
+                        </div>
+                    </div>
+                    <div class="p-8 flex-grow">
+                        <h3 class="font-bold text-xl text-gray-900 mb-3">Professional Voiceover</h3>
+                        <p class="text-gray-600 text-sm mb-4">Human-grade AI voice synthesis or professional human talent, perfectly matched to your brand tone.</p>
+                        <ul class="text-sm text-gray-500 space-y-2 mt-auto">
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>Instant revisions available</span></li>
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>Multi-language support</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Service Card 5: Ad Copy -->
+                <div id="service-ad" class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-calico-purple/20 hover:-translate-y-2 transition-all duration-300 group border border-gray-100 flex flex-col">
+                    <div class="h-40 bg-calico-darkPurple flex items-center justify-center p-6 relative overflow-hidden shrink-0">
+                        <div class="absolute inset-0 bg-calico-purple opacity-50 group-hover:opacity-70 transition"></div>
+                        <!-- Note: Since no image was provided for Ad Copy, we default to the icon/text combo directly -->
+                        <div class="flex flex-col items-center relative z-10">
+                            <i class="fa-solid fa-bullhorn text-5xl text-calico-yellow mb-2 transform group-hover:scale-110 transition duration-500 drop-shadow-lg"></i>
+                            <span class="text-white font-heading font-bold uppercase tracking-wider">Ad Copy</span>
+                        </div>
+                    </div>
+                    <div class="p-8 flex-grow">
+                        <h3 class="font-bold text-xl text-gray-900 mb-3">Ad Copy & Management</h3>
+                        <p class="text-gray-600 text-sm mb-4">Data-driven copy that converts. We manage your campaigns across platforms for maximum reach.</p>
+                        <ul class="text-sm text-gray-500 space-y-2 mt-auto">
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>A/B testing included</span></li>
+                            <li class="flex items-start"><span class="text-calico-yellow font-bold mr-2">•</span> <span>Weekly transparency reports</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Value Prop / CTA Card -->
+                <div class="bg-calico-yellow rounded-2xl overflow-hidden shadow-lg flex flex-col items-center justify-center p-8 text-center border-4 border-calico-yellow">
+                    <h3 class="font-black text-2xl text-calico-darkPurple mb-4">Why Bundle?</h3>
+                    <p class="text-calico-darkPurple font-semibold mb-6">One point of contact. Unified brand voice. Massive time savings.</p>
+                    <a href="mailto:customerservice@calico-usa.com?subject=Custom Bundle Request" class="bg-calico-darkPurple text-white px-6 py-3 rounded-lg font-bold hover:bg-white hover:text-calico-purple transition w-full shadow-lg">
+                        Get a Custom Bundle
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section id="values" class="py-20 bg-calico-darkPurple text-white relative">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-16">Our Core Values</h2>
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="space-y-4">
+                    <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 text-calico-yellow text-3xl">
+                        <i class="fa-solid fa-handshake"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold">Trust</h3>
+                    <p class="text-gray-300">We build relationships, not just assets. You can rely on us to deliver on time, every time.</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 text-calico-yellow text-3xl">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold">Integrity</h3>
+                    <p class="text-gray-300">"AI Driven, Artist Approved" means we use technology responsibly, always respecting the creative process.</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 text-calico-yellow text-3xl">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold">Transparency</h3>
+                    <p class="text-gray-300">No hidden fees. No "black box" processes. You see exactly how we work and what you pay for.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section id="contact" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="bg-gradient-to-r from-calico-purple to-calico-darkPurple rounded-3xl p-8 md:p-16 text-center shadow-2xl relative overflow-hidden">
+                <div class="absolute inset-0 opacity-20">
+                     <!-- Decorative pattern -->
+                     <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                         <path d="M0 100 C 20 0 50 0 100 100 Z" fill="#FFD700" />
+                     </svg>
+                </div>
+                
+                <div class="relative z-10">
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Ready to Reclaim Your Time?</h2>
+                    <p class="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">Stop managing freelancers. Start managing your business. Let's review your current workflow and find your savings.</p>
+                    <a href="mailto:customerservice@calico-usa.com?subject=Free Workflow Audit Request" class="inline-block bg-calico-yellow text-calico-darkPurple text-lg px-10 py-5 rounded-full font-black hover:bg-white hover:scale-105 transition transform shadow-lg">
+                        Schedule Your Free Workflow Audit
+                    </a>
+                    <p class="mt-6 text-sm text-gray-400">Trusted by entrepreneurs, artists, and creators worldwide.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
+            <!-- Brand Info & Socials -->
+            <div class="md:col-span-2">
+                <div class="flex items-center space-x-2 mb-4">
+                    <div class="text-calico-yellow font-bold text-2xl italic">CaliCo</div>
+                </div>
+                <p class="mb-4 max-w-sm">The full service agency that saves you 30+ hours. We combine human creativity with AI efficiency to deliver superior results.</p>
+                <!-- Social Links Ordered: LinkedIn, YouTube, Instagram, TikTok -->
+                <div class="flex space-x-4">
+                    <a href="https://www.linkedin.com/in/calico-usa" target="_blank" rel="noopener noreferrer" class="hover:text-calico-yellow transition text-xl"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="https://www.youtube.com/calico_usa" target="_blank" rel="noopener noreferrer" class="hover:text-calico-yellow transition text-xl"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/calico_usa" target="_blank" rel="noopener noreferrer" class="hover:text-calico-yellow transition text-xl"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/calico_usa" target="_blank" rel="noopener noreferrer" class="hover:text-calico-yellow transition text-xl"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+            
+            <!-- Quick Links: Services -->
+            <div>
+                <h4 class="text-white font-bold mb-4">Services</h4>
+                <ul class="space-y-2">
+                    <li><a href="#service-logo" class="hover:text-white transition">Logo Design</a></li>
+                    <li><a href="#service-jingle" class="hover:text-white transition">Jingle Creation</a></li>
+                    <li><a href="#service-video" class="hover:text-white transition">Video Content</a></li>
+                    <li><a href="#service-voiceover" class="hover:text-white transition">Professional Voiceover</a></li>
+                    <li><a href="#service-ad" class="hover:text-white transition">Ad Management</a></li>
+                </ul>
+            </div>
+            
+            <!-- Quick Links: Company -->
+            <div>
+                <h4 class="text-white font-bold mb-4">Company</h4>
+                <ul class="space-y-2">
+                    <li><a href="#values" class="hover:text-white transition">About CaliCo</a></li>
+                    <li><a href="#values" class="hover:text-white transition">Our Values</a></li>
+                    <li><a href="mailto:customerservice@calico-usa.com?subject=Contact Request" class="hover:text-white transition">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container mx-auto px-6 mt-12 pt-8 border-t border-gray-800 text-sm text-center">
+            &copy; 2025 CaliCo Agency. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Smooth Scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Time Calculator Logic
+        function calculateTime() {
+            const checkboxes = document.querySelectorAll('.service-checkbox');
+            let totalHours = 0;
+
+            checkboxes.forEach(box => {
+                if (box.checked) {
+                    totalHours += parseInt(box.dataset.hours);
+                }
+            });
+
+            // Animate the number counting up
+            animateValue("hours-display", parseInt(document.getElementById('hours-display').innerText), totalHours, 500);
+            
+            // Calculate weeks (assuming 1 "work week" of pure management time is roughly 40 hours)
+            let weeks = (totalHours / 40).toFixed(1);
+            if (totalHours === 0) weeks = 0;
+            document.getElementById('weeks-display').innerText = weeks;
+        }
+
+        // Animation function for the numbers
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            const range = end - start;
+            let current = start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            const obj = document.getElementById(id);
+            
+            // Clear existing interval if any (prevents glitching if clicked rapidly)
+            if(obj.timer) clearInterval(obj.timer);
+            
+            obj.timer = setInterval(function() {
+                current += increment;
+                obj.innerHTML = current;
+                if (current == end) {
+                    clearInterval(obj.timer);
+                }
+            }, stepTime);
+        }
+    </script>
+</body>
+</html>
+
+
