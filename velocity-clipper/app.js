@@ -92,7 +92,7 @@ async function handleVideoUpload(e) {
         };
         updateVideoSlotUI(currentUploadSlot);
         e.target.value = '';
-        loadEngine(() => {}); 
+        loadEngine((msg) => console.log("CaliCo Engine Status:", msg));
     };
 }
 
