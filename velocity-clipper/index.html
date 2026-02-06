@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocity Clipper | CaliCo Branding Solutions</title>
+    <script src="coi-serviceworker.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./ffmpeg/ffmpeg.js"></script>
+    <script src="./ffmpeg/index.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calico: {
+                            purple: '#4B0082', darkPurple: '#2E0057', deepest: '#0F0518',
+                            card: '#1A0B2E', yellow: '#FFD700', accent: '#00D4FF',
+                            success: '#00FF9D', error: '#FF0055'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 0.5s ease-out',
+                        pulse_slow: 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: radial-gradient(circle at 50% 0%, #2E0057 0%, #0F0518 80%); color: white; font-family: 'Open Sans', sans-serif; overflow-x: hidden; }
+        .glass-panel { background: rgba(26, 11, 46, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
+        .calico-gradient-text { background: linear-gradient(135deg, #FFD700 0%, #FFFFFF 50%, #00D4FF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-primary { background: linear-gradient(135deg, #4B0082 0%, #2E0057 100%); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(135deg, #FFD700 0%, #FFC000 100%); color: #0F0518; border-color: #FFD700; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; background: #2E0057; }
+        .btn-ai { background: linear-gradient(135deg, #00D4FF 0%, #0055FF 100%); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
+        .btn-ai:hover { background: linear-gradient(135deg, #FFFFFF 0%, #00D4FF 100%); color: #000; box-shadow: 0 0 15px rgba(0, 212, 255, 0.4); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4B0082; border-radius: 4px; }
+        .video-upload-slot { transition: all 0.3s ease; background: rgba(0,0,0,0.2); }
+        .video-upload-slot:hover { background: rgba(0, 212, 255, 0.05); border-color: #00D4FF; transform: scale(1.02); }
+        .timeline-clip { cursor: move; transition: all 0.2s; position: relative; overflow: hidden; }
+        .timeline-clip:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3); border-color: #00D4FF; }
+        .step-indicator { transition: all 0.3s ease; opacity: 0.5; }
+        .step-indicator.active { opacity: 1; transform: scale(1.05); }
+        .radio-option { cursor: pointer; transition: all 0.3s ease; }
+        .radio-option:hover { border-color: #FFD700; background: rgba(255, 215, 0, 0.05); }
+        .radio-option.selected { border-color: #FFD700; background: rgba(255, 215, 0, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+    <header class="text-center mb-8 w-full max-w-7xl animate-fadeIn">
+        <div class="inline-flex items-center justify-center gap-3 mb-2">
+            <i class="fas fa-scissors text-calico-yellow text-2xl md:text-4xl animate-pulse_slow"></i>
+            <h1 class="text-3xl md:text-5xl font-black font-heading calico-gradient-text tracking-tight">VELOCITY CLIPPER</h1>
+        </div>
+        <p class="text-gray-400 tracking-[0.2em] text-[10px] md:text-xs uppercase font-semibold">Clip Extraction Engine | Frame-Perfect Export | Alpha Launch</p>
+    </header>
+
+    <main class="w-full max-w-7xl relative">
+        <div class="mb-6 bg-blue-900/50 border border-blue-500/30 text-blue-100 p-4 rounded-xl backdrop-blur-sm text-sm text-center animate-fadeIn">
+            <i class="fas fa-check-circle mr-2 text-calico-success"></i>
+            <span><strong>Artist Approved Mode:</strong> Using Single-Threaded FFmpeg Engine. No lag, perfect sync, zero stretching.</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-2xl mb-8 flex items-center justify-between text-xs font-heading font-bold tracking-wider animate-fadeIn">
+            <div id="step-1" class="flex items-center gap-3 step-indicator active">
+                <div class="w-8 h-8 rounded-full bg-calico-yellow text-black flex items-center justify-center font-black text-sm">1</div>
+                <span class="hidden sm:inline text-calico-yellow">IMPORT</span>
+            </div>
+            <div class="flex-1 h-px bg-white/10 mx-4"></div>
+            <div id="step-2" class="flex items-center gap-3 step-indicator">
+                <div class="w-8 h-8 rounded-full bg-white/10 text-gray-400 flex items-center justify-center font-black text-sm">2</div>
+                <span class="hidden sm:inline">CLIPS</span>
+            </div>
+            <div class="flex-1 h-px bg-white/10 mx-4"></div>
+            <div id="step-3" class="flex items-center gap-3 step-indicator">
+                <div class="w-8 h-8 rounded-full bg-white/10 text-gray-400 flex items-center justify-center font-black text-sm">3</div>
+                <span class="hidden sm:inline">TIMELINE</span>
+            </div>
+            <div class="flex-1 h-px bg-white/10 mx-4"></div>
+            <div id="step-4" class="flex items-center gap-3 step-indicator">
+                <div class="w-8 h-8 rounded-full bg-white/10 text-gray-400 flex items-center justify-center font-black text-sm">4</div>
+                <span class="hidden sm:inline">EXPORT</span>
+            </div>
+        </div>
+
+        <div id="import-section" class="glass-panel p-8 rounded-3xl mb-6 animate-fadeIn">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-heading font-bold flex items-center gap-3 text-white"><i class="fas fa-cloud-upload-alt text-calico-yellow"></i> Import Assets</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+                <div id="video-slot-0" data-slot="0" class="video-upload-slot border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center aspect-[3/4] cursor-pointer">
+                    <i class="fas fa-plus text-2xl text-gray-500 mb-2"></i><p class="text-xs text-gray-400 font-bold uppercase">Slot 1</p>
+                </div>
+                <div id="video-slot-1" data-slot="1" class="video-upload-slot border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center aspect-[3/4] cursor-pointer">
+                    <i class="fas fa-plus text-2xl text-gray-500 mb-2"></i><p class="text-xs text-gray-400 font-bold uppercase">Slot 2</p>
+                </div>
+                <div id="video-slot-2" data-slot="2" class="video-upload-slot border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center aspect-[3/4] cursor-pointer">
+                    <i class="fas fa-plus text-2xl text-gray-500 mb-2"></i><p class="text-xs text-gray-400 font-bold uppercase">Slot 3</p>
+                </div>
+                <div id="video-slot-3" data-slot="3" class="video-upload-slot border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center aspect-[3/4] cursor-pointer">
+                    <i class="fas fa-plus text-2xl text-gray-500 mb-2"></i><p class="text-xs text-gray-400 font-bold uppercase">Slot 4</p>
+                </div>
+                <div id="video-slot-4" data-slot="4" class="video-upload-slot border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center aspect-[3/4] cursor-pointer">
+                    <i class="fas fa-plus text-2xl text-gray-500 mb-2"></i><p class="text-xs text-gray-400 font-bold uppercase">Slot 5</p>
+                </div>
+            </div>
+            <input type="file" id="video-input" accept="video/*" class="hidden">
+            <div class="flex gap-4 border-t border-white/10 pt-6">
+                <button id="proceed-to-clips-btn" disabled class="btn-primary px-8 py-4 rounded-xl font-black text-sm tracking-wide flex-1 uppercase">Proceed to Clips <i class="fas fa-arrow-right ml-2"></i></button>
+                <button id="clear-all-btn" class="px-6 py-4 rounded-xl font-bold text-xs bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors uppercase tracking-wider">Reset All</button>
+            </div>
+        </div>
+
+        <div id="clip-section" class="hidden animate-fadeIn">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="glass-panel p-6 rounded-3xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-heading font-bold text-white"><i class="fas fa-video text-calico-accent mr-2"></i> Source Monitor</h2>
+                            <div id="video-tabs" class="flex gap-2 overflow-x-auto custom-scrollbar pb-1 max-w-[300px]"></div>
+                        </div>
+                        <div class="relative group rounded-2xl overflow-hidden mb-4 border border-white/10 bg-black">
+                            <video id="player" class="w-full aspect-video" controls></video>
+                        </div>
+                        <div class="flex justify-between items-center text-xs font-mono text-gray-400 mb-4 px-2">
+                            <span id="current-video-name">No Video Selected</span>
+                            <span id="current-duration">00:00</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button id="mark-btn" class="btn-primary py-4 rounded-xl font-black text-sm uppercase flex items-center justify-center gap-2 group">
+                                <i class="fas fa-cut text-calico-yellow group-hover:text-black"></i> Mark Clip (M)
+                            </button>
+                            <button id="show-ai-btn" class="btn-ai py-4 rounded-xl font-black text-sm uppercase flex items-center justify-center gap-2">
+                                <i class="fas fa-robot text-white"></i> AI Parse
+                            </button>
+                        </div>
+                    </div>
+                    <div id="ai-panel" class="hidden glass-panel p-6 rounded-2xl border border-calico-accent/30 relative">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-sm text-calico-accent uppercase tracking-wider"><i class="fas fa-brain mr-2"></i> Import Timestamps</h3>
+                            <button id="hide-ai-btn" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+                        </div>
+                        <textarea id="ai-input" placeholder="00:15 - 00:30&#10;01:45 - 02:00" class="w-full h-24 bg-black/40 border border-white/10 p-3 rounded-xl text-white font-mono text-xs custom-scrollbar resize-none mb-3"></textarea>
+                        <button id="process-ai-btn" class="btn-ai w-full py-3 rounded-lg font-bold text-xs uppercase tracking-wide">Process & Queue</button>
+                    </div>
+                </div>
+                <div class="glass-panel p-6 rounded-3xl flex flex-col h-[600px] border-t-4 border-t-calico-yellow">
+                    <div class="flex justify-between items-end mb-6 border-b border-white/10 pb-4">
+                        <h3 class="font-heading font-bold text-lg flex items-center gap-2 text-white"><i class="fas fa-layer-group text-calico-accent"></i> Clip Library</h3>
+                        <span class="text-xs font-mono text-calico-yellow bg-calico-purple/30 px-2 py-1 rounded" id="clip-count">0</span>
+                    </div>
+                    <div id="clip-library" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-2">
+                        <div id="clip-library-empty" class="h-full flex flex-col items-center justify-center text-gray-500 opacity-50">
+                            <i class="fas fa-inbox text-4xl mb-3"></i><p class="text-xs uppercase tracking-wide">Library Empty</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/10">
+                        <button id="proceed-to-timeline-btn" disabled class="btn-primary w-full py-4 rounded-xl font-black text-sm uppercase tracking-wide">Open Timeline <i class="fas fa-chevron-right ml-2"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="timeline-section" class="hidden animate-fadeIn">
+            <div class="glass-panel p-8 rounded-3xl mb-8 border-t-4 border-t-calico-accent">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-heading font-bold text-white"><i class="fas fa-film text-calico-yellow mr-3"></i> Sequence Timeline</h2>
+                </div>
+                <div id="timeline-clips" class="space-y-3 mb-8 min-h-[150px] p-4 bg-black/20 rounded-2xl border border-white/5">
+                    <div id="timeline-empty" class="text-center py-12 text-gray-500 opacity-50">
+                        <i class="fas fa-film text-4xl mb-3"></i><p class="text-xs uppercase">Timeline is empty</p>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <button id="proceed-to-export-btn" class="btn-primary w-full py-5 rounded-xl font-black text-lg uppercase tracking-widest shadow-xl">Review & Export Clips <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="export-section" class="hidden animate-fadeIn">
+            <div class="glass-panel p-10 rounded-3xl border-2 border-calico-success/20 text-center max-w-3xl mx-auto">
+                <div class="mb-6">
+                    <div class="w-20 h-20 rounded-full bg-calico-success/20 flex items-center justify-center mx-auto mb-4 animate-pulse">
+                        <i class="fas fa-download text-4xl text-calico-success"></i>
+                    </div>
+                    <h2 class="text-3xl font-heading font-black text-white mb-2">Ready to Export</h2>
+                    <p class="text-sm text-gray-400">Rendering frame-perfect clips via FFmpeg.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-8 max-w-lg mx-auto bg-black/30 p-4 rounded-xl border border-white/5">
+                    <div class="text-center"><p class="text-gray-500 text-[10px] uppercase tracking-wider">Total Clips</p><p id="export-clip-count" class="text-2xl font-bold text-white">0</p></div>
+                    <div class="text-center border-l border-white/10"><p class="text-gray-500 text-[10px] uppercase tracking-wider">Est. Duration</p><p id="export-duration" class="text-2xl font-bold text-calico-yellow font-mono">00:00</p></div>
+                </div>
+                <div class="mb-8 bg-black/30 p-6 rounded-xl border border-white/5">
+                    <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-wider"><i class="fas fa-sliders-h mr-2"></i> Export Mode</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div id="export-mode-separate" class="radio-option border-2 border-white/10 rounded-xl p-4 selected">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-5 h-5 rounded-full border-2 border-calico-yellow flex items-center justify-center"><div class="w-2.5 h-2.5 rounded-full bg-calico-yellow"></div></div>
+                                <span class="font-bold text-white">Separate Clips</span>
+                            </div>
+                        </div>
+                        <div id="export-mode-merged" class="radio-option border-2 border-white/10 rounded-xl p-4">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-5 h-5 rounded-full border-2 border-white/30 flex items-center justify-center"><div class="w-2.5 h-2.5 rounded-full bg-transparent"></div></div>
+                                <span class="font-bold text-white">Merged Video</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="export-btn" class="w-full btn-primary py-5 rounded-xl font-black text-xl tracking-widest hover:scale-[1.02] transition-transform uppercase shadow-2xl mb-6">
+                    <i class="fas fa-download mr-3"></i> <span id="export-text">RENDER CLIPS</span>
+                </button>
+                <div id="progress-container" class="hidden">
+                    <div class="bg-black/50 rounded-full h-4 overflow-hidden mb-2 border border-white/10">
+                        <div id="progress-bar" class="bg-gradient-to-r from-calico-accent to-calico-success h-full w-0 transition-all duration-300 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <p id="progress-text" class="text-xs font-mono text-calico-accent">Initializing Engine...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-12 text-center text-[10px] text-gray-600 font-mono mb-8">
+        <p class="mb-2">VELOCITY CLIPPER VC-1.0 (ALPHA LAUNCH) | SINGLE-THREADED ENGINE</p>
+        <p>Built by <span class="text-calico-yellow font-bold">CaliCo Branding Solutions</span></p>
+    </footer>
+
+    <script type="module" src="./engine.js"></script>
+    <script type="module" src="./app.js"></script>
+</body>
+</html>

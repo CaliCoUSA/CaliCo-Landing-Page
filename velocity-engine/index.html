@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ROBOTS EXCLUSION PROTOCOL: PREVENTS SEARCH ENGINE INDEXING -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+
+<title>Velocity Engine | CaliCo Agency</title>
+<meta name="description" content="Generate AI-ready marketing prompts for your brand campaigns in seconds. AI Driven, Artist Approved.">
+<meta property="og:title" content="Velocity Engine">
+<meta property="og:description" content="Generate structured AI prompts for marketing campaigns.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:wght@400;600;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+calico: {
+purple: '#4B0082',
+darkPurple: '#2E0057',
+deepest: '#0F0518',
+card: '#1A0B2E',
+yellow: '#FFD700',
+accent: '#00D4FF',
+}
+},
+fontFamily: {
+sans: ['Open Sans', 'sans-serif'],
+heading: ['Montserrat', 'sans-serif'],
+},
+animation: {
+'fadeIn': 'fadeIn 0.5s ease-out forwards',
+'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+},
+keyframes: {
+fadeIn: {
+'0%': { opacity: '0', transform: 'translateY(10px)' },
+'100%': { opacity: '1', transform: 'translateY(0)' },
+}
+}
+}
+}
+}
+</script>
+<style>
+body { font-family: 'Open Sans', sans-serif; background-color: #0F0518; color: white; }
+h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Montserrat', sans-serif; }
+.glass-panel {
+background: rgba(255, 255, 255, 0.03);
+backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.05);
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+.glass-input {
+background: rgba(0, 0, 0, 0.3);
+border: 1px solid rgba(255, 255, 255, 0.1);
+color: white;
+transition: all 0.2s;
+}
+.glass-input:focus {
+border-color: #FFD700;
+outline: none;
+box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+}
+.glass-input::placeholder {
+color: rgba(255, 255, 255, 0.4);
+}
+.mode-toggle-btn {
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #0F0518; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #2E0057; border-radius: 4px; }
+.block-btn {
+font-size: 11px; font-weight: bold; text-transform: uppercase; padding: 6px 12px;
+border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;
+cursor: pointer;
+}
+.block-btn:hover { background: #FFD700; color: black; border-color: #FFD700; }
+.block-btn:focus {
+outline: 2px solid #FFD700;
+outline-offset: 2px;
+}
+.agency-mode .theme-border { border-color: #FFD700; }
+.client-mode .theme-border { border-color: #00D4FF; }
+.switch-checkbox { display: none; }
+.switch-label {
+display: flex; align-items: center; justify-content: space-between;
+cursor: pointer; width: 100%; max-width: 260px; height: 40px;
+background: rgba(0,0,0,0.4); border-radius: 40px; position: relative;
+border: 1px solid rgba(255,255,255,0.1);
+}
+.switch-label .ball {
+background-color: #fff; height: 32px; width: 48%; max-width: 128px;
+position: absolute; top: 3px; left: 4px;
+border-radius: 34px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+z-index: 10;
+}
+.switch-checkbox:checked + .switch-label .ball {
+transform: translateX(calc(100% - 8px));
+background-color: #FFD700;
+}
+.switch-checkbox:not(:checked) + .switch-label .ball {
+background-color: #00D4FF;
+}
+.switch-checkbox:focus + .switch-label {
+outline: 2px solid #FFD700;
+outline-offset: 2px;
+}
+.tooltip {
+position: relative;
+display: inline-block;
+}
+.tooltip .tooltiptext {
+visibility: hidden;
+width: 200px;
+background-color: rgba(0, 0, 0, 0.9);
+color: #fff;
+text-align: center;
+border-radius: 6px;
+padding: 8px;
+position: absolute;
+z-index: 1000;
+bottom: 125%;
+left: 50%;
+margin-left: -100px;
+opacity: 0;
+transition: opacity 0.3s;
+font-size: 11px;
+border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.tooltip:hover .tooltiptext {
+visibility: visible;
+opacity: 1;
+}
+.error-shake {
+animation: shake 0.5s;
+}
+@keyframes shake {
+0%, 100% { transform: translateX(0); }
+10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+.info-banner {
+background: rgba(255, 215, 0, 0.1);
+border: 1px solid rgba(255, 215, 0, 0.3);
+border-radius: 12px;
+padding: 12px 16px;
+margin-bottom: 20px;
+display: flex;
+align-items: start;
+gap: 12px;
+font-size: 13px;
+line-height: 1.5;
+}
+.info-banner i {
+color: #FFD700;
+margin-top: 2px;
+flex-shrink: 0;
+}
+.reset-confirm {
+background: rgba(255, 0, 0, 0.2) !important;
+border-color: rgba(255, 0, 0, 0.5) !important;
+animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.7; }
+}
+@media (max-width: 640px) {
+.switch-label {
+width: 220px;
+height: 36px;
+font-size: 9px;
+}
+.switch-label .ball {
+height: 28px;
+}
+}
+</style>
+</head>
+<body class="min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_#2E0057_0%,_#0F0518_70%)] overflow-x-hidden">
+<div id="app" class="flex-grow flex flex-col relative z-20"></div>
+<footer class="text-center py-6 text-xs text-gray-500 border-t border-white/5">
+<p>Built with ⚡ by CaliCo Branding Solutions | <a href="#" class="hover:text-calico-yellow transition-colors">Contact</a> | <span class="text-gray-600">Secure Client-Side Processing</span></p>
+</footer>
+<script type="module">
+import { html, render, Component } from 'https://unpkg.com/htm/preact/standalone.module.js';
+
+// --- SYSTEM CONSTANTS ---
+const APP_VERSION = '6.1'; // Gold Master - Motion Logic Finalized
+const STORAGE_KEY = 'calico_velocity_state';
+
+// --- SHARED DATA ---
+const VISUAL_STYLES = ['Minimalist', 'Vintage/Retro', 'Cyberpunk/Neon', 'Corporate/Clean', 'Luxury/Monogram', 'Hand-Drawn', '3D/Isometric'];
+const MOODS = ['Authoritative & Trusted', 'Playful & High-Energy', 'Dark & Cinematic', 'Warm & Soothing', 'Urgent & Bold', 'Mysterious & Elegant'];
+const VOX_PERSONAS = ['Male (Deep/Authoritative)', 'Female (Warm/Conversational)', 'Male (Energetic/Youthful)', 'Female (Professional/News)'];
+const LOGO_TOPOLOGY = ['Combination Mark', 'Wordmark', 'Pictorial Mark', 'Emblem'];
+const CAMERA_MOVES = ['Static Tripod', 'Slow Pan', 'Dolly In', 'Handheld Shake', 'FPV Drone'];
+
+// Full names for UX and Prompt Accuracy
+const AUDIO_BLOCKS = { 
+'I': 'Intro', 
+'V': 'Verse', 
+'P': 'Pre-Chorus', 
+'C': 'Chorus', 
+'B': 'Bridge', 
+'O': 'Outro', 
+'S': 'Solo' 
+};
+
+const COPY_FRAMEWORKS = ['AIDA (Attention-Interest)', 'PAS (Problem-Solution)', 'BAB (Before-After)', '4Ps (Promise-Proof)'];
+const FUNNEL_STAGES = ['Awareness (Social)', 'Consideration (Email/Web)', 'Conversion (Sales)', 'Retention (Loyalty)'];
+const DURATIONS = [15, 30, 45, 60, 75, 90, 105, 120];
+const MAX_PRODUCTS = 10;
+const MAX_AUDIO_BLOCKS = 20;
+
+// AGENCY DEFAULTS
+const AGENCY_DEFAULTS = {
+offer: "Save 30-40 hours per project via Streamlined Management",
+audience: "Small to Large Business Owners, Musicians, Artists, Entrepreneurs",
+description: "A Digital Marketing agency using advanced AI to bundle services and save clients time."
+};
+
+const getInitialState = () => ({
+version: APP_VERSION,
+mode: 'CLIENT',
+core: {
+brandName: '',
+industry: '',
+description: '',
+products: [],
+audience: '',
+offer: '',
+masterStyle: 'Minimalist',
+masterMood: 'Authoritative & Trusted',
+masterVoice: 'Male (Deep/Authoritative)'
+},
+tempProduct: { name: '', desc: '' },
+modules: {
+copy: { active: false, stage: 'Awareness (Social)', platform: 'Instagram', framework: 'AIDA' },
+visual: { active: false, topology: 'Combination Mark', colors: 'Brand Standard' },
+audio: { active: false, structure: ['I','V','C','V','C','O'], genre: 'Upbeat Pop' },
+vox: { active: false, accent: 'American (General)' },
+motion: { active: false, duration: 30, ratio: '9:16', cam: 'Static Tripod' }
+},
+generated: false,
+masterPrompt: '',
+copied: false,
+errors: [],
+isGenerating: false,
+resetConfirmation: false
+});
+
+// Sanitize user input to prevent XSS
+const sanitizeInput = (str) => {
+if (typeof str !== 'string') return str;
+const div = document.createElement('div');
+div.textContent = str;
+return div.innerHTML;
+};
+
+class VelocityEngine extends Component {
+constructor() {
+super();
+this.state = getInitialState();
+}
+
+componentDidMount() {
+const savedData = localStorage.getItem(STORAGE_KEY);
+if (savedData) {
+try {
+const parsed = JSON.parse(savedData);
+// VERSION LOCK
+if (parsed.version !== APP_VERSION) {
+console.log("Version mismatch. Wiping old data for stability.");
+localStorage.removeItem(STORAGE_KEY);
+return; 
+}
+
+// SAFE MERGE
+const safeState = {
+...getInitialState(),
+...parsed,
+core: { ...getInitialState().core, ...(parsed.core || {}) },
+modules: { 
+...getInitialState().modules, 
+...(parsed.modules || {}),
+copy: { ...getInitialState().modules.copy, ...(parsed.modules?.copy || {}) },
+visual: { ...getInitialState().modules.visual, ...(parsed.modules?.visual || {}) },
+audio: { ...getInitialState().modules.audio, ...(parsed.modules?.audio || {}) },
+vox: { ...getInitialState().modules.vox, ...(parsed.modules?.vox || {}) },
+motion: { ...getInitialState().modules.motion, ...(parsed.modules?.motion || {}) },
+},
+generated: false, 
+copied: false, 
+errors: [], 
+isGenerating: false, 
+resetConfirmation: false
+};
+this.setState(safeState);
+} catch (e) {
+console.error("Failed to load state", e);
+localStorage.removeItem(STORAGE_KEY);
+}
+}
+}
+
+componentDidUpdate(prevProps, prevState) {
+if (JSON.stringify(prevState) !== JSON.stringify(this.state)) {
+try {
+const stateToSave = { 
+...this.state, 
+version: APP_VERSION,
+errors: [], 
+copied: false, 
+isGenerating: false, 
+resetConfirmation: false 
+};
+localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+} catch (e) {
+console.error("LocalStorage limit exceeded", e);
+}
+}
+}
+
+resetState() {
+if (!this.state.resetConfirmation) {
+this.setState({ resetConfirmation: true });
+} else {
+localStorage.removeItem(STORAGE_KEY);
+const cleanState = getInitialState();
+const currentMode = this.state.mode;
+
+cleanState.mode = currentMode;
+
+if (currentMode === 'AGENCY') {
+cleanState.core.offer = AGENCY_DEFAULTS.offer;
+cleanState.core.audience = AGENCY_DEFAULTS.audience;
+cleanState.core.description = AGENCY_DEFAULTS.description;
+}
+
+this.setState(cleanState, () => {
+window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+}
+}
+
+toggleMode() {
+const currentMode = this.state.mode;
+const newMode = currentMode === 'CLIENT' ? 'AGENCY' : 'CLIENT';
+let newCore = JSON.parse(JSON.stringify(this.state.core));
+
+if (newMode === 'AGENCY') {
+if (!newCore.offer || newCore.offer === '') newCore.offer = AGENCY_DEFAULTS.offer;
+if (!newCore.audience || newCore.audience === '') newCore.audience = AGENCY_DEFAULTS.audience;
+if (!newCore.description || newCore.description === '') newCore.description = AGENCY_DEFAULTS.description;
+} else {
+if (newCore.offer === AGENCY_DEFAULTS.offer) newCore.offer = "";
+if (newCore.audience === AGENCY_DEFAULTS.audience) newCore.audience = "";
+if (newCore.description === AGENCY_DEFAULTS.description) newCore.description = "";
+}
+
+this.setState({ mode: newMode, core: newCore, generated: false, errors: [], resetConfirmation: false });
+}
+
+updateCore(field, value) {
+this.setState(prev => ({
+core: { ...prev.core, [field]: value },
+generated: false,
+errors: [],
+resetConfirmation: false
+}));
+}
+
+updateTempProduct(field, value) {
+this.setState(prev => ({
+tempProduct: { ...prev.tempProduct, [field]: value }
+}));
+}
+
+addProduct() {
+const { tempProduct, core } = this.state;
+
+if (!tempProduct.name.trim() || !tempProduct.desc.trim()) {
+this.setState({ errors: ['Please fill in both product name and description'] });
+return;
+}
+  
+if (core.products.length >= MAX_PRODUCTS) {
+this.setState({ errors: [`Maximum ${MAX_PRODUCTS} products allowed`] });
+return;
+}
+  
+this.setState({
+core: { ...core, products: [...core.products, { 
+name: sanitizeInput(tempProduct.name), 
+desc: sanitizeInput(tempProduct.desc) 
+}] },
+tempProduct: { name: '', desc: '' },
+generated: false,
+errors: [],
+resetConfirmation: false
+});
+}
+
+removeProduct(index) {
+const { core } = this.state;
+const newProducts = core.products.filter((_, i) => i !== index);
+this.setState({
+core: { ...core, products: newProducts },
+generated: false,
+resetConfirmation: false
+});
+}
+
+toggleModule(key) {
+this.setState(prev => ({
+modules: {
+...prev.modules,
+[key]: { ...prev.modules[key], active: !prev.modules[key].active }
+},
+generated: false,
+errors: [],
+resetConfirmation: false
+}));
+}
+
+updateModuleSpec(key, field, value) {
+this.setState(prev => ({
+modules: {
+...prev.modules,
+[key]: { ...prev.modules[key], [field]: value }
+},
+generated: false,
+resetConfirmation: false
+}));
+}
+
+addAudioBlock(blockCode) {
+const currentStructure = this.state.modules.audio.structure;
+if (currentStructure.length >= MAX_AUDIO_BLOCKS) {
+this.setState({ errors: [`Maximum ${MAX_AUDIO_BLOCKS} audio blocks allowed`] });
+return;
+}
+this.updateModuleSpec('audio', 'structure', [...currentStructure, blockCode]);
+}
+
+removeAudioBlock(index) {
+const currentStructure = this.state.modules.audio.structure;
+const newStructure = currentStructure.filter((_, i) => i !== index);
+this.updateModuleSpec('audio', 'structure', newStructure);
+}
+
+validateBeforeGenerate() {
+const { core, modules } = this.state;
+const errors = [];
+
+if (!core.brandName.trim()) errors.push("Brand name is required");
+if (!core.industry.trim()) errors.push("Industry is required");
+if (!core.audience.trim()) errors.push("Target audience is required");
+if (!core.offer.trim()) errors.push("Core offer/hook is required");
+
+const activeModules = Object.values(modules).filter(m => m.active).length;
+if (activeModules === 0) errors.push("Activate at least one service module");
+
+if (modules.audio.active && modules.audio.structure.length === 0) {
+errors.push("Audio module active but no song structure defined");
+}
+
+return errors;
+}
+
+generateMasterPrompt() {
+const errors = this.validateBeforeGenerate();
+if (errors.length > 0) {
+this.setState({ errors, generated: false });
+window.scrollTo({ top: 0, behavior: 'smooth' });
+return;
+}
+
+this.setState({ isGenerating: true, errors: [], resetConfirmation: false });
+setTimeout(() => {
+this._doGenerate();
+}, 300);
+}
+
+_doGenerate() {
+const { core, modules, mode } = this.state;
+const isAgency = mode === 'AGENCY';
+
+let productContext = isAgency ? "**Bundled Services:**\n" : "**Key Products/Services:**\n";
+if (core.products.length > 0) {
+productContext += core.products.map(p => `- ${p.name}: ${p.desc}`).join('\n');
+} else {
+productContext += "General Brand Awareness (No specific products listed)";
+}
+
+let masterPrompt = `========================================================================
+========
+CALICO VELOCITY ENGINE | CAMPAIGN DOSSIER
+========================================================================
+========
+
+**PROJECT:** ${sanitizeInput(core.brandName)}
+**INDUSTRY:** ${sanitizeInput(core.industry)}
+**MODE:** ${mode}
+
+[GLOBAL CONTEXT LAYER]
+
+Every asset generated below must adhere to these core truths:
+
+1. **Brand Mission:** ${sanitizeInput(core.description)}
+2. **Target Audience:** ${sanitizeInput(core.audience)}
+3. **The Hook (Offer):** ${sanitizeInput(core.offer)}
+4. **Master Vibe:** ${core.masterMood}
+5. **Visual Aesthetic:** ${core.masterStyle}
+
+${isAgency ? `[AGENCY OVERRIDE ACTIVE]
+
+- **Core Values:** Trust, Integrity, Transparency.
+- **Slogan:** "AI Driven, Artist Approved".
+- **Goal:** Sell the value of time-savings (30-40hrs) via bundled management.
+- **Tone:** Professional, Expert, Informational.` : ''}
+
+========================================================================
+========
+[ EXECUTION PROTOCOLS ]
+
+Below are the isolated system prompts for each creative domain.
+Execute these one by one or feed this entire dossier to a sophisticated LLM.
+
+========================================================================
+========
+
+`;
+
+if (modules.copy.active) {
+masterPrompt += `
+### MODULE 1: MARKETING COPY PROTOCOL
+
+**SYSTEM ROLE:** Senior Direct Response Copywriter.
+**FRAMEWORK:** ${modules.copy.framework} (Strict Adherence).
+**CONTEXT:** Funnel Stage: ${modules.copy.stage} | Platform: ${sanitizeInput(modules.copy.platform)}.
+
+**INSTRUCTIONS:**
+
+1. Analyze the 'Product Portfolio' above.
+2. Write 3 distinct variations of copy targeting the '${sanitizeInput(core.audience)}'.
+3. Use the ${modules.copy.framework} structure to guide the reader to the '${sanitizeInput(core.offer)}'.
+4. **Tone Check:** Must match '${core.masterMood}'. ${isAgency ? 'Ensure tone reflects Trust, Integrity, and Transparency.' : ''}
+5. **Formatting:** Use bolded bullet points for quick, scannable reading.
+6. **Integration:** ${isAgency ? 'Strategically use the slogan "AI Driven, Artist Approved".' : ''}
+7. **Action:** End with a single, clear Call-to-Action (CTA).
+
+**OUTPUT:**
+[Generate 3 Variations]
+
+--------------------------------------------------------------------------------
+`;
+}
+
+if (modules.visual.active) {
+masterPrompt += `
+### MODULE 2: VISUAL FOUNDRY PROTOCOL (JSON)
+
+**SYSTEM ROLE:** Midjourney/Imagen Prompt Engineer.
+**OBJECTIVE:** Create a high-fidelity image generation prompt in JSON format.
+
+**PARAMETERS:**
+- **Subject:** ${modules.visual.topology} for '${sanitizeInput(core.brandName)}'.
+- **Art Style:** ${core.masterStyle} (Interpret this style with professional keywords).
+- **Color Palette:** ${sanitizeInput(modules.visual.colors)}.
+- **Mood:** ${core.masterMood}.
+- **Context:** Use the 'Brand Mission' to determine iconography.
+
+**REQUIRED OUTPUT FORMAT:**
+{
+"tool_use": "generate_image",
+"parameters": {
+"prompt": "(Full descriptive prompt here...)",
+"negative_prompt": "text, watermark, blurry, low quality, distorted, photorealistic (if vector)",
+"aspect_ratio": "1:1"
+}
+}
+
+--------------------------------------------------------------------------------
+`;
+}
+
+if (modules.audio.active) {
+// Convert codes to full words
+const structureString = modules.audio.structure.map(code => AUDIO_BLOCKS[code]).join(' - ');
+
+masterPrompt += `
+### MODULE 3: SONIC BRIDGE PROTOCOL
+
+**SYSTEM ROLE:** Platinum-Selling Songwriter & Producer (Expert Lyricist Persona).
+**OBJECTIVE:** Construct hit-quality lyrics and structure for Suno/Udio.
+
+**PART 1: STYLE DEFINITION (JSON Format)**
+Create a JSON object defining the musical style tags.
+
+- **Genre:** ${sanitizeInput(modules.audio.genre)}
+- **Vibe:** ${core.masterMood}
+- **Parameters:** Instrumental count, bpm, key.
+
+**PART 2: LYRIC ARCHITECTURE (Expert Level)**
+Write lyrics based on the Structure Key: [${structureString}].
+
+**Expert Writing Constraints:**
+
+1. **Genre Fluency:** Adopt the specific slang, flow, and cadence of the '${sanitizeInput(modules.audio.genre)}' genre.
+2. **Avoid AI Cliches:** Do NOT use words like "unleash," "elevate," "realm," "tapestry," or "symphony." Use conversational, real-world language.
+3. **The Hook:** The chorus must be memorable and catchy.
+4. **Theme:** ${isAgency ? "Efficiency, Trust, Modern Tech" : `Based on '${sanitizeInput(core.description)}'`}.
+
+**Formatting Rules (Strict):**
+1. Section Headers in **[Brackets]** (e.g., [Verse 1], [Chorus]).
+2. Ad-libs, backing vocals, and echoes in **(Parentheses)** (e.g., (Oh yeah), (Let's go)).
+3. Standard line breaks for lyrics.
+
+--------------------------------------------------------------------------------
+`;
+}
+
+if (modules.vox.active) {
+masterPrompt += `
+### MODULE 4: VOX ARCHITECT PROTOCOL
+
+**SYSTEM ROLE:** ElevenLabs Voice Designer.
+**OBJECTIVE:** Generate Voice Design Prompt + Script.
+
+**PART A: VOICE DESIGN PROMPT**
+Create a rich description for a: ${core.masterVoice}.
+
+- **Accent:** ${sanitizeInput(modules.vox.accent)}.
+- **Tone:** ${core.masterMood}.
+- **Style:** ${core.masterStyle} (Audio equivalent).
+
+**PART B: THE SCRIPT**
+Write a 30-second script based on the '${sanitizeInput(core.offer)}'.
+
+- Do NOT include stage directions.
+- Focus on flow and prosody.
+
+--------------------------------------------------------------------------------
+`;
+}
+
+if (modules.motion.active) {
+// SCENE SEGMENTATION LOGIC
+const scenes = [];
+let remainingTime = modules.motion.duration;
+let sceneIndex = 1;
+
+while (remainingTime > 0) {
+let clipDuration;
+if (remainingTime <= 6) {
+clipDuration = remainingTime;
+} else {
+clipDuration = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
+}
+scenes.push({ id: `Scene_${sceneIndex}`, duration: clipDuration });
+remainingTime -= clipDuration;
+sceneIndex++;
+}
+
+// GENERATE INDIVIDUAL JSON BLOCKS FOR PART 1 (Static)
+let staticQueueOutput = "";
+let accumulatedTime = 0;
+
+scenes.forEach((s, idx) => {
+    let startT = accumulatedTime;
+    let endT = accumulatedTime + s.duration;
+    accumulatedTime = endT;
+
+    const json = JSON.stringify({
+        "shot_id": s.id,
+        "voiceover_line": `(LLM: Write a ${s.duration}-second script line matching the Brand Mission...)`,
+        "narrative_action": "(LLM: Describe what the audience UNDERSTANDS conceptually...)",
+        "visual_prompt": "(Detailed Midjourney/DALL-E prompt describing the visual composition...)"
+    }, null, 2);
+    staticQueueOutput += `\n**[SHOT ${idx + 1} - STATIC]:**\n${json}\n`;
+});
+
+// GENERATE INDIVIDUAL JSON BLOCKS FOR PART 2 (Motion)
+let motionQueueOutput = "";
+scenes.forEach((s, idx) => {
+    const json = JSON.stringify({
+        "target_asset_id": s.id,
+        "motion_prompt": "(LLM: Describe what the audience NOTICES physically, e.g., 'Slow zoom in, low angle'...)"
+    }, null, 2);
+    motionQueueOutput += `\n**[SHOT ${idx + 1} - MOTION]:**\n${json}\n`;
+});
+
+masterPrompt += `
+### MODULE 5: MOTION ARCHITECT PROTOCOL
+
+**SYSTEM ROLE:** AI Video Director (Runway Gen-3 / Luma Dream Machine).
+**OBJECTIVE:** Generate distinct JSON blocks for each shot to ensure zero-edit workflow.
+
+**GUIDING PRINCIPLE:**
+1. **STATIC Prompt = What the audience UNDERSTANDS.** (Concept, Composition, Subject)
+2. **MOTION Prompt = What the audience NOTICES.** (Camera Move, Physics, Lighting Shift)
+
+**TECH SPECS:**
+- **Total Duration:** ${modules.motion.duration}s (Segmented into ${scenes.length} clips)
+- **Aspect Ratio:** ${modules.motion.ratio}
+- **Camera Movement:** ${modules.motion.cam}
+- **Style:** ${core.masterStyle}
+
+**PART 1: STATIC ASSET QUEUE (Use with Midjourney/DALL-E)**
+${staticQueueOutput}
+
+**PART 2: MOTION CONTROL QUEUE (Use with Runway/Luma)**
+${motionQueueOutput}
+
+--------------------------------------------------------------------------------
+`;
+}
+
+masterPrompt += `
+[END OF DOSSIER]
+`;
+
+this.setState({ 
+masterPrompt, 
+generated: true, 
+isGenerating: false,
+errors: [] 
+});
+}
+
+// Updated Robust Copy Function
+copyToClipboard() {
+const text = this.state.masterPrompt;
+
+// Fallback function for reliability
+const fallbackCopyTextToClipboard = (text) => {
+const textArea = document.createElement("textarea");
+textArea.value = text;
+// Ensure textarea is hidden
+textArea.style.position = "fixed";
+textArea.style.left = "-9999px";
+textArea.style.top = "0";
+document.body.appendChild(textArea);
+textArea.focus();
+textArea.select();
+
+try {
+const successful = document.execCommand('copy');
+if (successful) {
+this.setState({ copied: true });
+setTimeout(() => this.setState({ copied: false }), 2000);
+} else {
+console.error('Fallback: Copy command was unsuccessful');
+alert('Clipboard permission denied. Please manually select the text to copy.');
+}
+} catch (err) {
+console.error('Fallback: Oops, unable to copy', err);
+alert('Clipboard permission denied. Please manually select the text to copy.');
+}
+
+document.body.removeChild(textArea);
+}
+
+// Primary attempt
+if (!navigator.clipboard) {
+fallbackCopyTextToClipboard(text);
+return;
+}
+
+navigator.clipboard.writeText(text).then(() => {
+this.setState({ copied: true });
+setTimeout(() => this.setState({ copied: false }), 2000);
+}, (err) => {
+console.error('Async: Could not copy text: ', err);
+fallbackCopyTextToClipboard(text);
+});
+}
+
+render() {
+const { mode, core, tempProduct, modules, generated, masterPrompt, copied, errors, isGenerating, resetConfirmation } = this.state;
+const isAgency = mode === 'AGENCY';
+
+return html`
+<div class="${isAgency ? 'agency-mode' : 'client-mode'} max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+<!-- HERO HEADER -->
+<div class="text-center mb-8 animate-fadeIn">
+<h1 class="text-4xl sm:text-5xl lg:text-6xl font-black font-heading mb-3 bg-gradient-to-r from-calico-yellow via-white to-calico-accent bg-clip-text text-transparent">
+⚡ VELOCITY ENGINE
+</h1>
+<p class="text-sm sm:text-base text-gray-400 mb-6">AI-Ready Marketing Prompts in Seconds</p>
+</div>
+
+<!-- NON-CLOSABLE TUTORIAL BANNER -->
+<div class="info-banner">
+<i class="fas fa-lightbulb text-lg"></i>
+<div>
+<strong>How it works:</strong> Fill in your brand details, activate service modules, then hit "Generate Master Prompt". Copy the output and paste into Claude, ChatGPT, or your favorite LLM to execute your custom prompts.
+</div>
+</div>
+
+<!-- ERROR DISPLAY -->
+${errors.length > 0 ? html`
+<div class="glass-panel border-red-500/50 bg-red-500/10 p-4 rounded-lg mb-6 error-shake">
+<div class="flex items-start gap-3">
+<i class="fas fa-exclamation-triangle text-red-400 text-xl mt-1"></i>
+<div class="flex-1">
+<h3 class="font-bold text-red-300 mb-2">Please fix the following:</h3>
+<ul class="list-disc list-inside text-sm text-red-200 space-y-1">
+${errors.map(err => html`<li>${err}</li>`)}
+</ul>
+</div>
+</div>
+</div>
+` : null}
+
+<!-- MODE TOGGLE -->
+<div class="glass-panel p-6 rounded-xl mb-6">
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-center sm:text-left">
+<h3 class="font-heading font-bold text-lg mb-1">Operating Mode</h3>
+<p class="text-xs text-gray-400">Switch between Client and Agency presets</p>
+</div>
+<div class="flex items-center gap-3">
+<input 
+type="checkbox" 
+id="mode-toggle" 
+class="switch-checkbox"
+checked=${isAgency}
+onChange=${() => this.toggleMode()}
+/>
+<label for="mode-toggle" class="switch-label">
+<span class="text-xs font-bold px-3 relative z-20" style="color: ${isAgency ? '#000' : '#00D4FF'}">CLIENT</span>
+<span class="text-xs font-bold px-3 relative z-20" style="color: ${isAgency ? '#FFD700' : '#000'}">AGENCY</span>
+<div class="ball"></div>
+</label>
+</div>
+</div>
+</div>
+
+<!-- CORE BRAND INFO -->
+<div class="glass-panel p-6 rounded-xl mb-6 theme-border border-l-4">
+<h2 class="font-heading font-bold text-2xl mb-4 flex items-center gap-2">
+<i class="fas fa-building"></i>
+Core Brand Info
+</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+<div>
+<label class="block text-sm font-semibold mb-2">Brand Name *</label>
+<input 
+type="text" 
+value=${core.brandName}
+onInput=${(e) => this.updateCore('brandName', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg" 
+placeholder="e.g., CaliCo Agency"
+/>
+</div>
+<div>
+<label class="block text-sm font-semibold mb-2">Industry *</label>
+<input 
+type="text" 
+value=${core.industry}
+onInput=${(e) => this.updateCore('industry', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg" 
+placeholder="e.g., Digital Marketing"
+/>
+</div>
+</div>
+<div class="mb-4">
+<label class="block text-sm font-semibold mb-2">Brand Mission / Description *</label>
+<textarea 
+value=${core.description}
+onInput=${(e) => this.updateCore('description', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg" 
+rows="3"
+placeholder="What does your brand do? What makes it unique?"
+></textarea>
+</div>
+<div class="mb-4">
+<label class="block text-sm font-semibold mb-2">Target Audience *</label>
+<input 
+type="text" 
+value=${core.audience}
+onInput=${(e) => this.updateCore('audience', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg" 
+placeholder="e.g., Small business owners, 25-45, tech-savvy"
+/>
+</div>
+<div class="mb-4">
+<label class="block text-sm font-semibold mb-2">Core Offer / Hook *</label>
+<input 
+type="text" 
+value=${core.offer}
+onInput=${(e) => this.updateCore('offer', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg" 
+placeholder="e.g., Save 30 hours per project"
+/>
+</div>
+
+<!-- MASTER STYLE CONTROLS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div>
+<label class="block text-sm font-semibold mb-2">Master Style</label>
+<select 
+value=${core.masterStyle}
+onChange=${(e) => this.updateCore('masterStyle', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg"
+>
+${VISUAL_STYLES.map(style => html`<option value=${style}>${style}</option>`)}
+</select>
+</div>
+<div>
+<label class="block text-sm font-semibold mb-2">Master Mood</label>
+<select 
+value=${core.masterMood}
+onChange=${(e) => this.updateCore('masterMood', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg"
+>
+${MOODS.map(mood => html`<option value=${mood}>${mood}</option>`)}
+</select>
+</div>
+<div>
+<label class="block text-sm font-semibold mb-2">Master Voice</label>
+<select 
+value=${core.masterVoice}
+onChange=${(e) => this.updateCore('masterVoice', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg"
+>
+${VOX_PERSONAS.map(voice => html`<option value=${voice}>${voice}</option>`)}
+</select>
+</div>
+</div>
+</div>
+
+<!-- PRODUCTS/SERVICES -->
+<div class="glass-panel p-6 rounded-xl mb-6">
+<h2 class="font-heading font-bold text-2xl mb-4 flex items-center gap-2">
+<i class="fas fa-box"></i>
+Products / Services <span class="text-sm text-gray-400">(Optional)</span>
+</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+<div>
+<input 
+type="text" 
+value=${tempProduct.name}
+onInput=${(e) => this.updateTempProduct('name', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg" 
+placeholder="Product/Service Name"
+/>
+</div>
+<div>
+<input 
+type="text" 
+value=${tempProduct.desc}
+onInput=${(e) => this.updateTempProduct('desc', e.target.value)}
+class="glass-input w-full px-4 py-2 rounded-lg" 
+placeholder="Short Description"
+/>
+</div>
+</div>
+<button 
+onClick=${() => this.addProduct()}
+class="bg-calico-yellow hover:bg-yellow-500 text-black font-bold py-2 px-6 rounded-lg transition-all"
+>
+<i class="fas fa-plus mr-2"></i>Add Product
+</button>
+
+${core.products.length > 0 ? html`
+<div class="mt-6 space-y-2">
+${core.products.map((prod, idx) => html`
+<div class="glass-input p-3 rounded-lg flex justify-between items-center">
+<div>
+<strong>${prod.name}</strong>
+<span class="text-gray-400 text-sm ml-2">${prod.desc}</span>
+</div>
+<button 
+onClick=${() => this.removeProduct(idx)}
+class="text-red-400 hover:text-red-300 transition-colors"
+>
+<i class="fas fa-trash"></i>
+</button>
+</div>
+`)}
+</div>
+` : null}
+</div>
+
+<!-- SERVICE MODULES -->
+<div class="glass-panel p-6 rounded-xl mb-6">
+<h2 class="font-heading font-bold text-2xl mb-4 flex items-center gap-2">
+<i class="fas fa-sliders-h"></i>
+Service Modules
+</h2>
+<p class="text-sm text-gray-400 mb-6">Activate the services you need. Each module generates a specialized AI prompt.</p>
+
+<!-- COPY MODULE -->
+<div class="mb-6 pb-6 border-b border-white/10">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<i class="fas fa-pen-fancy text-2xl ${modules.copy.active ? 'text-calico-yellow' : 'text-gray-600'}"></i>
+<div>
+<h3 class="font-bold text-lg">Marketing Copy</h3>
+<p class="text-xs text-gray-400">Direct response copywriting</p>
+</div>
+</div>
+<button 
+onClick=${() => this.toggleModule('copy')}
+class="block-btn ${modules.copy.active ? 'bg-calico-yellow text-black' : ''}"
+>
+${modules.copy.active ? 'ACTIVE' : 'INACTIVE'}
+</button>
+</div>
+${modules.copy.active ? html`
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+<div>
+<label class="block text-xs font-semibold mb-2">Funnel Stage</label>
+<select 
+value=${modules.copy.stage}
+onChange=${(e) => this.updateModuleSpec('copy', 'stage', e.target.value)}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+>
+${FUNNEL_STAGES.map(stage => html`<option value=${stage}>${stage}</option>`)}
+</select>
+</div>
+<div>
+<label class="block text-xs font-semibold mb-2">Platform</label>
+<input 
+type="text" 
+value=${modules.copy.platform}
+onInput=${(e) => this.updateModuleSpec('copy', 'platform', e.target.value)}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+/>
+</div>
+<div>
+<label class="block text-xs font-semibold mb-2">Framework</label>
+<select 
+value=${modules.copy.framework}
+onChange=${(e) => this.updateModuleSpec('copy', 'framework', e.target.value)}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+>
+${COPY_FRAMEWORKS.map(fw => html`<option value=${fw}>${fw}</option>`)}
+</select>
+</div>
+</div>
+` : null}
+</div>
+
+<!-- VISUAL MODULE -->
+<div class="mb-6 pb-6 border-b border-white/10">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<i class="fas fa-palette text-2xl ${modules.visual.active ? 'text-calico-yellow' : 'text-gray-600'}"></i>
+<div>
+<h3 class="font-bold text-lg">Visual Design</h3>
+<p class="text-xs text-gray-400">Logo & image generation prompts</p>
+</div>
+</div>
+<button 
+onClick=${() => this.toggleModule('visual')}
+class="block-btn ${modules.visual.active ? 'bg-calico-yellow text-black' : ''}"
+>
+${modules.visual.active ? 'ACTIVE' : 'INACTIVE'}
+</button>
+</div>
+${modules.visual.active ? html`
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+<div>
+<label class="block text-xs font-semibold mb-2">Logo Topology</label>
+<select 
+value=${modules.visual.topology}
+onChange=${(e) => this.updateModuleSpec('visual', 'topology', e.target.value)}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+>
+${LOGO_TOPOLOGY.map(topo => html`<option value=${topo}>${topo}</option>`)}
+</select>
+</div>
+<div>
+<label class="block text-xs font-semibold mb-2">Color Palette</label>
+<input 
+type="text" 
+value=${modules.visual.colors}
+onInput=${(e) => this.updateModuleSpec('visual', 'colors', e.target.value)}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+placeholder="e.g., Purple, Gold, Black"
+/>
+</div>
+</div>
+` : null}
+</div>
+
+<!-- AUDIO MODULE -->
+<div class="mb-6 pb-6 border-b border-white/10">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<i class="fas fa-music text-2xl ${modules.audio.active ? 'text-calico-yellow' : 'text-gray-600'}"></i>
+<div>
+<h3 class="font-bold text-lg">Audio Production</h3>
+<p class="text-xs text-gray-400">Song lyrics & structure for AI music</p>
+</div>
+</div>
+<button 
+onClick=${() => this.toggleModule('audio')}
+class="block-btn ${modules.audio.active ? 'bg-calico-yellow text-black' : ''}"
+>
+${modules.audio.active ? 'ACTIVE' : 'INACTIVE'}
+</button>
+</div>
+${modules.audio.active ? html`
+<div class="mt-4">
+<div class="mb-4">
+<label class="block text-xs font-semibold mb-2">Genre</label>
+<input 
+type="text" 
+value=${modules.audio.genre}
+onInput=${(e) => this.updateModuleSpec('audio', 'genre', e.target.value)}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+placeholder="e.g., Upbeat Pop, Lo-fi Hip Hop"
+/>
+</div>
+<div>
+<label class="block text-xs font-semibold mb-2">Song Structure</label>
+<div class="flex flex-wrap gap-2 mb-3">
+${Object.entries(AUDIO_BLOCKS).map(([code, name]) => html`
+<button 
+onClick=${() => this.addAudioBlock(code)}
+class="block-btn"
+title=${name}
+>
+${name}
+</button>
+`)}
+</div>
+<div class="glass-input p-3 rounded-lg flex flex-wrap gap-2">
+${modules.audio.structure.map((block, idx) => html`
+<span class="bg-calico-purple px-3 py-1 rounded text-sm flex items-center gap-2">
+${AUDIO_BLOCKS[block]}
+<button 
+onClick=${() => this.removeAudioBlock(idx)}
+class="text-red-400 hover:text-red-300"
+>×</button>
+</span>
+`)}
+${modules.audio.structure.length === 0 ? html`<span class="text-gray-500 text-sm">Click buttons above to build structure</span>` : null}
+</div>
+</div>
+</div>
+` : null}
+</div>
+
+<!-- VOX MODULE -->
+<div class="mb-6 pb-6 border-b border-white/10">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<i class="fas fa-microphone text-2xl ${modules.vox.active ? 'text-calico-yellow' : 'text-gray-600'}"></i>
+<div>
+<h3 class="font-bold text-lg">Voice Over</h3>
+<p class="text-xs text-gray-400">AI voice scripts & design</p>
+</div>
+</div>
+<button 
+onClick=${() => this.toggleModule('vox')}
+class="block-btn ${modules.vox.active ? 'bg-calico-yellow text-black' : ''}"
+>
+${modules.vox.active ? 'ACTIVE' : 'INACTIVE'}
+</button>
+</div>
+${modules.vox.active ? html`
+<div class="mt-4">
+<label class="block text-xs font-semibold mb-2">Accent</label>
+<input 
+type="text" 
+value=${modules.vox.accent}
+onInput=${(e) => this.updateModuleSpec('vox', 'accent', e.target.value)}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+placeholder="e.g., American (General), British (RP)"
+/>
+</div>
+` : null}
+</div>
+
+<!-- MOTION MODULE -->
+<div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<i class="fas fa-video text-2xl ${modules.motion.active ? 'text-calico-yellow' : 'text-gray-600'}"></i>
+<div>
+<h3 class="font-bold text-lg">Motion Graphics</h3>
+<p class="text-xs text-gray-400">AI video generation prompts</p>
+</div>
+</div>
+<button 
+onClick=${() => this.toggleModule('motion')}
+class="block-btn ${modules.motion.active ? 'bg-calico-yellow text-black' : ''}"
+>
+${modules.motion.active ? 'ACTIVE' : 'INACTIVE'}
+</button>
+</div>
+${modules.motion.active ? html`
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+<div>
+<label class="block text-xs font-semibold mb-2">Duration (sec)</label>
+<select 
+value=${modules.motion.duration}
+onChange=${(e) => this.updateModuleSpec('motion', 'duration', parseInt(e.target.value))}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+>
+${DURATIONS.map(dur => html`<option value=${dur}>${dur}s</option>`)}
+</select>
+</div>
+<div>
+<label class="block text-xs font-semibold mb-2">Aspect Ratio</label>
+<select 
+value=${modules.motion.ratio}
+onChange=${(e) => this.updateModuleSpec('motion', 'ratio', e.target.value)}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+>
+<option value="16:9">16:9 (Landscape)</option>
+<option value="9:16">9:16 (Vertical)</option>
+<option value="1:1">1:1 (Square)</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-semibold mb-2">Camera Movement</label>
+<select 
+value=${modules.motion.cam}
+onChange=${(e) => this.updateModuleSpec('motion', 'cam', e.target.value)}
+class="glass-input w-full px-3 py-2 rounded text-sm"
+>
+${CAMERA_MOVES.map(cam => html`<option value=${cam}>${cam}</option>`)}
+</select>
+</div>
+</div>
+` : null}
+</div>
+</div>
+
+<!-- GENERATE BUTTON -->
+<div class="flex flex-col sm:flex-row gap-4 mb-6">
+<button 
+onClick=${() => this.generateMasterPrompt()}
+disabled=${isGenerating}
+class="flex-1 bg-gradient-to-r from-calico-purple to-calico-darkPurple hover:from-calico-darkPurple hover:to-calico-purple text-white font-bold py-4 px-8 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+>
+${isGenerating ? html`
+<i class="fas fa-spinner fa-spin mr-2"></i>Generating...
+` : html`
+<i class="fas fa-rocket mr-2"></i>Generate Master Prompt
+`}
+</button>
+<button 
+onClick=${() => this.resetState()}
+class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-lg transition-all ${resetConfirmation ? 'reset-confirm' : ''}"
+>
+${resetConfirmation ? html`
+<i class="fas fa-exclamation-triangle mr-2"></i>Confirm Factory Reset
+` : html`
+<i class="fas fa-undo mr-2"></i>Factory Reset
+`}
+</button>
+</div>
+
+<!-- OUTPUT DISPLAY -->
+${generated ? html`
+<div class="glass-panel p-6 rounded-xl border-calico-yellow border-2">
+<div class="flex justify-between items-center mb-4">
+<h2 class="font-heading font-bold text-2xl flex items-center gap-2">
+<i class="fas fa-file-code"></i>
+Master Prompt Ready
+</h2>
+<button 
+onClick=${() => this.copyToClipboard()}
+class="bg-calico-yellow hover:bg-yellow-500 text-black font-bold py-2 px-6 rounded-lg transition-all flex items-center gap-2"
+>
+<i class="fas ${copied ? 'fa-check' : 'fa-copy'}"></i>
+${copied ? 'Copied!' : 'Copy to Clipboard'}
+</button>
+</div>
+<pre class="glass-input p-4 rounded-lg text-xs sm:text-sm overflow-x-auto custom-scrollbar" style="max-height: 600px; white-space: pre-wrap; word-wrap: break-word;">${masterPrompt}</pre>
+</div>
+` : null}
+</div>
+`;
+}
+}
+
+render(html`<${VelocityEngine} />`, document.getElementById('app'));
+</script>
+</body>
+</html>
+
+
