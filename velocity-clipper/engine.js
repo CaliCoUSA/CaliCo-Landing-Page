@@ -13,11 +13,10 @@ export async function loadEngine(progressCb) {
     const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
 
     await ffmpeg.load({
-        coreURL: `${baseURL}/ffmpeg-core.js`,
-        wasmURL: `${baseURL}/ffmpeg-core.wasm`,
-        // This is the worker file we were missing:
-        workerURL: `${baseURL}/ffmpeg-core.worker.js`
-    });
+    coreURL: './ffmpeg/ffmpeg-core.js',
+    wasmURL: './ffmpeg/ffmpeg-core.wasm',
+    workerURL: './ffmpeg/ffmpeg-core.worker.js'
+});
 
     engineReady = true;
     console.log("🚀 CaliCo Engine Ready (Multi-threaded)");
