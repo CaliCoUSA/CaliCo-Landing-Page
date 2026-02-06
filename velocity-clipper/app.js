@@ -270,8 +270,13 @@ async function handleExport() {
     container.classList.remove('hidden');
     
     try {
-        if (!isEngineReady()) await loadEngine((msg) => progressText.innerText = msg);
+        if (!isEngineReady()) {
+            await loadEngine((msg) => progressText.innerText = msg);
+        }
         
+        // Final safety check to ensure the 'null' error is impossible
+        if (!isEngineReady()) throw new Error("CaliCo Engine failed to initialize. Please refresh.");
+
         await renderClips({
             timelineClips, 
             exportMode, 
