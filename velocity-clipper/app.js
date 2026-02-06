@@ -49,7 +49,7 @@ function initEventListeners() {
     document.getElementById('proceed-to-timeline-btn').addEventListener('click', proceedToTimeline);
     document.getElementById('proceed-to-export-btn').addEventListener('click', proceedToExport);
     
-    // Export Controls (UI Fix Applied Here)
+    // Export Controls
     document.getElementById('export-mode-separate').addEventListener('click', () => setExportMode('separate'));
     document.getElementById('export-mode-merged').addEventListener('click', () => setExportMode('merged'));
     document.getElementById('export-btn').addEventListener('click', handleExport);
@@ -92,7 +92,14 @@ async function handleVideoUpload(e) {
         };
         updateVideoSlotUI(currentUploadSlot);
         e.target.value = '';
-        loadEngine((msg) => console.log("CaliCo Engine Status:", msg));
+        
+        // Connect to the AI-Driven Engine immediately upon first upload
+        if (!isEngineReady()) {
+            loadEngine((msg) => {
+                const progText = document.getElementById('progress-text');
+                if (progText) progText.innerText = msg;
+            });
+        }
     };
 }
 
@@ -186,7 +193,6 @@ function proceedToTimeline() {
     renderTimeline();
 }
 
-// --- PHASE 3 FIX: Re-enable SortableJS ---
 function renderTimeline() {
     const container = document.getElementById('timeline-clips');
     if(timelineClips.length === 0) {
@@ -211,14 +217,13 @@ function renderTimeline() {
         </div>
     `).join('');
     
-    // Sortable JS Logic
     new Sortable(container, {
         animation: 150,
         ghostClass: 'opacity-50',
         onEnd: (evt) => {
             const moved = timelineClips.splice(evt.oldIndex, 1)[0];
             timelineClips.splice(evt.newIndex, 0, moved);
-            renderTimeline(); // Re-render to update index numbers
+            renderTimeline();
         }
     });
 }
@@ -236,119 +241,20 @@ function updateExportSummary() {
     document.getElementById('export-duration').innerText = formatTime(dur);
 }
 
-// --- PHASE 4 FIX: CSS Logic for Radio Buttons ---
 function setExportMode(mode) {
     exportMode = mode;
     const separateEl = document.getElementById('export-mode-separate');
     const mergedEl = document.getElementById('export-mode-merged');
     
-    // Reset Both
     [separateEl, mergedEl].forEach(el => {
         el.classList.remove('selected', 'border-calico-yellow');
         el.classList.add('border-white/10');
-        const dot = el.querySelector('.w-2\\.5'); // TailWind escape char for w-2.5
+        const dot = el.querySelector('.w-2\\.5');
         const ring = el.querySelector('.w-5');
         if(dot) dot.classList.remove('bg-calico-yellow', 'bg-transparent');
         if(ring) ring.style.borderColor = 'rgba(255,255,255,0.3)';
     });
 
-    // Activate Selected
     const activeEl = mode === 'separate' ? separateEl : mergedEl;
     activeEl.classList.add('selected', 'border-calico-yellow');
-    activeEl.classList.remove('border-white/10');
-    
-    const activeDot = activeEl.querySelector('.w-2\\.5');
-    const activeRing = activeEl.querySelector('.w-5');
-    
-    if(activeDot) activeDot.classList.add('bg-calico-yellow');
-    if(activeRing) activeRing.style.borderColor = '#FFD700';
-
-    document.getElementById('export-text').innerText = mode === 'separate' ? 'RENDER CLIPS' : 'RENDER MERGED VIDEO';
-}
-
-async function handleExport() {
-    if (!timelineClips.length) return alert("Timeline empty");
-    const progressText = document.getElementById('progress-text');
-    const progressBar = document.getElementById('progress-bar');
-    const container = document.getElementById('progress-container');
-    const btn = document.getElementById('export-btn');
-    
-    btn.disabled = true;
-    container.classList.remove('hidden');
-    
-    try {
-        if (!isEngineReady()) await loadEngine((msg) => progressText.innerText = msg);
-        
-        await renderClips({
-            timelineClips, 
-            exportMode, 
-            onProgress: (msg) => {
-                progressText.innerText = msg;
-                if(msg.includes('Rendering')) progressBar.style.width = '60%';
-                else if(msg.includes('Merging')) progressBar.style.width = '80%';
-                else progressBar.style.width = '30%';
-            }
-        });
-        progressBar.style.width = '100%';
-        progressText.innerText = "Done!";
-    } catch (err) {
-        alert("Export Error: " + err.message);
-        console.error(err);
-    } finally {
-        btn.disabled = false;
-        setTimeout(() => { container.classList.add('hidden'); progressBar.style.width = '0'; }, 3000);
-    }
-}
-
-function formatTime(s) {
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${m}:${String(sec).padStart(2,'0')}`;
-}
-
-function updateStep(step) {
-    for(let i=1; i<=4; i++) {
-        const el = document.getElementById(`step-${i}`);
-        if(i <= step) {
-            el.classList.add('active');
-            el.querySelector('div').classList.replace('bg-white/10', 'bg-calico-yellow');
-            el.querySelector('div').classList.replace('text-gray-400', 'text-black');
-        } else {
-            el.classList.remove('active');
-        }
-    }
-}
-
-function clearAllVideos() {
-    if(confirm("Reset all?")) {
-        videos = []; clips = []; timelineClips = [];
-        document.querySelectorAll('.video-upload-slot').forEach((el, i) => {
-             el.innerHTML = `<i class="fas fa-plus text-2xl text-gray-500 mb-2"></i><p class="text-xs text-gray-400 font-bold uppercase">Slot ${i+1}</p>`;
-             el.style.borderColor = '';
-        });
-        updateStep(1);
-        document.getElementById('import-section').classList.remove('hidden');
-        document.getElementById('clip-section').classList.add('hidden');
-    }
-}
-
-function processAiTimestamps() {
-    const input = document.getElementById('ai-input').value;
-    const regex = /(\d{1,2}:\d{2}(?::\d{2})?)\s*-\s*(\d{1,2}:\d{2}(?::\d{2})?)/g;
-    let match;
-    const v = videos[currentVideoIndex];
-    if(!v) return alert("Select a video first");
-    while ((match = regex.exec(input)) !== null) {
-        const s = timeToSeconds(match[1]);
-        const e = timeToSeconds(match[2]);
-        clips.push({ id: Date.now() + Math.random(), videoIndex: currentVideoIndex, videoName: v.name, videoColor: v.color, file: v.file, start: s, end: Math.min(e, v.duration) });
-    }
-    renderClipLibrary();
-    document.getElementById('ai-panel').classList.add('hidden');
-}
-
-function timeToSeconds(t) {
-    const p = t.split(':').map(Number);
-    if(p.length === 3) return p[0]*3600 + p[1]*60 + p[2];
-    return p[0]*60 + p[1];
-}
+    activeEl.classList.remove('border-

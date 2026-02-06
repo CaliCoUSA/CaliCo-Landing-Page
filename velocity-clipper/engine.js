@@ -1,5 +1,3 @@
-// engine.js - The Authoritative Logic Layer (Self-Worker Fix)
-
 let ffmpeg = null;
 let engineReady = false;
 
@@ -9,14 +7,13 @@ export async function loadEngine(progressCb) {
     ffmpeg = new FFmpeg();
     progressCb?.("Loading High-Performance Engine...");
 
-    // Using the standard multi-threaded core
-    const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
+    const baseURL = './ffmpeg';
 
     await ffmpeg.load({
-    coreURL: './ffmpeg/ffmpeg-core.js',
-    wasmURL: './ffmpeg/ffmpeg-core.wasm',
-    workerURL: './ffmpeg/ffmpeg-core.worker.js'
-});
+        coreURL: `${baseURL}/ffmpeg-core.js`,
+        wasmURL: `${baseURL}/ffmpeg-core.wasm`,
+        workerURL: `${baseURL}/ffmpeg-core.worker.js`
+    });
 
     engineReady = true;
     console.log("🚀 CaliCo Engine Ready (Multi-threaded)");
@@ -32,7 +29,6 @@ export async function renderClips({ timelineClips, exportMode, onProgress }) {
 
     const written = new Set();
     
-    // 1. Write unique source files
     onProgress?.("Loading source files...");
     for (const clip of timelineClips) {
         if (!written.has(clip.videoIndex)) {
@@ -42,7 +38,6 @@ export async function renderClips({ timelineClips, exportMode, onProgress }) {
         }
     }
 
-    // 2. Process based on mode
     if (exportMode === "separate") {
         for (let i = 0; i < timelineClips.length; i++) {
             const c = timelineClips[i];

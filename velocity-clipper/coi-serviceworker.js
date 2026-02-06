@@ -1,4 +1,3 @@
-// coi-serviceworker.js
 if (typeof window === 'undefined') {
     self.addEventListener("install", () => self.skipWaiting());
     self.addEventListener("activate", (event) => event.waitUntil(self.clients.claim()));
@@ -24,4 +23,19 @@ if (typeof window === 'undefined') {
                 .catch((e) => console.error(e))
         );
     });
+} else {
+    // Registration logic for the main browser window
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register(window.document.currentScript.src).then(
+            (registration) => {
+                registration.addEventListener("updatefound", () => {
+                    location.reload();
+                });
+                if (registration.active && !navigator.serviceWorker.controller) {
+                    location.reload();
+                }
+            },
+            (err) => console.error("CaliCo Security Worker failed: ", err)
+        );
+    }
 }
