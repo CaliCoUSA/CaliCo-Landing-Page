@@ -3,11 +3,10 @@ let engineReady = false;
 
 export async function loadEngine(progressCb) {
     if (engineReady) return;
-    const { FFmpeg } = FFmpegWASM;
-    ffmpeg = new FFmpeg();
-    progressCb?.("Loading High-Performance Engine...");
-
-    const baseURL = './ffmpeg';
+    const FFmpegLib = window.FFmpegWASM || FFmpegWASM;
+    if (!FFmpegLib) throw new Error("CaliCo Engine Brain (FFmpegWASM) not found. Check index.html scripts.");
+    
+    const { FFmpeg } = FFmpegLib;
 
     await ffmpeg.load({
         coreURL: `${baseURL}/ffmpeg-core.js`,
