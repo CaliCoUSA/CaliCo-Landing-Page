@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Genre Architect | CaliCo Agency</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:wght@400;600;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calico: {
+                            purple: '#4B0082',
+                            darkPurple: '#2E0057',
+                            deepest: '#0F0518',
+                            card: '#1A0B2E',
+                            yellow: '#FFD700',
+                            accent: '#00D4FF',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        'fadeIn': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Open Sans', sans-serif; background-color: #0F0518; color: white; }
+        h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Montserrat', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.2s;
+        }
+        .glass-input:focus {
+            border-color: #FFD700;
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0F0518; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #2E0057; border-radius: 4px; }
+
+        .switch-checkbox { display: none; }
+        .switch-label {
+            display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; width: 100%; max-width: 320px; height: 44px;
+            background: rgba(0,0,0,0.4); border-radius: 40px; position: relative;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .switch-label .ball {
+            background-color: #fff; height: 36px; width: 48%;
+            position: absolute; top: 3px; left: 4px;
+            border-radius: 34px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 10;
+        }
+        .switch-checkbox:checked + .switch-label .ball {
+            transform: translateX(calc(100% - 8px));
+            background-color: #FFD700;
+        }
+        .switch-checkbox:not(:checked) + .switch-label .ball {
+            background-color: #00D4FF;
+        }
+
+        .json-key { color: #FFD700; }
+        .json-string { color: #00D4FF; }
+        .json-number { color: #b5cea8; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_#2E0057_0%,_#0F0518_70%)] overflow-x-hidden">
+
+<div id="app" class="flex-grow flex flex-col relative z-20 p-4 sm:p-8">
+    <div class="max-w-6xl mx-auto w-full">
+        <!-- HEADER -->
+        <div class="text-center mb-10 animate-fadeIn">
+            <h1 class="text-4xl sm:text-6xl font-black font-heading mb-3 bg-gradient-to-r from-calico-yellow via-white to-calico-accent bg-clip-text text-transparent">
+                🎵 GENRE ARCHITECT
+            </h1>
+            <p class="text-sm sm:text-base text-gray-400">AI Driven, Artist Approved Prompt Engine</p>
+        </div>
+
+        <!-- MODE TOGGLE -->
+        <div class="glass-panel p-8 rounded-2xl mb-8 flex flex-col items-center border-white/10">
+            <h3 class="font-heading font-bold text-lg mb-4 text-center">Engine Logic</h3>
+            <div class="flex items-center gap-3">
+                <input type="checkbox" id="mode-toggle" class="switch-checkbox" onchange="toggleMode()">
+                <label for="mode-toggle" class="switch-label">
+                    <span id="label-general" class="text-[10px] font-black tracking-widest px-6 relative z-20 text-black">GENERAL</span>
+                    <span id="label-custom" class="text-[10px] font-black tracking-widest px-6 relative z-20 text-white">CUSTOM HYBRID</span>
+                    <div class="ball"></div>
+                </label>
+            </div>
+            <p id="mode-desc" class="text-[11px] text-gray-500 mt-4 uppercase tracking-[0.2em]">1:1 Master JSON Output</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- INPUTS -->
+            <div class="lg:col-span-5 space-y-6">
+                <!-- GENERAL UI -->
+                <div id="ui-general" class="glass-panel p-6 rounded-2xl border-l-4 border-calico-accent">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-calico-accent mb-4">Select Base Identity</label>
+                    <select id="sel-base" onchange="updateOutput()" class="glass-input w-full p-4 rounded-xl font-semibold text-sm"></select>
+                </div>
+
+                <!-- CUSTOM UI -->
+                <div id="ui-custom" class="hidden space-y-4">
+                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-calico-yellow">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-calico-yellow mb-3">01. Identity Anchor</label>
+                        <select id="sel-anchor" onchange="updateOutput()" class="glass-input w-full p-3 rounded-xl text-sm"></select>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border-white/5 border-l-4">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">02. Audio Characteristics</label>
+                        <select id="sel-audio" onchange="updateOutput()" class="glass-input w-full p-3 rounded-xl text-sm"></select>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border-white/5 border-l-4">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">03. Instrumentation Stack</label>
+                        <select id="sel-instr" onchange="updateOutput()" class="glass-input w-full p-3 rounded-xl text-sm"></select>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border-white/5 border-l-4">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">04. Rhythm Stack</label>
+                        <select id="sel-rhythm" onchange="updateOutput()" class="glass-input w-full p-3 rounded-xl text-sm"></select>
+                    </div>
+                    <button onclick="randomize()" class="w-full py-4 bg-zinc-800/50 hover:bg-zinc-800 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border border-white/10">
+                        <i class="fas fa-random mr-2"></i> Randomize Hybrid
+                    </button>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="space-y-3 pt-2">
+                    <button onclick="copyToClipboard()" id="copy-btn" class="w-full py-5 bg-white text-black font-black rounded-2xl hover:bg-calico-yellow transition-all transform hover:scale-[1.01] shadow-2xl uppercase tracking-tighter">
+                        Copy Manifest JSON
+                    </button>
+                    <button onclick="copyAsTagString()" id="tags-btn" class="w-full py-5 bg-transparent border-2 border-calico-accent text-calico-accent font-black rounded-2xl hover:bg-calico-accent hover:text-black transition-all transform hover:scale-[1.01] uppercase tracking-tighter">
+                        Copy Tag String
+                    </button>
+                </div>
+            </div>
+
+            <!-- OUTPUT -->
+            <div class="lg:col-span-7">
+                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col h-full border-white/10 border shadow-2xl">
+                    <div class="bg-black/40 px-6 py-4 flex justify-between items-center border-b border-white/5">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-file-code text-calico-yellow"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">architect_output.json</span>
+                        </div>
+                        <div id="status-badge" class="text-[10px] font-black uppercase tracking-widest text-calico-accent">Ready</div>
+                    </div>
+                    <pre id="output" class="p-8 text-[13px] font-mono leading-relaxed overflow-auto max-h-[700px] bg-black/20 custom-scrollbar"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center py-8 text-[10px] uppercase tracking-[0.3em] text-gray-600 border-t border-white/5">
+    <p>Built with 🎵 by CaliCo Branding Solutions | Secure Engine v2.3</p>
+</footer>
+
+<textarea id="copy-buffer" class="fixed -left-[9999px]"></textarea>
+
+<script>
+    const GENRE_DATA = {
+        "Psychedelic Future Bass": { "style_definition": { "primary_genre": "Future Bass", "sub_genres": ["Psychedelia", "Wonky"] }, "audio_characteristics": { "tempo_bpm": 160, "dynamics": "Highly Compressed", "fidelity": "Ultra-HD Glossy" }, "instrumentation_stack": { "lead_elements": "Wobbly Supersaws", "bass_layer": "Sub-heavy 808s", "atmosphere": "Granular textures" }, "rhythm_stack": { "kick_pattern": "Syncopated Trap-style", "snare_texture": "Metallic Claps", "percussion": "Glitchy foley" }, "forbidden_items": ["Acoustic Piano", "Static Chords", "Lo-fi Hiss"] },
+        "Prog Psy-Trance": { "style_definition": { "primary_genre": "Psytrance", "sub_genres": ["Progressive", "Zenonesque"] }, "audio_characteristics": { "tempo_bpm": 138, "dynamics": "Driving/Constant", "fidelity": "Crisp/Digital" }, "instrumentation_stack": { "lead_elements": "FM Squeltch Leads", "bass_layer": "Rolling Triplets", "atmosphere": "Deep Space Pads" }, "rhythm_stack": { "kick_pattern": "Four-on-the-floor", "snare_texture": "Tight 909 Snare", "percussion": "Shuffling Hi-hats" }, "forbidden_items": ["Broken Beats", "Jazz Chords", "Vocal Ballads"] },
+        "Complextro": { "style_definition": { "primary_genre": "Electro House", "sub_genres": ["Chiptune", "Glitch"] }, "audio_characteristics": { "tempo_bpm": 128, "dynamics": "Maximized", "fidelity": "Bit-crushed/Clean" }, "instrumentation_stack": { "lead_elements": "Rapid Synth Swaps", "bass_layer": "Growling Talk-box", "atmosphere": "Video Game FX" }, "rhythm_stack": { "kick_pattern": "Heavy Thump", "snare_texture": "Digital White Noise", "percussion": "Rapid Fills" }, "forbidden_items": ["Long Ambient Drifts", "Simple Sine Bass", "Live Drum Kits"] },
+        "Pop": { "style_definition": { "primary_genre": "Pop", "sub_genres": ["Synth-pop", "Dance-pop"] }, "audio_characteristics": { "tempo_bpm": 120, "dynamics": "Highly Compressed", "fidelity": "Crystal Clear" }, "instrumentation_stack": { "lead_elements": "Clean Vocals/Leads", "bass_layer": "Synth/Moog Bass", "atmosphere": "Shimmering Reverbs" }, "rhythm_stack": { "kick_pattern": "Standard 4/4", "snare_texture": "Sharp Digital Snare", "percussion": "Tambourines/Shakers" }, "forbidden_items": ["Dissonance", "Long Solos", "Lo-fi Hiss"] },
+        "Hip-Hop": { "style_definition": { "primary_genre": "Hip-Hop", "sub_genres": ["Boom Bap", "Trap"] }, "audio_characteristics": { "tempo_bpm": 90, "dynamics": "Punchy", "fidelity": "Warm/Gritty" }, "instrumentation_stack": { "lead_elements": "Rap Vocals/Samples", "bass_layer": "Heavy 808 Sub", "atmosphere": "Vinyl Crackle/Street" }, "rhythm_stack": { "kick_pattern": "Syncopated", "snare_texture": "Crisp/Dry Snare", "percussion": "Hi-hat Rolls" }, "forbidden_items": ["Operatic Vocals", "Polka Beats", "Pure Ambient"] },
+        "Classic Rock": { "style_definition": { "primary_genre": "Rock", "sub_genres": ["Blues Rock", "Hard Rock"] }, "audio_characteristics": { "tempo_bpm": 120, "dynamics": "Natural/Live", "fidelity": "Analog/Tape" }, "instrumentation_stack": { "lead_elements": "Overdriven Guitar", "bass_layer": "Warm P-Bass", "atmosphere": "Room Reverb" }, "rhythm_stack": { "kick_pattern": "Thump/Rock", "snare_texture": "Organic Wooden Snare", "percussion": "Crash Cymbals" }, "forbidden_items": ["Autotune", "808 Kicks", "Glitch FX"] },
+        "Contemporary R&B": { "style_definition": { "primary_genre": "R&B", "sub_genres": ["Soul", "Neo-soul"] }, "audio_characteristics": { "tempo_bpm": 75, "dynamics": "Smooth/Fluid", "fidelity": "High-end Boutique" }, "instrumentation_stack": { "lead_elements": "Melismatic Vocals", "bass_layer": "Electric Bass", "atmosphere": "Electric Piano/Rhodes" }, "rhythm_stack": { "kick_pattern": "Laid back", "snare_texture": "Soft Snap", "percussion": "Finger Snaps" }, "forbidden_items": ["Distorted Guitars", "Screaming", "Techno Kicks"] },
+        "Country": { "style_definition": { "primary_genre": "Country", "sub_genres": ["Honky Tonk", "Pop"] }, "audio_characteristics": { "tempo_bpm": 110, "dynamics": "Vocal Forward", "fidelity": "Polished/Warm" }, "instrumentation_stack": { "lead_elements": "Steel Guitar/Fiddle", "bass_layer": "Walking Bass", "atmosphere": "Acoustic Strums" }, "rhythm_stack": { "kick_pattern": "Boom-Chicka", "snare_texture": "Brushed/Tight", "percussion": "Shakers" }, "forbidden_items": ["Dubstep Growls", "Industrial FX", "Scream-o"] },
+        "Reggaeton": { "style_definition": { "primary_genre": "Latin", "sub_genres": ["Dancehall", "Trap"] }, "audio_characteristics": { "tempo_bpm": 95, "dynamics": "Aggressive Lows", "fidelity": "Club-ready" }, "instrumentation_stack": { "lead_elements": "Autotuned Vocals", "bass_layer": "Deep Sine Sub", "atmosphere": "Tropical Synth Air" }, "rhythm_stack": { "kick_pattern": "Dem Bow Rhythm", "snare_texture": "Woodblock/Rimshot", "percussion": "Congas" }, "forbidden_items": ["Orchestral Strings", "Blast Beats", "Banjo"] },
+        "K-Pop": { "style_definition": { "primary_genre": "Pop", "sub_genres": ["Hip-hop", "EDM"] }, "audio_characteristics": { "tempo_bpm": 128, "dynamics": "Extreme Contrast", "fidelity": "Ultra-Modern" }, "instrumentation_stack": { "lead_elements": "Multi-part Vocals", "bass_layer": "Digital Bass", "atmosphere": "Ear Candy FX" }, "rhythm_stack": { "kick_pattern": "Driving 4/4", "snare_texture": "Layered Claps", "percussion": "Electronic Fills" }, "forbidden_items": ["Low Bitrate", "Minimalism", "Blues Scales"] },
+        "Heavy Metal": { "style_definition": { "primary_genre": "Metal", "sub_genres": ["Thrash", "Death"] }, "audio_characteristics": { "tempo_bpm": 180, "dynamics": "Wall of Sound", "fidelity": "Aggressive/Raw" }, "instrumentation_stack": { "lead_elements": "Distorted Guitars", "bass_layer": "Gritty/Metallic", "atmosphere": "Dark Drones" }, "rhythm_stack": { "kick_pattern": "Double Kick", "snare_texture": "High-tension Crack", "percussion": "Ride Bell" }, "forbidden_items": ["Soft Synths", "Acoustic Ukulele", "Swing"] },
+        "Jazz": { "style_definition": { "primary_genre": "Jazz", "sub_genres": ["Bebop", "Swing"] }, "audio_characteristics": { "tempo_bpm": 140, "dynamics": "Wide Range", "fidelity": "Warm/Intimate" }, "instrumentation_stack": { "lead_elements": "Saxophone/Trumpet", "bass_layer": "Upright Bass", "atmosphere": "Club Ambience" }, "rhythm_stack": { "kick_pattern": "Feathered Kick", "snare_texture": "Brushed/Snap", "percussion": "Ride Cymbal Swing" }, "forbidden_items": ["Mono-synths", "Heavy Clipping", "Trap Snares"] },
+        "Classical": { "style_definition": { "primary_genre": "Classical", "sub_genres": ["Baroque", "Romantic"] }, "audio_characteristics": { "tempo_bpm": 70, "dynamics": "Pianissimo/Fortissimo", "fidelity": "Acoustic Hall" }, "instrumentation_stack": { "lead_elements": "Violins/Piano", "bass_layer": "Cello/Double Bass", "atmosphere": "Concert Hall Reverb" }, "rhythm_stack": { "kick_pattern": "Timpani Rolls", "snare_texture": "Military Orchestral", "percussion": "Triangle/Cymbals" }, "forbidden_items": ["Synthesizers", "Drum Machines", "Vocoders"] },
+        "Folk": { "style_definition": { "primary_genre": "Folk", "sub_genres": ["Americana", "Celtic"] }, "audio_characteristics": { "tempo_bpm": 100, "dynamics": "Soft/Breathable", "fidelity": "Organic/Raw" }, "instrumentation_stack": { "lead_elements": "Acoustic Guitar/Banjo", "bass_layer": "Double Bass", "atmosphere": "Natural Air" }, "rhythm_stack": { "kick_pattern": "Subtle Stomp", "snare_texture": "Minimal Snare", "percussion": "Egg Shaker" }, "forbidden_items": ["Wobble Bass", "Laser Hits", "Distorted Vox"] },
+        "Soul": { "style_definition": { "primary_genre": "Soul", "sub_genres": ["Motown", "Gospel"] }, "audio_characteristics": { "tempo_bpm": 105, "dynamics": "Deeply Groovy", "fidelity": "Warm Analog" }, "instrumentation_stack": { "lead_elements": "Powerful Vocals/Brass", "bass_layer": "Syncopated Electric", "atmosphere": "B3 Organ" }, "rhythm_stack": { "kick_pattern": "Pocket Grove", "snare_texture": "Fat/Wet Snare", "percussion": "Tambourine/Bongos" }, "forbidden_items": ["Hardstyle Kick", "8-bit Noises", "Metal Grunts"] },
+        "Alternative Rock": { "style_definition": { "primary_genre": "Rock", "sub_genres": ["Grunge", "Indie"] }, "audio_characteristics": { "tempo_bpm": 115, "dynamics": "Quiet/Loud", "fidelity": "Mid-fi/Natural" }, "instrumentation_stack": { "lead_elements": "Clean/Fuzz Guitar", "bass_layer": "Melodic Electric", "atmosphere": "Chorus/Flange" }, "rhythm_stack": { "kick_pattern": "Steady/Nuanced", "snare_texture": "Deep/Ringy Snare", "percussion": "Tambourine" }, "forbidden_items": ["Brass Sections", "Trance Gates", "Trap Hats"] },
+        "Funk": { "style_definition": { "primary_genre": "Funk", "sub_genres": ["P-Funk", "Go-go"] }, "audio_characteristics": { "tempo_bpm": 110, "dynamics": "Highly Rhythmic", "fidelity": "Thick/Saturated" }, "instrumentation_stack": { "lead_elements": "Wah Guitar/Horns", "bass_layer": "Slap Bass", "atmosphere": "Vocal Ad-libs" }, "rhythm_stack": { "kick_pattern": "Syncopated/Bouncy", "snare_texture": "Tight/Dry Snap", "percussion": "Cowbell/Congas" }, "forbidden_items": ["Ambient Pads", "Folk Banjo", "Trap Highs"] },
+        "Disco": { "style_definition": { "primary_genre": "Disco", "sub_genres": ["Italo", "Nu-disco"] }, "audio_characteristics": { "tempo_bpm": 120, "dynamics": "Dancefloor Punch", "fidelity": "Hi-Fi Glossy" }, "instrumentation_stack": { "lead_elements": "Strings/Falsetto", "bass_layer": "Octave Bassline", "atmosphere": "Studio Reverb" }, "rhythm_stack": { "kick_pattern": "Four-on-the-floor", "snare_texture": "Clap/Snare Mix", "percussion": "Open Hi-hats" }, "forbidden_items": ["Blast Beats", "Drone Texture", "Death Growl"] },
+        "Reggae": { "style_definition": { "primary_genre": "Reggae", "sub_genres": ["Dub", "Roots"] }, "audio_characteristics": { "tempo_bpm": 70, "dynamics": "Heavy Low-end", "fidelity": "Analog/Dubby" }, "instrumentation_stack": { "lead_elements": "Skar Guitar Chops", "bass_layer": "Deep/Subby Electric", "atmosphere": "Tape Delay/Echo" }, "rhythm_stack": { "kick_pattern": "One Drop", "snare_texture": "High Rimshot", "percussion": "Bongos/Guiro" }, "forbidden_items": ["Supersaws", "Classical Piano", "Polka"] },
+        "House": { "style_definition": { "primary_genre": "EDM", "sub_genres": ["Deep", "Tech"] }, "audio_characteristics": { "tempo_bpm": 124, "dynamics": "Consistent Drive", "fidelity": "Clean/Club" }, "instrumentation_stack": { "lead_elements": "Piano/Synth Stabs", "bass_layer": "Sub/Plucked Bass", "atmosphere": "White Noise Swooshes" }, "rhythm_stack": { "kick_pattern": "Steady 4/4", "snare_texture": "909 Clap", "percussion": "Shuffling Hats" }, "forbidden_items": ["Live Drum Solos", "Blues Harmonica", "Grunge Fuzz"] },
+        "Techno": { "style_definition": { "primary_genre": "EDM", "sub_genres": ["Minimal", "Industrial"] }, "audio_characteristics": { "tempo_bpm": 130, "dynamics": "Repetitive/Hypnotic", "fidelity": "Dark/Industrial" }, "instrumentation_stack": { "lead_elements": "Acid Arps/Stabs", "bass_layer": "Rumbling Kick Bass", "atmosphere": "Reverberant Drones" }, "rhythm_stack": { "kick_pattern": "Heavy 4/4", "snare_texture": "Tight Digital", "percussion": "Dark Percussion" }, "forbidden_items": ["Vocal Choruses", "Acoustic Piano", "Jazz Chords"] },
+        "Drum and Bass": { "style_definition": { "primary_genre": "EDM", "sub_genres": ["Liquid", "Neurofunk"] }, "audio_characteristics": { "tempo_bpm": 174, "dynamics": "High Velocity", "fidelity": "Precision Engineered" }, "instrumentation_stack": { "lead_elements": "Warped Synths/Vocals", "bass_layer": "Reese Bass", "atmosphere": "Cinematic Pads" }, "rhythm_stack": { "kick_pattern": "Broken/Fast", "snare_texture": "Snappy Breakbeat", "percussion": "Fast Hi-hats" }, "forbidden_items": ["Slow Tempos", "4/4 Kick", "Classical Harp"] },
+        "Blues": { "style_definition": { "primary_genre": "Blues", "sub_genres": ["Delta", "Chicago"] }, "audio_characteristics": { "tempo_bpm": 80, "dynamics": "Expressive", "fidelity": "Vintage/Gritty" }, "instrumentation_stack": { "lead_elements": "Slide Guitar/Harp", "bass_layer": "Simple Thump", "atmosphere": "Backporch Air" }, "rhythm_stack": { "kick_pattern": "Shuffle Beat", "snare_texture": "Loose Wooden", "percussion": "Foot Stomps" }, "forbidden_items": ["Digital Arps", "Techno Highs", "Power Metal"] },
+        "Punk Rock": { "style_definition": { "primary_genre": "Punk", "sub_genres": ["Hardcore", "Skate"] }, "audio_characteristics": { "tempo_bpm": 200, "dynamics": "Constant High", "fidelity": "Lo-fi/DIY" }, "instrumentation_stack": { "lead_elements": "Power Chords", "bass_layer": "Fuzzed Electric", "atmosphere": "Feedback" }, "rhythm_stack": { "kick_pattern": "Fast/Straight", "snare_texture": "Trashy Snare", "percussion": "Rough Hi-hats" }, "forbidden_items": ["Jazz Fusion", "Orchestration", "Quantization"] },
+        "Afrobeats": { "style_definition": { "primary_genre": "African", "sub_genres": ["Afropop", "Amapiano"] }, "audio_characteristics": { "tempo_bpm": 105, "dynamics": "Percussive/Complex", "fidelity": "Modern/Digital" }, "instrumentation_stack": { "lead_elements": "Auto-tune/Guitar", "bass_layer": "Log Drum (Amapiano)", "atmosphere": "Ambient Plucks" }, "rhythm_stack": { "kick_pattern": "Polyrhythmic", "snare_texture": "Woody Perc Snare", "percussion": "Shakers/Congas" }, "forbidden_items": ["Power Chords", "Opera", "Country Twang"] },
+        "Synthwave": { "style_definition": { "primary_genre": "Electronic", "sub_genres": ["Retrowave", "Outrun"] }, "audio_characteristics": { "tempo_bpm": 100, "dynamics": "Gated/Processed", "fidelity": "80s Emulated" }, "instrumentation_stack": { "lead_elements": "Analog Style Leads", "bass_layer": "Arpeggiated Bass", "atmosphere": "Deep Retro Pads" }, "rhythm_stack": { "kick_pattern": "Steady/Deep", "snare_texture": "Gated Reverb Snare", "percussion": "Linndrum Perc" }, "forbidden_items": ["Acoustic Drums", "Rap Verses", "Death Metal"] },
+        "Phonk": { "style_definition": { "primary_genre": "Phonk", "sub_genres": ["Memphis", "Drift"] }, "audio_characteristics": { "tempo_bpm": 140, "dynamics": "Heavy/Compressed", "fidelity": "Lo-fi/Gritty" }, "instrumentation_stack": { "lead_elements": "Pitched Vocal Samples", "bass_layer": "Cowbell 808", "atmosphere": "Dark Memphis Samples" }, "rhythm_stack": { "kick_pattern": "Trap Hi-hats", "snare_texture": "Snappy/Reverbed", "percussion": "Rolling Hi-hats" }, "forbidden_items": ["Clean Vocals", "Uplifting Melodies", "Jazz Chords"] },
+        "Dubstep": { "style_definition": { "primary_genre": "EDM", "sub_genres": ["Brostep", "Riddim"] }, "audio_characteristics": { "tempo_bpm": 140, "dynamics": "Maximized Impact", "fidelity": "Aggressive Digital" }, "instrumentation_stack": { "lead_elements": "Wobble/Growl", "bass_layer": "Sub-frequency", "atmosphere": "Sci-fi FX" }, "rhythm_stack": { "kick_pattern": "Half-time", "snare_texture": "Heavy Crack", "percussion": "Cybernetic Noises" }, "forbidden_items": ["Country Twang", "Jazz Piano", "Samba Hats"] },
+        "Ambient": { "style_definition": { "primary_genre": "Electronic", "sub_genres": ["Dark", "Space"] }, "audio_characteristics": { "tempo_bpm": 0, "dynamics": "Minimal/Floating", "fidelity": "Wide/Vast" }, "instrumentation_stack": { "lead_elements": "Distant Textures", "bass_layer": "Low Drones", "atmosphere": "Field Recordings" }, "rhythm_stack": { "kick_pattern": "None", "snare_texture": "None", "percussion": "Slow Pulses" }, "forbidden_items": ["Heavy Drums", "Rap Vocals", "Maximized Volume"] },
+        "Ska": { "style_definition": { "primary_genre": "Ska", "sub_genres": ["Two-tone", "Punk"] }, "audio_characteristics": { "tempo_bpm": 130, "dynamics": "High Energy", "fidelity": "Punchy/Live" }, "instrumentation_stack": { "lead_elements": "Horns/Trombone", "bass_layer": "Walking Bass", "atmosphere": "Studio Room" }, "rhythm_stack": { "kick_pattern": "Off-beat Accent", "snare_texture": "Tight/Marching", "percussion": "Cowbell" }, "forbidden_items": ["Ambient Wash", "808 Sub", "Auto-tune"] },
+        "Trance": { "style_definition": { "primary_genre": "EDM", "sub_genres": ["Uplifting", "Psy"] }, "audio_characteristics": { "tempo_bpm": 138, "dynamics": "Epic/Building", "fidelity": "Shimmering" }, "instrumentation_stack": { "lead_elements": "Euphoric Supersaws", "bass_layer": "Rolling Bass", "atmosphere": "Ethereal Pads" }, "rhythm_stack": { "kick_pattern": "Hard 4/4", "snare_texture": "Big Reverb Snare", "percussion": "Sizzling Hi-hats" }, "forbidden_items": ["Broken Beats", "Blues Solos", "Folk Banjo"] }
+    };
+
+    let currentMode = 'general';
+    let currentResult = {}; // Track current object for string conversion
+    const selectors = {
+        base: document.getElementById('sel-base'),
+        anchor: document.getElementById('sel-anchor'),
+        audio: document.getElementById('sel-audio'),
+        instr: document.getElementById('sel-instr'),
+        rhythm: document.getElementById('sel-rhythm')
+    };
+
+    function init() {
+        const names = Object.keys(GENRE_DATA).sort();
+        Object.values(selectors).forEach(sel => {
+            names.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                sel.appendChild(opt);
+            });
+        });
+        updateOutput();
+    }
+
+    function toggleMode() {
+        const isChecked = document.getElementById('mode-toggle').checked;
+        currentMode = isChecked ? 'custom' : 'general';
+        
+        document.getElementById('ui-general').classList.toggle('hidden', currentMode !== 'general');
+        document.getElementById('ui-custom').classList.toggle('hidden', currentMode !== 'custom');
+        document.getElementById('mode-desc').textContent = isChecked ? 'Modular Sonic Fusion' : '1:1 Master JSON Output';
+        document.getElementById('status-badge').textContent = isChecked ? 'Custom Mix' : 'General';
+        document.getElementById('status-badge').className = `text-[10px] font-black uppercase tracking-widest ${isChecked ? 'text-calico-yellow' : 'text-calico-accent'}`;
+        
+        document.getElementById('label-general').className = `text-[10px] font-black tracking-widest px-6 relative z-20 ${isChecked ? 'text-white' : 'text-black'}`;
+        document.getElementById('label-custom').className = `text-[10px] font-black tracking-widest px-6 relative z-20 ${isChecked ? 'text-black' : 'text-white'}`;
+
+        resetSelections();
+        updateOutput();
+    }
+
+    function resetSelections() {
+        const firstKey = Object.keys(GENRE_DATA).sort()[0];
+        Object.values(selectors).forEach(sel => {
+            sel.value = firstKey;
+        });
+    }
+
+    function updateOutput() {
+        if (currentMode === 'general') {
+            currentResult = GENRE_DATA[selectors.base.value];
+        } else {
+            currentResult = {
+                "style_definition": GENRE_DATA[selectors.anchor.value].style_definition,
+                "audio_characteristics": GENRE_DATA[selectors.audio.value].audio_characteristics,
+                "instrumentation_stack": GENRE_DATA[selectors.instr.value].instrumentation_stack,
+                "rhythm_stack": GENRE_DATA[selectors.rhythm.value].rhythm_stack
+            };
+        }
+        renderJson(currentResult);
+    }
+
+    function renderJson(obj) {
+        let str = JSON.stringify(obj, null, 2);
+        str = str.replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:');
+        str = str.replace(/: "([^"]+)"/g, ': <span class="json-string">"$1"</span>');
+        str = str.replace(/: (\d+)/g, ': <span class="json-number">$1</span>');
+        document.getElementById('output').innerHTML = str;
+    }
+
+    function randomize() {
+        const keys = Object.keys(GENRE_DATA);
+        ['anchor', 'audio', 'instr', 'rhythm'].forEach(k => {
+            selectors[k].value = keys[Math.floor(Math.random() * keys.length)];
+        });
+        updateOutput();
+    }
+
+    function copyToClipboard() {
+        const text = document.getElementById('output').innerText;
+        const buffer = document.getElementById('copy-buffer');
+        buffer.value = text;
+        buffer.select();
+        
+        try {
+            document.execCommand('copy');
+            const btn = document.getElementById('copy-btn');
+            const original = btn.innerText;
+            btn.innerText = "MANIFEST COPIED";
+            btn.classList.replace('bg-white', 'bg-green-500');
+            btn.classList.add('text-white');
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.classList.replace('bg-green-500', 'bg-white');
+                btn.classList.remove('text-white');
+            }, 1500);
+        } catch (err) {
+            console.error('Copy failed', err);
+        }
+    }
+
+    function copyAsTagString() {
+        const buffer = document.getElementById('copy-buffer');
+        
+        // Flatten logic
+        const tags = [];
+        const processValue = (val) => {
+            if (Array.isArray(val)) {
+                val.forEach(item => tags.push(item));
+            } else if (typeof val === 'object' && val !== null) {
+                Object.keys(val).forEach(key => {
+                    if (key !== 'forbidden_items') {
+                        processValue(val[key]);
+                    }
+                });
+            } else {
+                // If it's the tempo, append BPM for clarity
+                if (typeof val === 'number') {
+                    tags.push(val + ' BPM');
+                } else {
+                    tags.push(val);
+                }
+            }
+        };
+
+        processValue(currentResult);
+        const tagString = tags.join(', ');
+        
+        buffer.value = tagString;
+        buffer.select();
+        
+        try {
+            document.execCommand('copy');
+            const btn = document.getElementById('tags-btn');
+            const original = btn.innerText;
+            btn.innerText = "TAGS COPIED";
+            btn.classList.replace('text-calico-accent', 'text-black');
+            btn.classList.add('bg-calico-accent');
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.classList.replace('text-black', 'text-calico-accent');
+                btn.classList.remove('bg-calico-accent');
+            }, 1500);
+        } catch (err) {
+            console.error('Copy failed', err);
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>
