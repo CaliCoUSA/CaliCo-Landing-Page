@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocity Builder | Calico USA</title>
+    
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:wght@400;600;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calico: {
+                            purple: '#4B0082',
+                            darkPurple: '#2E0057',
+                            deepest: '#0F0518',
+                            card: 'rgba(26, 11, 46, 0.6)',
+                            yellow: '#FFD700',
+                            accent: '#00D4FF',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        'fadeIn': 'fadeIn 0.5s ease-out forwards',
+                        'pulse-glow': 'pulse-glow 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { boxShadow: '0 0 10px rgba(255, 215, 0, 0.2)' },
+                            '50%': { boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            font-family: 'Open Sans', sans-serif; 
+            background-color: #0F0518; 
+            color: white; 
+        }
+        h1, h2, h3, h4, h5, h6, .font-heading { 
+            font-family: 'Montserrat', sans-serif; 
+        }
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        /* Interactive Inputs */
+        .glass-input, .glass-select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .glass-select option {
+            background-color: #0F0518;
+            color: white;
+        }
+        .glass-input:focus, .glass-select:focus {
+            border-color: #FFD700;
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+        }
+
+        /* Tool Selection Cards */
+        .tool-card {
+            cursor: pointer;
+        }
+        .tool-card.selected {
+            border-color: #00D4FF;
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+        .tool-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Layout Blocks (Draggable) */
+        .layout-block {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .layout-block:active {
+            cursor: grabbing;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0F0518; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #2E0057; border-radius: 4px; }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_#2E0057_0%,_#0F0518_70%)] overflow-x-hidden p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto w-full space-y-8 animate-fadeIn">
+        
+        <div class="text-center space-y-2">
+            <h1 class="text-4xl md:text-6xl font-black font-heading bg-gradient-to-r from-calico-yellow via-white to-calico-accent bg-clip-text text-transparent uppercase tracking-tighter">
+                Velocity Builder
+            </h1>
+            <p class="text-calico-accent/70 tracking-[0.3em] text-xs font-bold uppercase">The Prompt IDE by Calico USA</p>
+        </div>
+
+        <form id="vibe-form" onsubmit="event.preventDefault();" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-4 space-y-6">
+                <div class="glass-panel p-6 rounded-3xl">
+                    <h2 class="font-heading font-bold text-calico-yellow mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-fingerprint"></i> Identity
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Project Name</label>
+                            <input type="text" id="project-name" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Neo-Tokyo SaaS">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Aesthetic Archetype</label>
+                            <select id="aesthetic" class="glass-select p-3 rounded-xl text-sm">
+                                <option value="Modern SaaS">Modern SaaS (Clean, Trust)</option>
+                                <option value="Cyberpunk">Cyberpunk (Neon, Dark)</option>
+                                <option value="Neo-Brutalism">Neo-Brutalism (Bold, Raw)</option>
+                                <option value="Glassmorphism">Glassmorphism (Frosted, Soft)</option>
+                                <option value="Swiss Minimal">Swiss Minimal (Grid, Type)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Primary</label>
+                                <div class="flex items-center gap-2 bg-black/30 p-2 rounded-lg border border-white/10">
+                                    <input type="color" id="color-primary" value="#4B0082" class="bg-transparent border-none w-6 h-6 p-0 cursor-pointer">
+                                    <span class="text-xs font-mono text-gray-300">#HEX</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Accent</label>
+                                <div class="flex items-center gap-2 bg-black/30 p-2 rounded-lg border border-white/10">
+                                    <input type="color" id="color-accent" value="#FFD700" class="bg-transparent border-none w-6 h-6 p-0 cursor-pointer">
+                                    <span class="text-xs font-mono text-gray-300">#HEX</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-3xl border-red-500/20">
+                    <h2 class="font-heading font-bold text-red-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> Red Team
+                    </h2>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
+                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Mobile Responsiveness</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
+                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Form Validation</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
+                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Accessibility (WCAG)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 space-y-6">
+                <div class="glass-panel p-6 rounded-3xl h-full flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-heading font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-calico-accent"></i> Layout Map
+                        </h2>
+                        <span class="text-[10px] text-gray-500 bg-black/40 px-2 py-1 rounded">DRAG TO REORDER</span>
+                    </div>
+
+                    <div id="layout-container" class="flex-1 bg-black/20 rounded-xl border border-dashed border-white/10 p-4 space-y-2 min-h-[300px]">
+                        <div class="layout-block group">
+                            <span class="text-sm font-bold font-heading text-gray-300">Header / Nav</span>
+                            <i class="fa-solid fa-grip-lines text-gray-600 group-hover:text-white"></i>
+                        </div>
+                        <div class="layout-block group">
+                            <span class="text-sm font-bold font-heading text-gray-300">Hero Section</span>
+                            <i class="fa-solid fa-grip-lines text-gray-600 group-hover:text-white"></i>
+                        </div>
+                        <div class="layout-block group">
+                            <span class="text-sm font-bold font-heading text-gray-300">Feature Grid</span>
+                            <i class="fa-solid fa-grip-lines text-gray-600 group-hover:text-white"></i>
+                        </div>
+                        <div class="layout-block group">
+                            <span class="text-sm font-bold font-heading text-gray-300">Footer</span>
+                            <i class="fa-solid fa-grip-lines text-gray-600 group-hover:text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 mt-4">
+                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">
+                            + CTA
+                        </button>
+                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">
+                            + PRICING
+                        </button>
+                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">
+                            + TESTIMONIAL
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 space-y-6">
+                <div class="glass-panel p-6 rounded-3xl">
+                    <h2 class="font-heading font-bold text-calico-accent mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-toolbox"></i> Tech Stack
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
+                            <i class="fa-brands fa-react text-2xl text-blue-400"></i>
+                            <span class="text-xs font-bold text-gray-300">React</span>
+                        </div>
+                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
+                            <i class="fa-solid fa-database text-2xl text-green-400"></i>
+                            <span class="text-xs font-bold text-gray-300">Supabase</span>
+                        </div>
+                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
+                            <i class="fa-solid fa-lock text-2xl text-orange-400"></i>
+                            <span class="text-xs font-bold text-gray-300">Auth</span>
+                        </div>
+                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
+                            <i class="fa-solid fa-wand-magic-sparkles text-2xl text-purple-400"></i>
+                            <span class="text-xs font-bold text-gray-300">GSAP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="w-full py-6 rounded-2xl bg-gradient-to-r from-calico-purple to-calico-darkPurple border border-calico-yellow/30 shadow-[0_0_30px_rgba(75,0,130,0.6)] group relative overflow-hidden transition-all hover:scale-[1.02]">
+                    <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <span class="relative z-10 text-2xl font-black font-heading text-white tracking-widest flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-code"></i> INITIALIZE
+                    </span>
+                </button>
+
+                <div id="output-area" class="hidden glass-panel p-4 rounded-2xl border-calico-accent/30">
+                    <p class="text-xs text-calico-accent font-bold mb-2">GENERATED PROMPT (CLICK TO COPY)</p>
+                    <textarea class="w-full bg-black/40 text-gray-300 text-xs font-mono p-3 rounded-lg border border-white/10 h-32 focus:outline-none focus:border-calico-accent"></textarea>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
+
+
