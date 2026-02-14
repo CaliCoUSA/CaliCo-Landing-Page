@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velocity Builder | Calico Branding Solutions</title>
+    <title>Velocity Builder | Calico USA</title>
     
     <link href="https://fonts.googleapis.com/css?family=Montserrat:wght@400;600;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,20 +26,6 @@
                     fontFamily: {
                         sans: ['Open Sans', 'sans-serif'],
                         heading: ['Montserrat', 'sans-serif'],
-                    },
-                    animation: {
-                        'fadeIn': 'fadeIn 0.5s ease-out forwards',
-                        'pulse-glow': 'pulse-glow 2s infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        'pulse-glow': {
-                            '0%, 100%': { boxShadow: '0 0 10px rgba(255, 215, 0, 0.2)' },
-                            '50%': { boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)' },
-                        }
                     }
                 }
             }
@@ -47,116 +33,53 @@
     </script>
 
     <style>
-        body { 
-            font-family: 'Open Sans', sans-serif; 
-            background-color: #0F0518; 
-            color: white; 
-        }
-        h1, h2, h3, h4, h5, h6, .font-heading { 
-            font-family: 'Montserrat', sans-serif; 
-        }
+        body { font-family: 'Open Sans', sans-serif; background-color: #0F0518; color: white; }
+        h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Montserrat', sans-serif; }
 
-        /* Glassmorphism Effect */
         .glass-panel {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
-        /* Interactive Inputs */
         .glass-input, .glass-select {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
-            transition: all 0.2s ease;
             width: 100%;
         }
-        .glass-select option {
-            background-color: #0F0518;
-            color: white;
-        }
-        .glass-input:focus, .glass-select:focus {
-            border-color: #FFD700;
-            outline: none;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
-        }
 
-        /* Tool Selection Cards & Tooltips */
-        .tool-card {
-            cursor: pointer;
-            position: relative;
-        }
-        .tool-card.selected {
-            border-color: #00D4FF;
-            background: rgba(0, 212, 255, 0.1);
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
-        }
-        .tool-card:hover {
-            transform: translateY(-2px);
-        }
-
+        .tool-card { cursor: pointer; position: relative; }
+        .tool-card.selected { border-color: #00D4FF; background: rgba(0, 212, 255, 0.1); }
+        
         .tool-card .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: rgba(15, 5, 24, 0.95);
-            color: #fff;
-            text-align: center;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 12px;
-            padding: 10px;
-            position: absolute;
-            z-index: 50;
-            bottom: 110%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.7rem;
-            line-height: 1.4;
-            pointer-events: none;
-            backdrop-filter: blur(8px);
+            visibility: hidden; width: 200px; background-color: rgba(15, 5, 24, 0.95);
+            color: #fff; text-align: center; border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px; padding: 10px; position: absolute; z-index: 50;
+            bottom: 110%; left: 50%; margin-left: -100px; opacity: 0;
+            transition: opacity 0.3s; font-size: 0.7rem; pointer-events: none;
         }
-        .tool-card:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
+        .tool-card:hover .tooltip-text { visibility: visible; opacity: 1; }
 
-        /* Layout Blocks (Draggable) */
         .layout-block {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
-            cursor: grab;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: rgba(255, 255, 255, 0.05); border: 1px dashed rgba(255, 255, 255, 0.2);
+            padding: 1rem; margin-bottom: 0.5rem; border-radius: 8px; cursor: grab;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .layout-block:active {
-            cursor: grabbing;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #0F0518; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #2E0057; border-radius: 4px; }
+        .layout-block:active { cursor: grabbing; }
     </style>
 </head>
 
-<body class="min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_#2E0057_0%,_#0F0518_70%)] overflow-x-hidden p-4 md:p-8">
+<body class="min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_#2E0057_0%,_#0F0518_70%)] p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto w-full space-y-8 animate-fadeIn">
-        
-        <div class="text-center space-y-2">
-            <h1 class="text-4xl md:text-6xl font-black font-heading bg-gradient-to-r from-calico-yellow via-white to-calico-accent bg-clip-text text-transparent uppercase tracking-tighter">
+    <div class="max-w-6xl mx-auto w-full space-y-8">
+        <div class="text-center">
+            <h1 class="text-4xl md:text-6xl font-black font-heading bg-gradient-to-r from-calico-yellow via-white to-calico-accent bg-clip-text text-transparent uppercase">
                 Velocity Builder
             </h1>
-            <p class="text-calico-accent/70 tracking-[0.3em] text-xs font-bold uppercase">The Prompt IDE by Calico USA</p>
+            <p class="text-calico-accent/70 tracking-widest text-xs font-bold uppercase">The Prompt IDE by Calico USA</p>
         </div>
 
         <form id="vibe-form" onsubmit="event.preventDefault();" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -166,87 +89,40 @@
                     <h2 class="font-heading font-bold text-calico-yellow mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-fingerprint"></i> Identity & Strategy
                     </h2>
-                    
                     <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Project Name</label>
-                                <input type="text" id="project-name" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Neo-Tokyo SaaS">
+                                <label class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Project Name</label>
+                                <input type="text" id="project-name" class="glass-input p-3 rounded-xl text-sm" placeholder="Project Name">
                             </div>
                             <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Aesthetic</label>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Aesthetic</label>
                                 <select id="aesthetic" class="glass-select p-3 rounded-xl text-sm">
                                     <option value="Modern SaaS">Modern SaaS</option>
                                     <option value="Cyberpunk">Cyberpunk</option>
                                     <option value="Neo-Brutalism">Neo-Brutalism</option>
                                     <option value="Glassmorphism">Glassmorphism</option>
-                                    <option value="Swiss Minimal">Swiss Minimal</option>
                                 </select>
                             </div>
                         </div>
-
                         <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Business Niche</label>
-                                <input type="text" id="business-niche" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. SaaS Security">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Target Audience</label>
-                                <input type="text" id="target-audience" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Gen Z Gamers">
-                            </div>
+                            <input type="text" id="business-niche" class="glass-input p-3 rounded-xl text-sm" placeholder="Business Niche">
+                            <input type="text" id="target-audience" class="glass-input p-3 rounded-xl text-sm" placeholder="Target Audience">
                         </div>
-
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Core Solutions</label>
-                            <textarea id="core-solutions" class="glass-input p-3 rounded-xl text-sm h-16" placeholder="List services separated by commas..."></textarea>
-                        </div>
-
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Customer Pain Points</label>
-                            <input type="text" id="pain-points" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Inconsistent branding">
-                        </div>
-
+                        <textarea id="core-solutions" class="glass-input p-3 rounded-xl text-sm h-16" placeholder="Core Solutions (comma separated)"></textarea>
+                        <input type="text" id="pain-points" class="glass-input p-3 rounded-xl text-sm" placeholder="Customer Pain Points">
                         <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Primary Goal</label>
-                                <input type="text" id="conversion-goal" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Book Audit">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Keywords</label>
-                                <input type="text" id="keywords" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Trusted, AI-Driven">
-                            </div>
+                            <input type="text" id="conversion-goal" class="glass-input p-3 rounded-xl text-sm" placeholder="Primary Goal">
+                            <input type="text" id="keywords" class="glass-input p-3 rounded-xl text-sm" placeholder="Keywords">
                         </div>
-
                         <div class="grid grid-cols-3 gap-2">
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Heading Font</label>
-                                <input type="text" id="font-heading" class="glass-input p-2 rounded-lg text-xs" placeholder="Montserrat">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Body Font</label>
-                                <input type="text" id="font-body" class="glass-input p-2 rounded-lg text-xs" placeholder="Open Sans">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Feat. Count</label>
-                                <input type="number" id="feature-count" class="glass-input p-2 rounded-lg text-xs" value="6">
-                            </div>
+                            <input type="text" id="font-heading" class="glass-input p-2 rounded-lg text-xs" placeholder="Heading Font">
+                            <input type="text" id="font-body" class="glass-input p-2 rounded-lg text-xs" placeholder="Body Font">
+                            <input type="number" id="feature-count" class="glass-input p-2 rounded-lg text-xs" value="6">
                         </div>
-
-                        <div class="grid grid-cols-2 gap-2 pt-2">
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Primary Color</label>
-                                <div class="flex items-center gap-2 bg-black/30 p-2 rounded-lg border border-white/10">
-                                    <input type="color" id="color-primary" value="#4B0082" class="bg-transparent border-none w-6 h-6 p-0 cursor-pointer">
-                                    <span class="text-[10px] font-mono text-gray-300">HEX</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Accent Color</label>
-                                <div class="flex items-center gap-2 bg-black/30 p-2 rounded-lg border border-white/10">
-                                    <input type="color" id="color-accent" value="#FFD700" class="bg-transparent border-none w-6 h-6 p-0 cursor-pointer">
-                                    <span class="text-[10px] font-mono text-gray-300">HEX</span>
-                                </div>
-                            </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="color" id="color-primary" value="#4B0082" class="w-full h-8 bg-transparent cursor-pointer">
+                            <input type="color" id="color-accent" value="#FFD700" class="w-full h-8 bg-transparent cursor-pointer">
                         </div>
                     </div>
                 </div>
@@ -256,106 +132,68 @@
                         <i class="fa-solid fa-shield-halved"></i> Red Team
                     </h2>
                     <div class="space-y-3">
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" id="audit-mobile" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
-                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Responsiveness</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" id="audit-validation" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
-                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Validation</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" id="audit-wcag" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
-                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Accessibility</span>
-                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="audit-mobile" class="w-4 h-4"><span class="text-sm">Responsiveness</span></label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="audit-validation" class="w-4 h-4"><span class="text-sm">Validation</span></label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="audit-wcag" class="w-4 h-4"><span class="text-sm">Accessibility</span></label>
                     </div>
                 </div>
             </div>
 
             <div class="lg:col-span-4 space-y-6">
                 <div class="glass-panel p-6 rounded-3xl h-full flex flex-col">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="font-heading font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-layer-group text-calico-accent"></i> Layout Map
-                        </h2>
-                        <span class="text-[10px] text-gray-500 bg-black/40 px-2 py-1 rounded">DRAG TO REORDER</span>
+                    <h2 class="font-heading font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-layer-group text-calico-accent"></i> Layout Map</h2>
+                    <div id="layout-container" class="flex-1 bg-black/20 rounded-xl p-4 space-y-2 min-h-[300px]">
+                        <div class="layout-block" draggable="true"><span>Header / Nav</span><i class="fa-solid fa-grip-lines"></i></div>
+                        <div class="layout-block" draggable="true"><span>Hero Section</span><i class="fa-solid fa-grip-lines"></i></div>
+                        <div class="layout-block" draggable="true"><span>Feature Grid</span><i class="fa-solid fa-grip-lines"></i></div>
+                        <div class="layout-block" draggable="true"><span>Footer</span><i class="fa-solid fa-grip-lines"></i></div>
                     </div>
-
-                    <div id="layout-container" class="flex-1 bg-black/20 rounded-xl border border-dashed border-white/10 p-4 space-y-2 min-h-[300px]">
-                        <div class="layout-block group">
-                            <span class="text-sm font-bold font-heading text-gray-300">Header / Nav</span>
-                            <i class="fa-solid fa-grip-lines text-gray-600 group-hover:text-white"></i>
-                        </div>
-                        <div class="layout-block group">
-                            <span class="text-sm font-bold font-heading text-gray-300">Hero Section</span>
-                            <i class="fa-solid fa-grip-lines text-gray-600 group-hover:text-white"></i>
-                        </div>
-                        <div class="layout-block group">
-                            <span class="text-sm font-bold font-heading text-gray-300">Feature Grid</span>
-                            <i class="fa-solid fa-grip-lines text-gray-600 group-hover:text-white"></i>
-                        </div>
-                        <div class="layout-block group">
-                            <span class="text-sm font-bold font-heading text-gray-300">Footer</span>
-                            <i class="fa-solid fa-grip-lines text-gray-600 group-hover:text-white"></i>
-                        </div>
-                    </div>
-
                     <div class="grid grid-cols-3 gap-2 mt-4">
-                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">+ CTA</button>
-                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">+ PRICING</button>
-                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">+ TESTIMONIAL</button>
+                        <button type="button" class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 rounded-lg">+ CTA</button>
+                        <button type="button" class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 rounded-lg">+ PRICING</button>
+                        <button type="button" class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 rounded-lg">+ TESTIMONIAL</button>
                     </div>
                 </div>
             </div>
 
             <div class="lg:col-span-4 space-y-6">
                 <div class="glass-panel p-6 rounded-3xl">
-                    <h2 class="font-heading font-bold text-calico-accent mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-toolbox"></i> Tech Stack
-                    </h2>
-                    
+                    <h2 class="font-heading font-bold text-calico-accent mb-4">Tech Stack</h2>
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
-                            <span class="tooltip-text">A industry-standard library for building modular, high-performance UI components.</span>
+                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center gap-2" onclick="this.classList.toggle('selected')">
+                            <span class="tooltip-text">Professional UI library.</span>
                             <i class="fa-brands fa-react text-2xl text-blue-400"></i>
-                            <span class="text-xs font-bold text-gray-300">React</span>
+                            <span class="text-xs font-bold">React</span>
                         </div>
-                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
-                            <span class="tooltip-text">A powerful backend-as-a-service providing real-time databases and secure data storage.</span>
+                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center gap-2" onclick="this.classList.toggle('selected')">
+                            <span class="tooltip-text">Backend and Database.</span>
                             <i class="fa-solid fa-database text-2xl text-green-400"></i>
-                            <span class="text-xs font-bold text-gray-300">Supabase</span>
+                            <span class="text-xs font-bold">Supabase</span>
                         </div>
-                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
-                            <span class="tooltip-text">Enterprise-grade security for user login, registration, and profile management.</span>
+                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center gap-2" onclick="this.classList.toggle('selected')">
+                            <span class="tooltip-text">Secure authentication.</span>
                             <i class="fa-solid fa-lock text-2xl text-orange-400"></i>
-                            <span class="text-xs font-bold text-gray-300">Auth</span>
+                            <span class="text-xs font-bold">Auth</span>
                         </div>
-                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
-                            <span class="tooltip-text">The gold standard for "Artist Approved" high-end web animations and visual effects.</span>
+                        <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center gap-2" onclick="this.classList.toggle('selected')">
+                            <span class="tooltip-text">High-end animations.</span>
                             <i class="fa-solid fa-wand-magic-sparkles text-2xl text-purple-400"></i>
-                            <span class="text-xs font-bold text-gray-300">GSAP</span>
+                            <span class="text-xs font-bold">GSAP</span>
                         </div>
                     </div>
                 </div>
 
-                <button id="generate-btn" class="w-full py-6 rounded-2xl bg-gradient-to-r from-calico-purple to-calico-darkPurple border border-calico-yellow/30 shadow-[0_0_30px_rgba(75,0,130,0.6)] group relative overflow-hidden transition-all hover:scale-[1.02]">
-                    <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    <span class="relative z-10 text-2xl font-black font-heading text-white tracking-widest flex items-center justify-center gap-3">
-                        <i class="fa-solid fa-code"></i> INITIALIZE
-                    </span>
+                <button id="generate-btn" type="button" class="w-full py-6 rounded-2xl bg-calico-purple font-black font-heading tracking-widest hover:scale-[1.02] transition-all">
+                    <i class="fa-solid fa-code"></i> INITIALIZE
                 </button>
 
-                <div id="output-area" class="hidden glass-panel p-4 rounded-2xl border-calico-accent/30">
-                    <p class="text-xs text-calico-accent font-bold mb-2">GENERATED PROMPT (CLICK TO COPY)</p>
-                    <textarea class="w-full bg-black/40 text-gray-300 text-xs font-mono p-3 rounded-lg border border-white/10 h-32 focus:outline-none focus:border-calico-accent"></textarea>
+                <div id="output-area" class="hidden glass-panel p-4 rounded-2xl">
+                    <textarea class="w-full bg-black/40 text-gray-300 text-xs font-mono p-3 rounded-lg h-32"></textarea>
                 </div>
             </div>
-
         </form>
     </div>
 
-<script type="module" src="js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
-
-
