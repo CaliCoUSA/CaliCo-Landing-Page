@@ -2,39 +2,45 @@
   "project_metadata": {
     "name": "Project Name",
     "framework": "Vanilla HTML/Tailwind/JS",
-    "file_structure": "modular-folder-system"
+    "file_structure": "modular-folder-system",
+    "business_niche": "e.g., Luxury Real Estate, SaaS Security",
+    "target_audience": "e.g., Fortune 500 CTOs, Gen Z Gamers"
   },
   "vibe_identity": {
-    "aesthetic_archetype": "e.g., Cyberpunk, Swiss Minimalist, 90s GeoCities",
+    "aesthetic_archetype": "Descriptive Style Name",
     "color_palette": {
       "primary": "#hex",
-      "secondary": "#hex",
       "accent": "#hex",
-      "background": "#hex"
+      "background": "#0F0518",
+      "surface": "rgba(255, 255, 255, 0.05)"
     },
     "typography": {
-      "heading_font": "Font Name / Style",
-      "body_font": "Font Name / Style",
-      "tone": "e.g., Bold, elegant, playful, aggressive"
+      "heading_font": "Font Name",
+      "body_font": "Font Name"
     },
-    "visual_cues": ["Glassmorphism", "Heavy Borders", "Neo-brutalism"]
+    "marketing_dna": {
+      "pain_points": "The specific problems the site solves",
+      "conversion_goal": "The primary CTA (e.g., Book Audit)",
+      "keywords": "SEO and brand identity pillars",
+      "core_solutions": "List of services or product features"
+    }
   },
-  "layout_blueprint": [
-    {"section": "Header", "logic": "Sticky with glass effect", "elements": ["Logo", "Nav", "CTA"]},
-    {"section": "Hero", "logic": "Split screen", "elements": ["Headline", "Subtext", "Email-Optin"]},
-    {"section": "Feature_Grid", "logic": "3-column responsive", "elements": ["Icons", "Cards", "Hover-effects"]},
-    {"section": "Footer", "logic": "Simple center-aligned", "elements": ["Socials", "Copyright"]}
-  ],
+  "layout_blueprint": ["Header", "Hero", "Feature Grid", "CTA", "Pricing", "Footer"],
   "tool_integrations": {
-    "forms": "Formspree / Custom JS",
-    "analytics": "Plausible / Google",
-    "auth": "None / Clerk / Supabase",
-    "database": "None / LocalStorage / Supabase"
+    "React": "Boolean",
+    "Supabase": "Boolean",
+    "Auth": "Boolean",
+    "GSAP": "Boolean"
   },
-  "red_team_constraints": [
-    "Must be mobile-responsive down to 320px",
-    "All forms must have client-side validation",
-    "Contrast ratios must meet WCAG AA standards"
-  ]
+  "red_team_constraints": {
+    "feature_count": "Number (default 6)",
+    "audits": {
+      "mobile": "Boolean",
+      "validation": "Boolean",
+      "wcag": "Boolean"
+    },
+    "styling_scope": "Full-Components"
+  }
 }
+
 

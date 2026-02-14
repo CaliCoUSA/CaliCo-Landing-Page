@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velocity Builder | Calico USA</title>
+    <title>Velocity Builder | Calico Branding Solutions</title>
     
     <link href="https://fonts.googleapis.com/css?family=Montserrat:wght@400;600;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -84,9 +84,10 @@
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
         }
 
-        /* Tool Selection Cards */
+        /* Tool Selection Cards & Tooltips */
         .tool-card {
             cursor: pointer;
+            position: relative;
         }
         .tool-card.selected {
             border-color: #00D4FF;
@@ -95,6 +96,32 @@
         }
         .tool-card:hover {
             transform: translateY(-2px);
+        }
+
+        .tool-card .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(15, 5, 24, 0.95);
+            color: #fff;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            position: absolute;
+            z-index: 50;
+            bottom: 110%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.7rem;
+            line-height: 1.4;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+        }
+        .tool-card:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
         }
 
         /* Layout Blocks (Draggable) */
@@ -137,39 +164,87 @@
             <div class="lg:col-span-4 space-y-6">
                 <div class="glass-panel p-6 rounded-3xl">
                     <h2 class="font-heading font-bold text-calico-yellow mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-fingerprint"></i> Identity
+                        <i class="fa-solid fa-fingerprint"></i> Identity & Strategy
                     </h2>
                     
                     <div class="space-y-4">
-                        <div>
-                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Project Name</label>
-                            <input type="text" id="project-name" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Neo-Tokyo SaaS">
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Aesthetic Archetype</label>
-                            <select id="aesthetic" class="glass-select p-3 rounded-xl text-sm">
-                                <option value="Modern SaaS">Modern SaaS (Clean, Trust)</option>
-                                <option value="Cyberpunk">Cyberpunk (Neon, Dark)</option>
-                                <option value="Neo-Brutalism">Neo-Brutalism (Bold, Raw)</option>
-                                <option value="Glassmorphism">Glassmorphism (Frosted, Soft)</option>
-                                <option value="Swiss Minimal">Swiss Minimal (Grid, Type)</option>
-                            </select>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Project Name</label>
+                                <input type="text" id="project-name" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Neo-Tokyo SaaS">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Aesthetic</label>
+                                <select id="aesthetic" class="glass-select p-3 rounded-xl text-sm">
+                                    <option value="Modern SaaS">Modern SaaS</option>
+                                    <option value="Cyberpunk">Cyberpunk</option>
+                                    <option value="Neo-Brutalism">Neo-Brutalism</option>
+                                    <option value="Glassmorphism">Glassmorphism</option>
+                                    <option value="Swiss Minimal">Swiss Minimal</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Primary</label>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Business Niche</label>
+                                <input type="text" id="business-niche" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. SaaS Security">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Target Audience</label>
+                                <input type="text" id="target-audience" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Gen Z Gamers">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Core Solutions</label>
+                            <textarea id="core-solutions" class="glass-input p-3 rounded-xl text-sm h-16" placeholder="List services separated by commas..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Customer Pain Points</label>
+                            <input type="text" id="pain-points" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Inconsistent branding">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Primary Goal</label>
+                                <input type="text" id="conversion-goal" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Book Audit">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Keywords</label>
+                                <input type="text" id="keywords" class="glass-input p-3 rounded-xl text-sm" placeholder="e.g. Trusted, AI-Driven">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Heading Font</label>
+                                <input type="text" id="font-heading" class="glass-input p-2 rounded-lg text-xs" placeholder="Montserrat">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Body Font</label>
+                                <input type="text" id="font-body" class="glass-input p-2 rounded-lg text-xs" placeholder="Open Sans">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Feat. Count</label>
+                                <input type="number" id="feature-count" class="glass-input p-2 rounded-lg text-xs" value="6">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Primary Color</label>
                                 <div class="flex items-center gap-2 bg-black/30 p-2 rounded-lg border border-white/10">
                                     <input type="color" id="color-primary" value="#4B0082" class="bg-transparent border-none w-6 h-6 p-0 cursor-pointer">
-                                    <span class="text-xs font-mono text-gray-300">#HEX</span>
+                                    <span class="text-[10px] font-mono text-gray-300">HEX</span>
                                 </div>
                             </div>
                             <div>
-                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Accent</label>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Accent Color</label>
                                 <div class="flex items-center gap-2 bg-black/30 p-2 rounded-lg border border-white/10">
                                     <input type="color" id="color-accent" value="#FFD700" class="bg-transparent border-none w-6 h-6 p-0 cursor-pointer">
-                                    <span class="text-xs font-mono text-gray-300">#HEX</span>
+                                    <span class="text-[10px] font-mono text-gray-300">HEX</span>
                                 </div>
                             </div>
                         </div>
@@ -182,16 +257,16 @@
                     </h2>
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
-                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Mobile Responsiveness</span>
+                            <input type="checkbox" id="audit-mobile" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
+                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Responsiveness</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
-                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Form Validation</span>
+                            <input type="checkbox" id="audit-validation" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
+                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Validation</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
-                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Accessibility (WCAG)</span>
+                            <input type="checkbox" id="audit-wcag" class="w-4 h-4 rounded border-gray-600 bg-black/50 text-calico-accent focus:ring-offset-0 focus:ring-0">
+                            <span class="text-sm text-gray-300 group-hover:text-white transition-colors">Test Accessibility</span>
                         </label>
                     </div>
                 </div>
@@ -226,15 +301,9 @@
                     </div>
 
                     <div class="grid grid-cols-3 gap-2 mt-4">
-                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">
-                            + CTA
-                        </button>
-                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">
-                            + PRICING
-                        </button>
-                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">
-                            + TESTIMONIAL
-                        </button>
+                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">+ CTA</button>
+                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">+ PRICING</button>
+                        <button class="p-2 text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 transition-colors">+ TESTIMONIAL</button>
                     </div>
                 </div>
             </div>
@@ -247,18 +316,22 @@
                     
                     <div class="grid grid-cols-2 gap-3">
                         <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
+                            <span class="tooltip-text">A industry-standard library for building modular, high-performance UI components.</span>
                             <i class="fa-brands fa-react text-2xl text-blue-400"></i>
                             <span class="text-xs font-bold text-gray-300">React</span>
                         </div>
                         <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
+                            <span class="tooltip-text">A powerful backend-as-a-service providing real-time databases and secure data storage.</span>
                             <i class="fa-solid fa-database text-2xl text-green-400"></i>
                             <span class="text-xs font-bold text-gray-300">Supabase</span>
                         </div>
                         <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
+                            <span class="tooltip-text">Enterprise-grade security for user login, registration, and profile management.</span>
                             <i class="fa-solid fa-lock text-2xl text-orange-400"></i>
                             <span class="text-xs font-bold text-gray-300">Auth</span>
                         </div>
                         <div class="tool-card glass-panel p-3 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors" onclick="this.classList.toggle('selected')">
+                            <span class="tooltip-text">The gold standard for "Artist Approved" high-end web animations and visual effects.</span>
                             <i class="fa-solid fa-wand-magic-sparkles text-2xl text-purple-400"></i>
                             <span class="text-xs font-bold text-gray-300">GSAP</span>
                         </div>
@@ -276,8 +349,8 @@
                     <p class="text-xs text-calico-accent font-bold mb-2">GENERATED PROMPT (CLICK TO COPY)</p>
                     <textarea class="w-full bg-black/40 text-gray-300 text-xs font-mono p-3 rounded-lg border border-white/10 h-32 focus:outline-none focus:border-calico-accent"></textarea>
                 </div>
-
             </div>
+
         </form>
     </div>
 
