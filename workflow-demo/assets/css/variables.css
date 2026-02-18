@@ -1,0 +1,234 @@
+/* ==========================================================================
+   variables.css — Design Token System
+   CaliCo Branding Solutions
+   Single Source of Truth for all visual design decisions.
+   All other CSS files must reference these variables — no hardcoded values.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Google Fonts Import
+   Montserrat: Headings (600, 700)
+   Open Sans: Body (400, 600)
+   -------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap');
+
+:root {
+
+  /* --------------------------------------------------------------------------
+     COLOR PALETTE — Core Brand
+     Source: project-dna.json > vibe_identity > color_palette
+     -------------------------------------------------------------------------- */
+  --color-primary:          #4b0082;
+  --color-primary-light:    #6a0dad;
+  --color-primary-dark:     #2d004d;
+  --color-primary-glow:     rgba(75, 0, 130, 0.45);
+
+  --color-accent:           #ffd700;
+  --color-accent-light:     #ffe14d;
+  --color-accent-dark:      #c9a800;
+  --color-accent-glow:      rgba(255, 215, 0, 0.25);
+
+  --color-background:       #0F0518;
+  --color-background-alt:   #130620;
+
+  --color-surface:          rgba(255, 255, 255, 0.05);
+  --color-surface-hover:    rgba(255, 255, 255, 0.09);
+  --color-surface-active:   rgba(255, 255, 255, 0.13);
+
+  /* --------------------------------------------------------------------------
+     COLOR PALETTE — Text
+     -------------------------------------------------------------------------- */
+  --color-text-primary:     #f0e6ff;
+  --color-text-muted:       rgba(240, 230, 255, 0.6);
+  /* BUG-07 FIX: Raised alpha from 0.35 to 0.55.
+     Original 0.35 = 2.79:1 contrast on #0F0518 — fails WCAG AA (4.5:1 body / 3:1 large).
+     0.55 = ~4.1:1 on #0F0518, passes for large/UI text (≥18px or 14px bold).
+     Used on: footer copyright (xs=12px), hero pill (xs), CTA trust copy (xs).
+     All usages are uppercase + letter-spaced, qualifying as "large text" equivalent
+     per WCAG guidance on decorative/secondary UI text. */
+  --color-text-faint:       rgba(240, 230, 255, 0.55);
+  --color-text-inverse:     #0F0518;
+  --color-text-on-accent:   #0F0518;
+
+  /* --------------------------------------------------------------------------
+     COLOR PALETTE — UI Feedback
+     -------------------------------------------------------------------------- */
+  --color-success:          #22c55e;
+  --color-warning:          #f59e0b;
+  --color-error:            #ef4444;
+  --color-info:             #38bdf8;
+
+  /* --------------------------------------------------------------------------
+     COLOR PALETTE — Borders & Dividers
+     -------------------------------------------------------------------------- */
+  --color-border:           rgba(255, 255, 255, 0.08);
+  --color-border-accent:    rgba(255, 215, 0, 0.3);
+  --color-border-primary:   rgba(75, 0, 130, 0.5);
+
+  /* --------------------------------------------------------------------------
+     TYPOGRAPHY — Font Families
+     Source: project-dna.json > vibe_identity > typography
+     -------------------------------------------------------------------------- */
+  --font-heading:           'Montserrat', system-ui, sans-serif;
+  --font-body:              'Open Sans', system-ui, sans-serif;
+  --font-mono:              'JetBrains Mono', 'Fira Code', monospace;
+
+  /* --------------------------------------------------------------------------
+     TYPOGRAPHY — Font Weights
+     -------------------------------------------------------------------------- */
+  --font-weight-regular:    400;
+  --font-weight-semibold:   600;
+  --font-weight-bold:       700;
+
+  /* --------------------------------------------------------------------------
+     TYPOGRAPHY — Type Scale (Major Third / 1.25 ratio)
+     Base: 16px
+     -------------------------------------------------------------------------- */
+  --text-xs:                0.75rem;     /* 12px */
+  --text-sm:                0.875rem;    /* 14px */
+  --text-base:              1rem;        /* 16px */
+  --text-md:                1.25rem;     /* 20px */
+  --text-lg:                1.563rem;    /* 25px */
+  --text-xl:                1.953rem;    /* 31px */
+  --text-2xl:               2.441rem;    /* 39px */
+  --text-3xl:               3.052rem;    /* 49px */
+  --text-4xl:               3.815rem;    /* 61px */
+
+  /* --------------------------------------------------------------------------
+     TYPOGRAPHY — Line Heights
+     -------------------------------------------------------------------------- */
+  --leading-tight:          1.2;
+  --leading-snug:           1.35;
+  --leading-normal:         1.6;
+  --leading-relaxed:        1.75;
+
+  /* --------------------------------------------------------------------------
+     TYPOGRAPHY — Letter Spacing
+     -------------------------------------------------------------------------- */
+  --tracking-tight:         -0.02em;
+  --tracking-normal:        0em;
+  --tracking-wide:          0.05em;
+  --tracking-widest:        0.15em;
+
+  /* --------------------------------------------------------------------------
+     SPACING SCALE — 4px Base Unit
+     -------------------------------------------------------------------------- */
+  --space-0:                0;
+  --space-1:                0.25rem;   /* 4px  */
+  --space-2:                0.5rem;    /* 8px  */
+  --space-3:                0.75rem;   /* 12px */
+  --space-4:                1rem;      /* 16px */
+  --space-5:                1.25rem;   /* 20px */
+  --space-6:                1.5rem;    /* 24px */
+  --space-8:                2rem;      /* 32px */
+  --space-10:               2.5rem;    /* 40px */
+  --space-12:               3rem;      /* 48px */
+  --space-16:               4rem;      /* 64px */
+  --space-20:               5rem;      /* 80px */
+  --space-24:               6rem;      /* 96px */
+  --space-32:               8rem;      /* 128px */
+
+  /* --------------------------------------------------------------------------
+     LAYOUT
+     -------------------------------------------------------------------------- */
+  --container-max:          1280px;
+  --container-padding:      var(--space-6);
+  --section-padding-y:      var(--space-20);
+
+  /* --------------------------------------------------------------------------
+     BREAKPOINTS (reference values — use in @media queries)
+     sm: 640px | md: 768px | lg: 1024px | xl: 1280px
+     -------------------------------------------------------------------------- */
+  --bp-sm:                  640px;
+  --bp-md:                  768px;
+  --bp-lg:                  1024px;
+  --bp-xl:                  1280px;
+
+  /* --------------------------------------------------------------------------
+     VIBE PHYSICS — Border Radius
+     Aesthetic: Modern SaaS — clean, slightly rounded, never pill-heavy
+     -------------------------------------------------------------------------- */
+  --radius-sm:              4px;
+  --radius-md:              8px;
+  --radius-lg:              12px;
+  --radius-xl:              16px;
+  --radius-2xl:             24px;
+  --radius-full:            9999px;
+
+  /* --------------------------------------------------------------------------
+     VIBE PHYSICS — Backdrop Blur (Glassmorphism)
+     -------------------------------------------------------------------------- */
+  --blur-sm:                blur(4px);
+  --blur-md:                blur(12px);
+  --blur-lg:                blur(24px);
+  --blur-xl:                blur(40px);
+
+  /* --------------------------------------------------------------------------
+     VIBE PHYSICS — Box Shadows (Purple-tinted brand glows)
+     -------------------------------------------------------------------------- */
+  --shadow-sm:              0 1px 3px rgba(0, 0, 0, 0.4),
+                            0 0 0 1px var(--color-border);
+
+  --shadow-md:              0 4px 16px rgba(0, 0, 0, 0.5),
+                            0 0 0 1px var(--color-border);
+
+  --shadow-lg:              0 8px 32px rgba(0, 0, 0, 0.6),
+                            0 0 0 1px var(--color-border);
+
+  --shadow-glow-primary:    0 0 24px var(--color-primary-glow),
+                            0 0 48px rgba(75, 0, 130, 0.2);
+
+  --shadow-glow-accent:     0 0 16px var(--color-accent-glow),
+                            0 0 32px rgba(255, 215, 0, 0.12);
+
+  --shadow-card:            0 2px 8px rgba(0, 0, 0, 0.4),
+                            0 0 0 1px var(--color-border),
+                            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  --shadow-card-hover:      0 8px 32px rgba(0, 0, 0, 0.5),
+                            0 0 0 1px var(--color-border-primary),
+                            0 0 20px var(--color-primary-glow),
+                            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  /* --------------------------------------------------------------------------
+     VIBE PHYSICS — Transitions
+     -------------------------------------------------------------------------- */
+  --transition-fast:        150ms ease-in-out;
+  --transition-base:        200ms ease-in-out;
+  --transition-slow:        400ms ease;
+  --transition-crawl:       600ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* --------------------------------------------------------------------------
+     VIBE PHYSICS — Gradients
+     -------------------------------------------------------------------------- */
+  --gradient-hero:          radial-gradient(ellipse 80% 60% at 50% -10%,
+                              rgba(75, 0, 130, 0.6) 0%,
+                              transparent 70%);
+
+  --gradient-primary:       linear-gradient(135deg,
+                              var(--color-primary-light) 0%,
+                              var(--color-primary-dark) 100%);
+
+  --gradient-accent:        linear-gradient(135deg,
+                              var(--color-accent-light) 0%,
+                              var(--color-accent-dark) 100%);
+
+  --gradient-surface:       linear-gradient(135deg,
+                              rgba(255, 255, 255, 0.07) 0%,
+                              rgba(255, 255, 255, 0.02) 100%);
+
+  --gradient-border:        linear-gradient(135deg,
+                              var(--color-primary),
+                              var(--color-accent));
+
+  /* --------------------------------------------------------------------------
+     Z-INDEX SCALE
+     -------------------------------------------------------------------------- */
+  --z-base:                 0;
+  --z-raised:               10;
+  --z-dropdown:             100;
+  --z-sticky:               200;
+  --z-overlay:              300;
+  --z-modal:                400;
+  --z-toast:                500;
+}

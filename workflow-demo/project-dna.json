@@ -1,0 +1,53 @@
+{
+  "project_metadata": {
+    "name": "CaliCo Branding Solutions",
+    "framework": "Vanilla HTML/Tailwind/JS",
+    "file_structure": "modular-folder-system",
+    "business_niche": "Automation & Digital Marketing",
+    "target_audience": "Business Owners & Content Creators"
+  },
+  "vibe_identity": {
+    "aesthetic_archetype": "Modern SaaS",
+    "color_palette": {
+      "primary": "#4b0082",
+      "accent": "#ffd700",
+      "background": "#0F0518",
+      "surface": "rgba(255, 255, 255, 0.05)"
+    },
+    "typography": {
+      "heading_font": "Montserrat",
+      "body_font": "Open Sans"
+    },
+    "marketing_dna": {
+      "pain_points": "Vendor Fatigue, Prompting Drift, Time Loss",
+      "conversion_goal": "Save Time",
+      "keywords": "Trust, Integrity, Transparency",
+      "core_solutions": "Jingles, Logos, Voiceovers, Videos, Ad Copy."
+    }
+  },
+  "layout_blueprint": [
+    "Header / Nav",
+    "Hero Section",
+    "Feature Grid",
+    "Footer",
+    {
+      "section": "CTA",
+      "cta_headline": "Save hours managing multiple vendors",
+      "cta_subheadline": "Tired of spending time managing vendors instead of managing your business?",
+      "cta_button_text": "Email us at customerservice@calico-usa.com",
+      "cta_button_action": "external-link"
+    }
+  ],
+  "tool_integrations": {
+    "React": true,
+    "GSAP": true
+  },
+  "red_team_constraints": {
+    "feature_count": "6",
+    "audits": {
+      "mobile": true,
+      "validation": true,
+      "wcag": true
+    }
+  }
+}

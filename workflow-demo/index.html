@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CaliCo Branding Solutions — One partner for Jingles, Logos, Voiceovers, Videos, and Ad Copy. Stop managing vendors. Start growing your business." />
+  <meta name="theme-color" content="#0F0518" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="CaliCo Branding Solutions" />
+  <meta property="og:description" content="One trusted partner for all your branding needs. Jingles, Logos, Voiceovers, Videos, Ad Copy & more." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+
+  <title>CaliCo Branding Solutions — Automation &amp; Digital Marketing</title>
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Design System — load global first (imports variables internally), then components -->
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind config — align with our design tokens -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4b0082',
+            accent:  '#ffd700',
+            bg:      '#0F0518',
+          },
+          fontFamily: {
+            heading: ['Montserrat', 'system-ui', 'sans-serif'],
+            body:    ['Open Sans',   'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+
+  <!-- =====================================================================
+       SKIP LINK — WCAG 2.1 keyboard accessibility
+       ===================================================================== -->
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- =====================================================================
+       HEADER / NAV
+       Role: site navigation landmark
+       ===================================================================== -->
+  <header role="banner">
+    <nav class="nav" id="nav" aria-label="Primary navigation">
+      <div class="nav__container">
+
+        <!-- Brand wordmark -->
+        <a class="nav__brand" href="#hero" aria-label="CaliCo Branding Solutions — home">
+          <svg aria-hidden="true" focusable="false" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#4b0082"/>
+            <path d="M8 16C8 11.582 11.582 8 16 8C18.548 8 20.826 9.138 22.364 10.95L19.656 13.294C18.808 12.488 17.464 12 16 12C13.792 12 12 13.792 12 16C12 18.208 13.792 20 16 20C17.464 20 18.808 19.512 19.656 18.706L22.364 21.05C20.826 22.862 18.548 24 16 24C11.582 24 8 20.418 8 16Z" fill="#ffd700"/>
+          </svg>
+          Cali<span class="nav__brand-accent">Co</span>
+        </a>
+
+        <!-- Desktop navigation links -->
+        <ul class="nav__links" role="list">
+          <li><a class="nav__link" href="#hero">Home</a></li>
+          <li><a class="nav__link" href="#features">Services</a></li>
+          <li><a class="nav__link" href="#cta">Contact</a></li>
+        </ul>
+
+        <!-- Desktop CTA -->
+        <div class="nav__cta">
+          <a
+            class="btn btn-primary btn--sm"
+            href="mailto:customerservice@calico-usa.com"
+            aria-label="Email CaliCo to get started"
+          >
+            Get Started
+          </a>
+        </div>
+
+        <!-- Mobile hamburger toggle -->
+        <button
+          class="nav__toggle"
+          id="nav-toggle"
+          aria-expanded="false"
+          aria-controls="nav-drawer"
+          aria-label="Open navigation menu"
+        >
+          <span class="nav__toggle-bar" aria-hidden="true"></span>
+          <span class="nav__toggle-bar" aria-hidden="true"></span>
+          <span class="nav__toggle-bar" aria-hidden="true"></span>
+        </button>
+
+      </div>
+
+      <!-- Mobile drawer — inert prevents keyboard focus when hidden (BUG-10 FIX) -->
+      <nav
+        class="nav__drawer"
+        id="nav-drawer"
+        aria-label="Mobile navigation"
+        aria-hidden="true"
+        inert
+      >
+        <a class="nav__link" href="#hero">Home</a>
+        <a class="nav__link" href="#features">Services</a>
+        <a class="nav__link" href="#cta">Contact</a>
+        <a
+          class="btn btn-primary"
+          href="mailto:customerservice@calico-usa.com"
+          style="margin-top: 0.5rem; text-align: center;"
+        >
+          Get Started
+        </a>
+      </nav>
+    </nav>
+  </header>
+
+
+  <!-- =====================================================================
+       MAIN CONTENT
+       ===================================================================== -->
+  <main id="main-content" role="main">
+
+
+    <!-- ==================================================================
+         HERO SECTION
+         Addresses pain points: Vendor Fatigue, Prompting Drift, Time Loss
+         Conversion goal: Save Time
+         ================================================================== -->
+    <section class="hero" id="hero" aria-labelledby="hero-title">
+
+      <!-- Decorative glow orb — aria-hidden so screen readers skip it -->
+      <div class="hero__glow" aria-hidden="true"></div>
+
+      <div class="hero__content">
+
+        <!-- Trust badge -->
+        <div class="hero__badge js-fade-in">
+          <span class="badge">
+            <svg aria-hidden="true" focusable="false" width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+              <circle cx="5" cy="5" r="5"/>
+            </svg>
+            Trusted by Business Owners &amp; Content Creators
+          </span>
+        </div>
+
+        <!-- Primary headline -->
+        <h1 class="hero__title js-fade-up" id="hero-title">
+          One Partner.<br />
+          <span class="hero__title-accent">All Your Branding.</span><br />
+          Zero Vendor Chaos.
+        </h1>
+
+        <!-- Subheadline — directly addresses pain points -->
+        <p class="hero__subtitle js-fade-up">
+          Tired of juggling multiple vendors, losing hours to back-and-forth,
+          and watching your creative vision drift with every new contact?
+          CaliCo brings integrity and transparency to every project —
+          so you can save time and get back to running your business.
+        </p>
+
+        <!-- CTA actions -->
+        <div class="hero__actions js-fade-up">
+          <a
+            class="btn btn-primary btn--lg"
+            href="mailto:customerservice@calico-usa.com"
+            aria-label="Email CaliCo Branding Solutions to save time on your branding"
+          >
+            Save Time — Email Us Today
+          </a>
+          <a
+            class="btn btn-secondary btn--lg"
+            href="#features"
+            aria-label="See all CaliCo services"
+          >
+            Explore Services
+          </a>
+        </div>
+
+        <!-- Social proof micro-copy -->
+        <p class="js-fade-in" style="margin-top: 2rem; font-size: var(--text-xs); color: var(--color-text-faint); letter-spacing: var(--tracking-wide); text-transform: uppercase; max-width: none;">
+          Jingles &nbsp;·&nbsp; Logos &nbsp;·&nbsp; Voiceovers &nbsp;·&nbsp; Videos &nbsp;·&nbsp; Ad Copy
+        </p>
+
+      </div>
+    </section>
+
+
+    <!-- ==================================================================
+         FEATURE GRID
+         feature_count: 6
+         Drawn from core_solutions: Jingles, Logos, Voiceovers, Videos,
+         Ad Copy — expanded to 6 with Brand Strategy (see comment below).
+         NOTE: "Brand Strategy" added as 6th card to satisfy feature_count: 6.
+         The DNA lists 5 core_solutions; Brand Strategy is a natural adjacent
+         service within the Automation & Digital Marketing niche.
+         ================================================================== -->
+    <section
+      class="section-wrapper"
+      id="features"
+      aria-labelledby="features-title"
+    >
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-header__label js-fade-in" aria-hidden="true">What We Deliver</span>
+          <h2 class="section-header__title js-fade-up" id="features-title">
+            Every Asset Your Brand Needs,<br />Under One Roof
+          </h2>
+          <p class="section-header__subtitle js-fade-up">
+            From the first note of your jingle to the final frame of your video,
+            CaliCo handles it all — with transparency at every step.
+          </p>
+        </div>
+
+        <ul class="feature-grid" role="list" aria-label="CaliCo services">
+
+          <!-- Card 1 — Jingles -->
+          <li class="card js-fade-up" aria-labelledby="feature-jingles-title">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="2"/>
+                <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3 class="card__title" id="feature-jingles-title">Jingles</h3>
+            <p class="card__body">
+              Memorable, professionally produced jingles that lodge your brand
+              in your audience's mind. Custom-composed to match your voice,
+              market, and message — delivered fast.
+            </p>
+            <div class="card__footer">
+              <span class="badge">Audio Branding</span>
+            </div>
+          </li>
+
+          <!-- Card 2 — Logos -->
+          <li class="card js-fade-up" aria-labelledby="feature-logos-title">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="card__title" id="feature-logos-title">Logos</h3>
+            <p class="card__body">
+              Timeless, scalable logo design built on your brand's personality.
+              Every mark we craft is built for integrity — from business card
+              to billboard, your identity stays consistent.
+            </p>
+            <div class="card__footer">
+              <span class="badge">Visual Identity</span>
+            </div>
+          </li>
+
+          <!-- Card 3 — Voiceovers -->
+          <li class="card js-fade-up" aria-labelledby="feature-voiceovers-title">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="8" y1="23" x2="16" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="card__title" id="feature-voiceovers-title">Voiceovers</h3>
+            <p class="card__body">
+              Professional voice talent that speaks directly to your audience.
+              Whether it's a radio spot, explainer video, or podcast intro,
+              we deliver studio-quality audio without the studio hassle.
+            </p>
+            <div class="card__footer">
+              <span class="badge">Audio Production</span>
+            </div>
+          </li>
+
+          <!-- Card 4 — Videos -->
+          <li class="card js-fade-up" aria-labelledby="feature-videos-title">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <rect x="2" y="4" width="15" height="16" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17 8.5l5-3v13l-5-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="card__title" id="feature-videos-title">Videos</h3>
+            <p class="card__body">
+              From concept to final cut, we produce scroll-stopping video content
+              for ads, social media, and beyond. One brief. One partner.
+              No more chasing down a dozen freelancers.
+            </p>
+            <div class="card__footer">
+              <span class="badge">Video Production</span>
+            </div>
+          </li>
+
+          <!-- Card 5 — Ad Copy -->
+          <li class="card js-fade-up" aria-labelledby="feature-adcopy-title">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="card__title" id="feature-adcopy-title">Ad Copy</h3>
+            <p class="card__body">
+              Conversion-focused copy that communicates trust and drives action.
+              We write headlines, scripts, social captions, and email sequences
+              tuned to your audience and optimized for results.
+            </p>
+            <div class="card__footer">
+              <span class="badge">Copywriting</span>
+            </div>
+          </li>
+
+          <!-- Card 6 — Brand Strategy
+               NOTE: Added to fulfill feature_count: 6 from red_team_constraints.
+               DNA lists 5 core_solutions; Brand Strategy is the natural
+               orchestration layer that connects all five services.
+          -->
+          <li class="card card--featured js-fade-up" aria-labelledby="feature-strategy-title">
+            <div class="card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3 class="card__title" id="feature-strategy-title">Brand Strategy</h3>
+            <p class="card__body">
+              The blueprint that ties every asset together. We align your jingle,
+              logo, copy, and content into a cohesive brand experience — built
+              on transparency, designed to scale your business with confidence.
+            </p>
+            <div class="card__footer">
+              <span class="badge badge--primary">Full-Service</span>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </section>
+
+
+    <!-- ==================================================================
+         CTA SECTION
+         Source: layout_blueprint > section: "CTA"
+         cta_headline: "Save hours managing multiple vendors"
+         cta_subheadline: "Tired of spending time managing vendors..."
+         cta_button_text: "Email us at customerservice@calico-usa.com"
+         cta_button_action: "external-link" (mailto)
+         ================================================================== -->
+    <section
+      class="section-wrapper section-wrapper--alt"
+      id="cta"
+      aria-labelledby="cta-title"
+    >
+      <div class="container">
+
+        <div class="cta-block">
+
+          <!-- Eyebrow label -->
+          <span class="section-header__label js-fade-in" style="margin-bottom: 1.25rem;">
+            Let's Work Together
+          </span>
+
+          <!-- DNA-exact headline -->
+          <h2 class="cta-block__headline js-fade-up" id="cta-title">
+            Save hours managing<br />multiple vendors
+          </h2>
+
+          <!-- DNA-exact subheadline -->
+          <p class="cta-block__subheadline js-fade-up">
+            Tired of spending time managing vendors instead of managing your business?
+            CaliCo is your single point of trust — one relationship, full transparency,
+            every branding asset you need.
+          </p>
+
+          <!-- DNA-exact CTA button — mailto external link -->
+          <a
+            class="btn btn-primary btn--lg js-fade-up"
+            href="mailto:customerservice@calico-usa.com"
+            aria-label="Send an email to CaliCo Branding Solutions at customerservice@calico-usa.com"
+          >
+            <!-- Icon: envelope -->
+            <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Email us at customerservice@calico-usa.com
+          </a>
+
+          <!-- Trust micro-copy beneath CTA -->
+          <p class="js-fade-in" style="margin-top: 1.5rem; font-size: var(--text-xs); color: var(--color-text-faint); letter-spacing: var(--tracking-wide); text-transform: uppercase;">
+            No commitment required &nbsp;·&nbsp; Transparent pricing &nbsp;·&nbsp; Fast response
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+
+  </main><!-- /main -->
+
+
+  <!-- =====================================================================
+       FOOTER
+       ===================================================================== -->
+  <footer class="footer" id="footer" role="contentinfo" aria-label="Site footer">
+    <div class="container">
+
+      <div class="footer__grid">
+
+        <!-- Brand column -->
+        <div class="footer__brand-col">
+          <a href="#hero" class="footer__brand-name" aria-label="CaliCo Branding Solutions — back to top">
+            Cali<span>Co</span> Branding Solutions
+          </a>
+          <p class="footer__brand-desc">
+            Your single trusted partner for Jingles, Logos, Voiceovers,
+            Videos, and Ad Copy — built on integrity and delivered with transparency.
+          </p>
+          <!-- Contact email repeated for scanners -->
+          <a
+            class="footer__link"
+            href="mailto:customerservice@calico-usa.com"
+            aria-label="Email CaliCo at customerservice@calico-usa.com"
+          >
+            customerservice@calico-usa.com
+          </a>
+        </div>
+
+        <!-- Services column -->
+        <nav aria-label="Footer services navigation">
+          <h3 class="footer__col-title">Services</h3>
+          <ul class="footer__links" role="list">
+            <li><a class="footer__link" href="#features">Jingles</a></li>
+            <li><a class="footer__link" href="#features">Logos</a></li>
+            <li><a class="footer__link" href="#features">Voiceovers</a></li>
+            <li><a class="footer__link" href="#features">Videos</a></li>
+            <li><a class="footer__link" href="#features">Ad Copy</a></li>
+            <li><a class="footer__link" href="#features">Brand Strategy</a></li>
+          </ul>
+        </nav>
+
+        <!-- Company column -->
+        <nav aria-label="Footer company navigation">
+          <h3 class="footer__col-title">Company</h3>
+          <ul class="footer__links" role="list">
+            <li><a class="footer__link" href="#hero">Home</a></li>
+            <li><a class="footer__link" href="#features">Services</a></li>
+            <li><a class="footer__link" href="#cta">Contact</a></li>
+          </ul>
+        </nav>
+
+        <!-- Values column -->
+        <div>
+          <h3 class="footer__col-title">Our Promise</h3>
+          <ul class="footer__links" role="list">
+            <li>
+              <span class="footer__link" style="cursor: default;">
+                ✦ &nbsp;Trust in every deliverable
+              </span>
+            </li>
+            <li>
+              <span class="footer__link" style="cursor: default;">
+                ✦ &nbsp;Integrity in every process
+              </span>
+            </li>
+            <li>
+              <span class="footer__link" style="cursor: default;">
+                ✦ &nbsp;Transparency in every price
+              </span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="footer__bottom">
+        <p class="footer__copyright">
+          &copy; <span id="footer-year"></span> CaliCo Branding Solutions. All rights reserved.
+        </p>
+        <nav class="footer__legal" aria-label="Legal links">
+          <a class="footer__legal-link" href="#">Privacy Policy</a>
+          <a class="footer__legal-link" href="#">Terms of Service</a>
+        </nav>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- =====================================================================
+       SCRIPTS
+       GSAP core + ScrollTrigger loaded before main.js
+       ===================================================================== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="assets/js/main.js" type="module"></script>
+
+</body>
+</html>
