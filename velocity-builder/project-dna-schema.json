@@ -25,7 +25,34 @@
       "core_solutions": "List of services or product features"
     }
   },
-  "layout_blueprint": ["Header", "Hero", "Feature Grid", "CTA", "Pricing", "Footer"],
+  "layout_blueprint": [
+    "Header / Nav",
+    "Hero Section",
+    "Feature Grid",
+    {
+      "_comment": "CTA Section — added via + CTA button. All fields captured from inline drawer.",
+      "section": "CTA",
+      "cta_headline": "e.g., Ready to Scale Your Brand?",
+      "cta_subheadline": "e.g., No contracts. Cancel anytime.",
+      "cta_button_text": "e.g., Book a Free Audit",
+      "cta_button_action": "scroll-to-form | open-modal | external-link"
+    },
+    {
+      "_comment": "Pricing Section — added via + PRICING button. All fields captured from inline drawer.",
+      "section": "Pricing",
+      "pricing_tiers": "2 | 3",
+      "pricing_billing": "monthly | annual | one-time",
+      "pricing_tier_names": "e.g., Starter, Pro, Agency"
+    },
+    {
+      "_comment": "Testimonial Section — added via + TESTIMONIAL button. All fields captured from inline drawer.",
+      "section": "Testimonial",
+      "testimonial_count": "2 | 3 | 4",
+      "testimonial_source": "placeholder | real",
+      "testimonial_names": "e.g., Jane Doe, CEO at Acme Co. (only if source is real)"
+    },
+    "Footer"
+  ],
   "tool_integrations": {
     "React": "Boolean",
     "Supabase": "Boolean",
@@ -42,5 +69,4 @@
     "styling_scope": "Full-Components"
   }
 }
-
 
