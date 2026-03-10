@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocity Planner | CaliCo Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:wght@400;600;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calico: {
+                            purple: '#4B0082',
+                            dark: '#0F0518',
+                            yellow: '#FFD700',
+                            accent: '#00D4FF',
+                            glass: 'rgba(255, 255, 255, 0.05)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0F0518; color: white; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.2s;
+        }
+        .glass-input:focus {
+            border-color: #FFD700;
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+        }
+        /* Toggle Button Styles */
+        .platform-toggle {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .platform-toggle.active {
+            background-color: #00D4FF; /* calico-accent */
+            color: black;
+            font-weight: 800;
+            border-color: #00D4FF;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+        /* Custom scrollbar for the output area */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0F0518; }
+        ::-webkit-scrollbar-thumb { background: #4B0082; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto w-full text-center mb-10">
+        <h1 class="text-4xl md:text-5xl font-black font-heading mb-2 bg-gradient-to-r from-calico-yellow to-white bg-clip-text text-transparent">
+            VELOCITY PLANNER
+        </h1>
+        <p class="text-gray-400 text-sm tracking-widest uppercase">The Strategy Prism | AI Driven, Artist Approved</p>
+    </div>
+
+    <div class="max-w-4xl mx-auto w-full space-y-8">
+
+        <!-- SECTION 1: IMPORT -->
+        <div class="glass-panel p-6 rounded-xl border-l-4 border-calico-accent">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-heading font-bold text-xl flex items-center gap-2">
+                    <i class="fas fa-file-import text-calico-accent"></i> 1. Context Import
+                </h2>
+                <span class="text-xs text-gray-500 uppercase font-bold">Velocity Engine Compatible</span>
+            </div>
+            
+            <p class="text-sm text-gray-400 mb-3">Paste the full output from <strong>The Velocity Engine</strong> here to auto-fill client data.</p>
+            
+            <textarea id="dossierInput" rows="3" 
+                class="glass-input w-full p-4 rounded-lg text-xs font-mono mb-3" 
+                placeholder="Paste Velocity Engine text here... 
+Example format:
+**PROJECT:** Brand Name
+**The Hook (Offer):** Save 30-40 hours..."></textarea>
+            
+            <button onclick="parseDossier()" 
+                class="bg-calico-accent hover:bg-cyan-400 text-black font-bold py-2 px-6 rounded text-sm transition-all w-full sm:w-auto shadow-lg hover:shadow-cyan-500/20">
+                <i class="fas fa-magic mr-2"></i>Extract Strategy Data
+            </button>
+            
+            <div id="parseStatus" class="mt-2 text-xs font-bold hidden"></div>
+        </div>
+
+        <!-- SECTION 2: CONSTRAINTS -->
+        <div class="glass-panel p-6 rounded-xl">
+            <h2 class="font-heading font-bold text-xl mb-4 flex items-center gap-2">
+                <i class="fas fa-sliders-h text-gray-400"></i> 2. Strategy Constraints
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1">Client / Brand Name</label>
+                    <input type="text" id="brandName" class="glass-input w-full p-2 rounded" placeholder="e.g. CaliCo">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1">Target Audience</label>
+                    <input type="text" id="audience" class="glass-input w-full p-2 rounded" placeholder="e.g. Small Business Owners">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-gray-400 mb-1">Core Offer / Product</label>
+                    <input type="text" id="offer" class="glass-input w-full p-2 rounded" placeholder="e.g. Save 30-40 hours per project">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1">Brand Voice</label>
+                    <input type="text" id="voice" class="glass-input w-full p-2 rounded" placeholder="e.g. Professional, Direct">
+                </div>
+                 <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1">Campaign Goal</label>
+                    <select id="goal" class="glass-input w-full p-2 rounded">
+                        <option value="Lead Generation (Sales)">Lead Generation (Sales)</option>
+                        <option value="Brand Authority (Trust)">Brand Authority (Trust)</option>
+                        <option value="Community Growth (Engagement)">Community Growth (Engagement)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <input type="hidden" id="mission">
+            <input type="hidden" id="style">
+        </div>
+
+        <!-- SECTION 3: THE HOOK & PLATFORMS -->
+        <div class="glass-panel p-6 rounded-xl border-l-4 border-calico-yellow">
+            <h2 class="font-heading font-bold text-xl mb-4 flex items-center gap-2">
+                <i class="fas fa-anchor text-calico-yellow"></i> 3. The Anchor Hook & Distribution
+            </h2>
+            
+            <label class="block text-xs font-bold text-gray-400 mb-2">Paste ONE winning hook from The Hook Gym:</label>
+            <input type="text" id="masterHook" 
+                class="glass-input w-full p-4 rounded-lg text-lg border-calico-yellow/50 mb-6" 
+                placeholder="e.g., The #1 reason agencies fail is burnout...">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Timeframe -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-2">Sprint Duration</label>
+                    <select id="duration" class="glass-input w-full p-3 rounded text-sm">
+                        <option value="3 Days">3 Days (Mini-Series)</option>
+                        <option value="5 Days">5 Days (Work Week)</option>
+                        <option value="7 Days">7 Days (Full Sprint)</option>
+                    </select>
+                </div>
+
+                <!-- Platform Matrix -->
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-gray-500 mb-2">Active Platforms (Select all that apply)</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="platformGrid">
+                        <!-- Generated via JS for cleaner HTML structure, but hardcoded here for clarity -->
+                        <div class="platform-toggle glass-input rounded px-3 py-2 text-xs text-center flex items-center justify-center gap-2" onclick="togglePlatform(this)" data-value="LinkedIn">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </div>
+                        <div class="platform-toggle glass-input rounded px-3 py-2 text-xs text-center flex items-center justify-center gap-2" onclick="togglePlatform(this)" data-value="Instagram">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </div>
+                        <div class="platform-toggle glass-input rounded px-3 py-2 text-xs text-center flex items-center justify-center gap-2" onclick="togglePlatform(this)" data-value="TikTok">
+                            <i class="fab fa-tiktok"></i> TikTok
+                        </div>
+                        <div class="platform-toggle glass-input rounded px-3 py-2 text-xs text-center flex items-center justify-center gap-2" onclick="togglePlatform(this)" data-value="Twitter/X">
+                            <i class="fab fa-twitter"></i> Twitter/X
+                        </div>
+                        <div class="platform-toggle glass-input rounded px-3 py-2 text-xs text-center flex items-center justify-center gap-2" onclick="togglePlatform(this)" data-value="YouTube Shorts">
+                            <i class="fab fa-youtube"></i> Shorts
+                        </div>
+                        <div class="platform-toggle glass-input rounded px-3 py-2 text-xs text-center flex items-center justify-center gap-2" onclick="togglePlatform(this)" data-value="Facebook">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GENERATE BUTTON -->
+        <button onclick="generateMegaPrompt()" 
+            class="w-full bg-gradient-to-r from-calico-purple to-calico-dark border border-white/20 hover:border-calico-yellow text-white font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.01] hover:shadow-calico-purple/50">
+            <i class="fas fa-bolt text-calico-yellow mr-2"></i> GENERATE STRATEGY PRISM
+        </button>
+
+        <!-- OUTPUT ZONE -->
+        <div id="outputZone" class="hidden glass-panel p-6 rounded-xl border-2 border-calico-yellow/50">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-heading font-bold text-lg">Mega-Prompt Ready</h3>
+                <button onclick="copyToClipboard()" class="text-xs bg-calico-yellow text-black font-bold px-3 py-2 rounded hover:bg-white transition-colors">
+                    <i class="fas fa-copy mr-1"></i> Copy to Clipboard
+                </button>
+            </div>
+            <textarea id="finalPrompt" readonly class="glass-input w-full h-64 p-4 rounded-lg text-xs font-mono" style="white-space: pre-wrap;"></textarea>
+        </div>
+
+    </div>
+
+    <footer class="text-center py-8 text-xs text-gray-600">
+        AI Driven, Artist Approved. &copy; 2026 CaliCo.
+    </footer>
+
+    <script>
+        // --- UI UTILS ---
+        function togglePlatform(element) {
+            element.classList.toggle('active');
+        }
+
+        // --- PARSING LOGIC ---
+        function parseDossier() {
+            const text = document.getElementById('dossierInput').value;
+            const status = document.getElementById('parseStatus');
+            
+            if (!text) {
+                status.innerText = "Error: Input is empty.";
+                status.className = "mt-2 text-xs font-bold text-red-500";
+                status.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                // Regex patterns matching the provided Velocity Engine output format
+                const projectRx = /\*\*PROJECT:\*\*\s*(.+)/i;
+                const offerRx = /\*\*The Hook \(Offer\):\*\*\s*(.+)/i;
+                const audienceRx = /\*\*Target Audience:\*\*\s*(.+)/i;
+                const missionRx = /\*\*Brand Mission:\*\*\s*(.+)/i;
+                const vibeRx = /\*\*Master Vibe:\*\*\s*(.+)/i;
+                const styleRx = /\*\*Visual Aesthetic:\*\*\s*(.+)/i;
+
+                // Extraction
+                const brand = text.match(projectRx)?.[1] || "";
+                const offer = text.match(offerRx)?.[1] || "";
+                const audience = text.match(audienceRx)?.[1] || "";
+                const mission = text.match(missionRx)?.[1] || "";
+                const voice = text.match(vibeRx)?.[1] || "";
+                const style = text.match(styleRx)?.[1] || "";
+
+                if (!brand && !offer) {
+                     throw new Error("Could not find patterns");
+                }
+
+                // Populate Fields
+                document.getElementById('brandName').value = brand.trim();
+                document.getElementById('offer').value = offer.trim();
+                document.getElementById('audience').value = audience.trim();
+                document.getElementById('mission').value = mission.trim();
+                document.getElementById('voice').value = voice.trim();
+                document.getElementById('style').value = style.trim();
+
+                status.innerHTML = `<i class="fas fa-check"></i> Success! Extracted data for: ${brand}`;
+                status.className = "mt-2 text-xs font-bold text-green-400";
+                status.classList.remove('hidden');
+
+            } catch (e) {
+                status.innerText = "Parsing failed. Ensure format matches: **PROJECT:** Name ...";
+                status.className = "mt-2 text-xs font-bold text-red-500";
+                status.classList.remove('hidden');
+                console.error(e);
+            }
+        }
+
+        // --- PROMPT GENERATION LOGIC ---
+        function generateMegaPrompt() {
+            const hook = document.getElementById('masterHook').value;
+            if (!hook) {
+                alert("Please enter a Master Hook.");
+                return;
+            }
+
+            // Get Context Data
+            const brand = document.getElementById('brandName').value || "[INSERT BRAND]";
+            const offer = document.getElementById('offer').value || "[INSERT OFFER]";
+            const audience = document.getElementById('audience').value || "General Audience";
+            const voice = document.getElementById('voice').value || "Professional";
+            const mission = document.getElementById('mission').value || "";
+            const style = document.getElementById('style').value || "Modern";
+            
+            // Get Settings
+            const days = document.getElementById('duration').value;
+            const goal = document.getElementById('goal').value;
+
+            // Get Selected Platforms
+            const activeElements = document.querySelectorAll('.platform-toggle.active');
+            let selectedPlatforms = [];
+            activeElements.forEach(el => selectedPlatforms.push(el.dataset.value));
+            
+            if (selectedPlatforms.length === 0) {
+                selectedPlatforms = ["General Social Media"]; // Fallback
+            }
+            const platformString = selectedPlatforms.join(", ");
+
+            // --- THE PRISM PROMPT CONSTRUCTION ---
+            let prompt = `
+### SYSTEM ROLE
+Act as a Senior Content Strategist and Copywriter for **${brand}**.
+Your goal is to execute a **${days}** content "Sprint".
+
+### DISTRIBUTION CHANNELS
+The client is active on these platforms: **${platformString}**.
+You must recommend the specific platform placement for each piece of content below.
+
+### THE CAMPAIGN PRISM
+We are taking ONE single hook and expanding it into a multi-day narrative.
+**The Anchor Hook:** "${hook}"
+**The Core Product to Sell:** "${offer}"
+**The Campaign Goal:** ${goal}
+
+### CONTEXT LAYER (THE DOSSIER)
+You must strictly adhere to this identity:
+- **Target Audience:** ${audience}
+- **Brand Voice:** ${voice}
+- **Visual Style:** ${style}
+${mission ? `- **Mission Context:** ${mission}` : ''}
+
+### OUTPUT FORMAT RULES (CRITICAL)
+1. **NO TABLES.** Output must be in **copy-paste ready blocks**.
+2. **Visual Direction (JSON):** You must output the visual description in strict JSON format.
+3. **Remix Prompt:** You must include a ready-to-use "Mini-Prompt" for cross-platform adaptation.
+   - **CRITICAL:** Inside this remix prompt, you MUST replace "[Insert Caption]" with the **actual text of the caption** you just wrote above. Do NOT leave a placeholder.
+   - You MUST replace "[Insert Platforms]" with the specific names of the other active platforms not used in the primary post.
+
+### REQUIRED OUTPUT STRUCTURE
+Please output the schedule exactly like this:
+
+**DAY 1: [Angle Type]**
+**Primary Platform:** [Select best fit from: ${platformString}]
+**Format:** [e.g. Reel / Carousel / Text Post]
+**Hook:** [Write the Hook]
+**Caption:** [Write the Full Caption in ${voice} tone]
+
+**Visual Direction (JSON):**
+\`\`\`json
+{
+  "image_prompt": "[Detailed visual description in ${style} style]",
+  "aspect_ratio": "[e.g. 9:16 or 1:1]",
+  "mood": "${voice}",
+  "text_overlay": "[Any text to appear on image]"
+}
+\`\`\`
+
+**Cross-Platform Remix Prompt:**
+(Copy and paste the block below to generate adaptations)
+> "Act as a Social Media Manager for **${brand}**.
+> **Context:** Target Audience is **${audience}**. Brand Voice is **${voice}**.
+> **Goal:** ${goal}.
+> **Source Content:** [PASTE THE EXACT CAPTION TEXT YOU WROTE ABOVE HERE - NO PLACEHOLDERS]
+> **Task:** Adapt the source content for these platforms: [LIST OTHER ACTIVE PLATFORMS].
+> **Constraint:** Keep the core message but adjust the format and tone to fit the specific culture of each platform."
+
+**Hashtags:** [Tags]
+---
+**DAY 2: [Angle Type]**
+... (repeat for ${days})
+`;
+
+            document.getElementById('finalPrompt').value = prompt.trim();
+            document.getElementById('outputZone').classList.remove('hidden');
+            
+            // Scroll to output
+            document.getElementById('outputZone').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyToClipboard() {
+            const copyText = document.getElementById("finalPrompt");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            // Execute copy
+            try {
+                document.execCommand('copy');
+                
+                // Visual Feedback
+                const btn = document.querySelector('#outputZone button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.classList.add('bg-green-400', 'text-black');
+                btn.classList.remove('bg-calico-yellow');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('bg-green-400', 'text-black');
+                    btn.classList.add('bg-calico-yellow');
+                }, 2000);
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+                alert("Please manually copy the text.");
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+

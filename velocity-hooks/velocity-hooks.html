@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocity Hooks | CaliCo Branding Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- NLP Library for verb conjugation -->
+    <script src="https://unpkg.com/compromise"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:wght@400;600;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calico: {
+                            purple: '#4B0082',
+                            darkPurple: '#2E0057',
+                            deepest: '#0F0518',
+                            yellow: '#FFD700',
+                            accent: '#00D4FF',
+                            danger: '#FF4B4B',
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Montserrat', 'sans-serif'],
+                        sans: ['Open Sans', 'sans-serif'],
+                    },
+                    animation: {
+                        'fadeIn': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background: radial-gradient(circle at 50% 0%, #2E0057 0%, #0F0518 80%); 
+            color: white; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+        }
+        
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-field {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: #00D4FF;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .hook-card { 
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .hook-card:hover { 
+            transform: translateY(-4px); 
+            border-color: #FFD700; 
+            background: rgba(255,255,255,0.06); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3); 
+        }
+        
+        .copied-overlay {
+            position: absolute; inset: 0; background: #00D4FF; display: flex; 
+            align-items: center; justify-content: center; font-weight: 900; 
+            text-transform: uppercase; transform: translateY(100%); transition: transform 0.2s;
+            color: #0F0518; font-family: 'Montserrat', sans-serif; z-index: 50;
+        }
+        .hook-card.copied .copied-overlay { transform: translateY(0); }
+
+        .highlight { color: #FFD700; font-weight: 700; }
+        
+        /* Logic Console Styles */
+        .logic-console {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .hook-card:hover .logic-console { opacity: 1; }
+
+        .logic-group { display: flex; gap: 4px; align-items: center; }
+        .logic-label { font-size: 9px; text-transform: uppercase; font-weight: 700; color: #666; margin-right: 4px; display: none; }
+        @media (min-width: 768px) { .logic-label { display: block; } }
+        
+        .logic-btn {
+            font-size: 8px; padding: 2px 6px; border-radius: 3px; 
+            border: 1px solid rgba(255,255,255,0.1); color: #888; cursor: pointer;
+            transition: all 0.2s; text-transform: uppercase; font-weight: 600;
+        }
+        .logic-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+        
+        /* Active States */
+        .logic-btn.active.action { background: #00D4FF; color: #000; border-color: #00D4FF; }
+        .logic-btn.active.pain { background: #FF4B4B; color: #fff; border-color: #FF4B4B; }
+        .logic-btn.active.noun { background: #4B0082; color: #fff; border-color: #4B0082; }
+
+    </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center">
+
+    <header class="text-center mb-8 w-full max-w-2xl animate-fadeIn">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-calico-yellow text-calico-darkPurple mb-3 shadow-[0_0_25px_rgba(255,215,0,0.4)]">
+            <i class="fas fa-brain text-xl"></i>
+        </div>
+        <h1 class="text-3xl md:text-5xl font-black font-heading tracking-tight text-white mb-2 uppercase">The Hook Gym</h1>
+        <p class="text-calico-accent text-xs tracking-[0.3em] uppercase font-bold mb-1">AI Driven. Artist Approved.</p>
+        <p class="text-gray-500 text-[9px] font-mono tracking-wider">v5.3 // 250+ TEMPLATES // CSV EXPORT</p>
+    </header>
+
+    <main class="w-full max-w-6xl">
+        <!-- Input Section -->
+        <div class="glass-panel p-6 md:p-8 rounded-3xl shadow-2xl mb-10 relative border-t-4 border-t-calico-yellow animate-fadeIn" style="animation-delay: 0.1s;">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 mt-2">
+                
+                <!-- 1. Topic -->
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider">1. The Topic (Noun)</label>
+                    <input type="text" id="input-topic" placeholder="e.g. AI Marketing" class="input-field w-full rounded-xl p-3 text-sm text-white outline-none">
+                </div>
+
+                <!-- 2. Audience -->
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider">2. The Audience (Plural)</label>
+                    <input type="text" id="input-audience" placeholder="e.g. Agency Owners" class="input-field w-full rounded-xl p-3 text-sm text-white outline-none">
+                </div>
+
+                <!-- 3. Benefit (Action) -->
+                <div class="space-y-2 relative">
+                    <label class="text-[11px] font-bold text-calico-accent uppercase tracking-wider">3. Action / Benefit</label>
+                    <input type="text" id="input-benefit" placeholder="e.g. Save Time" class="input-field w-full rounded-xl p-3 text-sm text-white outline-none border-l-4 border-l-calico-accent">
+                </div>
+
+                <!-- 4. Pain (Problem) -->
+                <div class="space-y-2 relative">
+                    <label class="text-[11px] font-bold text-calico-danger uppercase tracking-wider">4. Pain / Problem</label>
+                    <input type="text" id="input-pain" placeholder="e.g. Waste Money" class="input-field w-full rounded-xl p-3 text-sm text-white outline-none border-l-4 border-l-calico-danger">
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4">
+                <button onclick="spinTheWheel()" class="flex-1 group bg-gradient-to-r from-calico-purple to-calico-darkPurple hover:from-calico-yellow hover:to-orange-500 hover:text-calico-deepest text-white font-black text-lg py-4 rounded-xl transition-all shadow-xl transform active:scale-[0.99] uppercase tracking-widest flex items-center justify-center gap-3 border border-white/10">
+                    <i class="fas fa-bolt text-calico-accent group-hover:text-calico-deepest animate-pulse"></i> 
+                    <span>Generate With Root Logic</span>
+                </button>
+                <button onclick="clearInputs()" class="px-6 py-4 rounded-xl border border-white/10 hover:bg-white/5 text-gray-400 hover:text-white transition-colors uppercase text-xs font-bold tracking-wider">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Area -->
+        <div id="results-area" class="hidden">
+            <div class="glass-panel p-6 md:p-8 rounded-3xl shadow-2xl border-t-4 border-t-calico-accent">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-black font-heading uppercase text-white tracking-wide">
+                        <i class="fas fa-fire text-calico-yellow mr-2"></i> Generated Hooks
+                    </h2>
+                    <div class="flex gap-2">
+                        <button onclick="copyAllHooks()" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white font-bold text-sm hover:bg-white/10 transition-all shadow-lg uppercase tracking-wide">
+                            <i class="fas fa-list-ol mr-2 text-calico-accent"></i>Copy List
+                        </button>
+                        <button onclick="exportToCSV()" class="px-4 py-2 rounded-lg bg-calico-yellow text-calico-deepest font-bold text-sm hover:bg-yellow-400 transition-all shadow-lg uppercase tracking-wide">
+                            <i class="fas fa-file-csv mr-2"></i>Export CSV
+                        </button>
+                    </div>
+                </div>
+                <div id="hooks-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 bg-calico-yellow text-calico-deepest font-black rounded-lg shadow-2xl transition-all duration-300 translate-y-20 opacity-0 uppercase text-sm tracking-wider z-50">
+        <i class="fas fa-check-circle mr-2"></i>
+        <span id="toast-msg"></span>
+    </div>
+
+    <script>
+        // --- MASSIVE TEMPLATE VAULT (250+ Templates) ---
+        const templateVault = [
+            // CONTRARIAN (50)
+            {cat:"Contrarian", text:"Stop {b_ing}. Start {p_ing}."},
+            {cat:"Contrarian", text:"Why {a} Should {p_root} (Yes, Really)"},
+            {cat:"Contrarian", text:"Everyone Says to {b_root}. I Say {p_root}."},
+            {cat:"Contrarian", text:"Don't {b_root}. Do This Instead."},
+            {cat:"Contrarian", text:"{t} Won't Help You {b_root}. Here's What Will."},
+            {cat:"Contrarian", text:"Forget {b_ing}. Focus on {p_root}."},
+            {cat:"Contrarian", text:"Why {b_ing} Is Overrated"},
+            {cat:"Contrarian", text:"The Myth of {b_ing}"},
+            {cat:"Contrarian", text:"{t} Is Dead. Here's What's Next."},
+            {cat:"Contrarian", text:"Why You Shouldn't {b_root} (Yet)"},
+            {cat:"Contrarian", text:"Unpopular Opinion: {t} is causing {a} to {p_root}"},
+            {cat:"Contrarian", text:"Stop trying to {b_root} if you can't handle {p_ing}"},
+            {cat:"Contrarian", text:"I used to think {t} was the solution. The real problem was {p_ing}"},
+            {cat:"Contrarian", text:"{a} are doing {t} all wrong"},
+            {cat:"Contrarian", text:"Why the {t} industry wants you to keep {p_ing}"},
+            {cat:"Contrarian", text:"The inconvenient truth about {b_ing}"},
+            {cat:"Contrarian", text:"{t} is making {a} lazy"},
+            {cat:"Contrarian", text:"You don't need to {b_root}. You need to stop {p_ing}"},
+            {cat:"Contrarian", text:"Hot take: {b_ing} is a waste of time for most {a}"},
+            {cat:"Contrarian", text:"Why I quit {b_ing} and never looked back"},
+            {cat:"Contrarian", text:"The {t} advice that's keeping you {p_ing}"},
+            {cat:"Contrarian", text:"Unpopular truth: Most {a} will never {b_root}"},
+            {cat:"Contrarian", text:"Why {b_ing} is actually making things worse"},
+            {cat:"Contrarian", text:"The dirty secret about {t} nobody tells {a}"},
+            {cat:"Contrarian", text:"{a} who {b_root} are doing it wrong"},
+            {cat:"Contrarian", text:"Stop {p_ing} and embrace the chaos"},
+            {cat:"Contrarian", text:"Why the best {a} ignore {t} completely"},
+            {cat:"Contrarian", text:"{b_ing} won't save you from {p_ing}"},
+            {cat:"Contrarian", text:"The {t} trend that's killing your results"},
+            {cat:"Contrarian", text:"Why I deleted my {t} and started {p_ing} instead"},
+            {cat:"Contrarian", text:"The opposite of what {a} think about {b_ing}"},
+            {cat:"Contrarian", text:"Why {p_ing} might be exactly what you need"},
+            {cat:"Contrarian", text:"{t} is a distraction from what really matters"},
+            {cat:"Contrarian", text:"The hard pill to swallow about {b_ing}"},
+            {cat:"Contrarian", text:"Why most {t} advice is garbage"},
+            {cat:"Contrarian", text:"Stop optimizing. Start {p_ing}."},
+            {cat:"Contrarian", text:"The {b_ing} movement is a lie"},
+            {cat:"Contrarian", text:"Why I chose {p_ing} over {b_ing}"},
+            {cat:"Contrarian", text:"{a} don't need more {t}. They need less."},
+            {cat:"Contrarian", text:"The brutal truth about {b_ing} that nobody shares"},
+            {cat:"Contrarian", text:"Why {t} experts are wrong about {a}"},
+            {cat:"Contrarian", text:"Confession: {b_ing} didn't work for me"},
+            {cat:"Contrarian", text:"The {t} playbook is broken. Here's the new one."},
+            {cat:"Contrarian", text:"Why successful {a} avoid {b_ing}"},
+            {cat:"Contrarian", text:"{t} is overhyped. Here's what actually works."},
+            {cat:"Contrarian", text:"The controversial reason why {p_ing} beats {b_ing}"},
+            {cat:"Contrarian", text:"Stop following {t} trends. Do this instead."},
+            {cat:"Contrarian", text:"Why {b_ing} makes {a} weaker, not stronger"},
+            {cat:"Contrarian", text:"The {t} myth that's costing {a} everything"},
+            {cat:"Contrarian", text:"Forget what you know about {b_ing}"},
+
+            // HOW-TO (50)
+            {cat:"How-To", text:"How {a} {b_root} Without {p_ing}"},
+            {cat:"How-To", text:"The {t} Playbook to {b_root} in 30 Days"},
+            {cat:"How-To", text:"5 Ways to {b_root} with {t}"},
+            {cat:"How-To", text:"From {p_ing} to {b_ing}: My {t} Journey"},
+            {cat:"How-To", text:"The Ultimate Guide to {b_ing} with {t}"},
+            {cat:"How-To", text:"3 Steps to {b_root} Using {t}"},
+            {cat:"How-To", text:"How to {b_root} Even If You're {p_ing}"},
+            {cat:"How-To", text:"{b_root} Like the Top 1% of {a}"},
+            {cat:"How-To", text:"The Simple Formula to {b_root} with {t}"},
+            {cat:"How-To", text:"The {t} Blueprint to {b_root} Fast"},
+            {cat:"How-To", text:"How to stop {p_ing} without using cheap tricks"},
+            {cat:"How-To", text:"The lazy guide to {b_ing} for {a} who hate {p_ing}"},
+            {cat:"How-To", text:"My framework for {t} that eliminates {p_ing} forever"},
+            {cat:"How-To", text:"How I went from {p_ed} to {b_ed} in 30 days"},
+            {cat:"How-To", text:"The step-by-step system to {b_root} consistently"},
+            {cat:"How-To", text:"How to {b_root} in half the time"},
+            {cat:"How-To", text:"The complete {t} roadmap for {a}"},
+            {cat:"How-To", text:"How to automate {b_ing} and stop {p_ing}"},
+            {cat:"How-To", text:"The beginner's guide to {b_ing} without {p_ing}"},
+            {cat:"How-To", text:"7 proven ways {a} can {b_root} today"},
+            {cat:"How-To", text:"How to {b_root} when you have zero time"},
+            {cat:"How-To", text:"The exact process I use to {b_root} every day"},
+            {cat:"How-To", text:"How to master {t} and never {p_root} again"},
+            {cat:"How-To", text:"The {a} guide to {b_ing} on a budget"},
+            {cat:"How-To", text:"How to {b_root} without expensive {t}"},
+            {cat:"How-To", text:"The no-BS approach to {b_ing}"},
+            {cat:"How-To", text:"How I {b_ed} using only free {t} tools"},
+            {cat:"How-To", text:"Your first 30 days {b_ing} with {t}"},
+            {cat:"How-To", text:"How to teach yourself to {b_root}"},
+            {cat:"How-To", text:"The advanced {t} tactics for {b_ing}"},
+            {cat:"How-To", text:"How to {b_root} faster than 99% of {a}"},
+            {cat:"How-To", text:"The unconventional method to {b_root}"},
+            {cat:"How-To", text:"How to start {b_ing} with zero experience"},
+            {cat:"How-To", text:"The 10-minute daily habit that helps you {b_root}"},
+            {cat:"How-To", text:"How to fix your {p_ing} problem in 7 days"},
+            {cat:"How-To", text:"The complete toolkit for {b_ing}"},
+            {cat:"How-To", text:"How to scale {b_ing} without {p_ing}"},
+            {cat:"How-To", text:"The shortcut to {b_ing} nobody talks about"},
+            {cat:"How-To", text:"How to {b_root} like a pro in 90 days"},
+            {cat:"How-To", text:"The secret workflow for consistent {b_ing}"},
+            {cat:"How-To", text:"How to transform {p_ing} into {b_ing}"},
+            {cat:"How-To", text:"The minimalist approach to {b_ing}"},
+            {cat:"How-To", text:"How to double your {b_ing} results"},
+            {cat:"How-To", text:"The {t} checklist every {a} needs"},
+            {cat:"How-To", text:"How to build a {b_ing} system that works"},
+            {cat:"How-To", text:"The ultimate {t} starter pack for {a}"},
+            {cat:"How-To", text:"How I engineered my way to {b_ing}"},
+            {cat:"How-To", text:"The proven path from {p_ing} to {b_ing}"},
+            {cat:"How-To", text:"How to optimize {t} for maximum {b_ing}"},
+            {cat:"How-To", text:"The fastest way to {b_root} I've found"},
+
+            // URGENCY (50)
+            {cat:"Urgency", text:"You're {p_ing} If You Don't {b_root}"},
+            {cat:"Urgency", text:"Most {a} Are {p_ing}. Here's How to {b_root}."},
+            {cat:"Urgency", text:"The Hidden Cost of {p_ing}"},
+            {cat:"Urgency", text:"You Have 7 Days to {b_root} or Keep {p_ing}"},
+            {cat:"Urgency", text:"If You're Still {p_ing}, Read This Now"},
+            {cat:"Urgency", text:"The Clock Is Ticking on Your Ability to {b_root}"},
+            {cat:"Urgency", text:"{a}: Stop {p_ing} Before It's Too Late"},
+            {cat:"Urgency", text:"You're Losing Money Every Day You Don't {b_root}"},
+            {cat:"Urgency", text:"Last Chance to {b_root} Before Everyone Else Does"},
+            {cat:"Urgency", text:"The Window to {b_root} Is Closing"},
+            {cat:"Urgency", text:"If you want to {b_root}, you need to stop {p_ing}"},
+            {cat:"Urgency", text:"The cost of {p_ing} is higher than you think"},
+            {cat:"Urgency", text:"Why {a} are scrambling to fix {p_ed} projects right now"},
+            {cat:"Urgency", text:"You're running out of time to {b_root}"},
+            {cat:"Urgency", text:"Every day you're {p_ing} is a day you lose"},
+            {cat:"Urgency", text:"This is your wake-up call to {b_root}"},
+            {cat:"Urgency", text:"Don't wait until it's too late to stop {p_ing}"},
+            {cat:"Urgency", text:"The {t} opportunity is disappearing for {a}"},
+            {cat:"Urgency", text:"Why you can't afford to {p_root} anymore"},
+            {cat:"Urgency", text:"Time's up: Start {b_ing} or get left behind"},
+            {cat:"Urgency", text:"{a} who don't {b_root} will regret it"},
+            {cat:"Urgency", text:"The price of {p_ing} just went up"},
+            {cat:"Urgency", text:"Your competitors are {b_ing} while you're {p_ing}"},
+            {cat:"Urgency", text:"The {t} shift that's forcing {a} to adapt now"},
+            {cat:"Urgency", text:"Stop {p_ing} today or pay the price tomorrow"},
+            {cat:"Urgency", text:"You have one year to {b_root} before it's too late"},
+            {cat:"Urgency", text:"The deadline for {a} to {b_root} is approaching"},
+            {cat:"Urgency", text:"Why waiting to {b_root} is costing you everything"},
+            {cat:"Urgency", text:"The {p_ing} crisis nobody's talking about"},
+            {cat:"Urgency", text:"Your last chance to {b_root} before the change"},
+            {cat:"Urgency", text:"Don't let {p_ing} destroy your future"},
+            {cat:"Urgency", text:"The urgent problem with {t} for {a}"},
+            {cat:"Urgency", text:"Why {b_ing} can't wait until next year"},
+            {cat:"Urgency", text:"The ticking time bomb of {p_ing}"},
+            {cat:"Urgency", text:"You're bleeding money by {p_ing}"},
+            {cat:"Urgency", text:"{a} must {b_root} before Q4 or face disaster"},
+            {cat:"Urgency", text:"The {t} warning every {a} is ignoring"},
+            {cat:"Urgency", text:"Why delaying {b_ing} is the worst decision"},
+            {cat:"Urgency", text:"The emergency plan for {a} still {p_ing}"},
+            {cat:"Urgency", text:"You have 30 days to fix your {p_ing} problem"},
+            {cat:"Urgency", text:"The {t} deadline is closer than you think"},
+            {cat:"Urgency", text:"Why now is the only time to {b_root}"},
+            {cat:"Urgency", text:"Don't miss the {b_ing} window"},
+            {cat:"Urgency", text:"The alarm bells ringing for {a} who {p_root}"},
+            {cat:"Urgency", text:"Your {t} is {p_ing} and you don't even know it"},
+            {cat:"Urgency", text:"The point of no return for {p_ing}"},
+            {cat:"Urgency", text:"Act fast: {b_root} before your competitors do"},
+            {cat:"Urgency", text:"The race to {b_root} has already started"},
+            {cat:"Urgency", text:"Why tomorrow is too late to stop {p_ing}"},
+            {cat:"Urgency", text:"The final warning for {a} still {p_ing}"},
+
+            // TRUST (50)
+            {cat:"Trust", text:"{a} Who {b_ed} Share How They Did It"},
+            {cat:"Trust", text:"I {b_ed} Using {t}. Here's What Happened."},
+            {cat:"Trust", text:"{a} Are {b_ing}. You Should Too."},
+            {cat:"Trust", text:"Why I Stopped {p_ing} and Started {b_ing}"},
+            {cat:"Trust", text:"How {a} {b_ed} in 90 Days (Without {p_ing})"},
+            {cat:"Trust", text:"I Tried Every {t} Strategy. Only This {b_ed}."},
+            {cat:"Trust", text:"The {t} Method I Used to {b_root}"},
+            {cat:"Trust", text:"How I {b_ed} by Ignoring This Common Advice"},
+            {cat:"Trust", text:"Why Successful {a} {b_root} Daily"},
+            {cat:"Trust", text:"I Spent $10K Learning to {b_root}. Here's What Worked."},
+            {cat:"Trust", text:"Why transparency in {t} is the secret to {b_ing}"},
+            {cat:"Trust", text:"The honest truth: You will continue {p_ing} if you ignore {t}"},
+            {cat:"Trust", text:"I was tired of {p_ing}, so I built a system to {b_root}"},
+            {cat:"Trust", text:"I tried {t} for a month. Here's how I avoided {p_ing}"},
+            {cat:"Trust", text:"How {t} saved me from {p_ing}"},
+            {cat:"Trust", text:"The day I realized {p_ing} was killing my business"},
+            {cat:"Trust", text:"I finally stopped {p_ing} and started {b_ing}"},
+            {cat:"Trust", text:"Behind the scenes of how I {b_ed}"},
+            {cat:"Trust", text:"What nobody tells you about {b_ing}"},
+            {cat:"Trust", text:"My honest review of {t} for {a}"},
+            {cat:"Trust", text:"I tested {t} for 6 months. Here's the truth."},
+            {cat:"Trust", text:"The mistakes I made while {b_ing}"},
+            {cat:"Trust", text:"What I wish I knew before starting to {b_root}"},
+            {cat:"Trust", text:"The real reason I switched from {p_ing} to {b_ing}"},
+            {cat:"Trust", text:"How I transformed my {t} to stop {p_ing}"},
+            {cat:"Trust", text:"The unexpected result of {b_ing} every day"},
+            {cat:"Trust", text:"Why I recommend {t} to every {a}"},
+            {cat:"Trust", text:"My journey from {p_ing} to {b_ing}"},
+            {cat:"Trust", text:"The truth about {t} nobody wants to admit"},
+            {cat:"Trust", text:"I failed at {b_ing} 10 times. Here's what I learned."},
+            {cat:"Trust", text:"How {a} like me finally {b_ed}"},
+            {cat:"Trust", text:"The before and after of {b_ing} with {t}"},
+            {cat:"Trust", text:"Why I'm obsessed with {b_ing} now"},
+            {cat:"Trust", text:"My complete story of {b_ing} success"},
+            {cat:"Trust", text:"The uncomfortable truth about {p_ing}"},
+            {cat:"Trust", text:"How I proved everyone wrong by {b_ing}"},
+            {cat:"Trust", text:"What 5 years of {b_ing} taught me"},
+            {cat:"Trust", text:"The vulnerable truth about my {p_ing} struggle"},
+            {cat:"Trust", text:"Why I'm sharing my {t} secrets with {a}"},
+            {cat:"Trust", text:"The emotional cost of {p_ing} I didn't expect"},
+            {cat:"Trust", text:"How {b_ing} changed my entire life"},
+            {cat:"Trust", text:"The personal reason I committed to {b_ing}"},
+            {cat:"Trust", text:"My unfiltered experience with {t}"},
+            {cat:"Trust", text:"What happened when I stopped {p_ing} completely"},
+            {cat:"Trust", text:"The reality check about {b_ing} I needed"},
+            {cat:"Trust", text:"How I went from skeptic to believer in {t}"},
+            {cat:"Trust", text:"The {b_ing} breakthrough that changed everything"},
+            {cat:"Trust", text:"Why I'm never going back to {p_ing}"},
+            {cat:"Trust", text:"The powerful shift from {p_ing} to {b_ing}"},
+            {cat:"Trust", text:"My honest confession about {t}"},
+
+            // LIST (30)
+            {cat:"List", text:"5 tools for {b_ing} that prevent {p_ing}"},
+            {cat:"List", text:"3 reasons why {t} is the cure for {p_ing}"},
+            {cat:"List", text:"The 10 commandments of {b_ing} for {a}"},
+            {cat:"List", text:"7 mistakes {a} make when {b_ing}"},
+            {cat:"List", text:"10 signs you're {p_ing} instead of {b_ing}"},
+            {cat:"List", text:"5 {t} hacks every {a} should know"},
+            {cat:"List", text:"The 3 pillars of successful {b_ing}"},
+            {cat:"List", text:"8 ways to avoid {p_ing} forever"},
+            {cat:"List", text:"The top 5 myths about {t}"},
+            {cat:"List", text:"12 reasons why {a} fail at {b_ing}"},
+            {cat:"List", text:"6 proven tactics to {b_root} faster"},
+            {cat:"List", text:"The 4 stages of {b_ing} mastery"},
+            {cat:"List", text:"9 {t} trends {a} need to watch"},
+            {cat:"List", text:"5 warning signs you're about to {p_root}"},
+            {cat:"List", text:"The 7 habits of highly effective {a}"},
+            {cat:"List", text:"10 resources for {a} who want to {b_root}"},
+            {cat:"List", text:"3 simple rules for {b_ing} success"},
+            {cat:"List", text:"The 5 biggest barriers to {b_ing}"},
+            {cat:"List", text:"8 {t} strategies that actually work"},
+            {cat:"List", text:"6 things successful {a} never do"},
+            {cat:"List", text:"The 4 types of {a} and how they {b_root}"},
+            {cat:"List", text:"7 alternatives to {p_ing}"},
+            {cat:"List", text:"5 surprising benefits of {b_ing}"},
+            {cat:"List", text:"The 10 best {t} platforms for {a}"},
+            {cat:"List", text:"3 non-negotiables for {b_ing}"},
+            {cat:"List", text:"9 game-changing tips for {a}"},
+            {cat:"List", text:"The 6 levels of {b_ing} expertise"},
+            {cat:"List", text:"4 uncomfortable truths about {t}"},
+            {cat:"List", text:"8 questions to ask before {b_ing}"},
+            {cat:"List", text:"The 5 essential skills for {b_ing}"},
+
+            // STORY (20)
+            {cat:"Story", text:"The turning point in my {b_ing} journey"},
+            {cat:"Story", text:"When I discovered the power of {t}"},
+            {cat:"Story", text:"The moment I knew {p_ing} had to stop"},
+            {cat:"Story", text:"How one decision to {b_root} changed everything"},
+            {cat:"Story", text:"The wake-up call that made me quit {p_ing}"},
+            {cat:"Story", text:"My biggest {t} failure and what it taught me"},
+            {cat:"Story", text:"The night I decided to finally {b_root}"},
+            {cat:"Story", text:"When {b_ing} stopped being optional"},
+            {cat:"Story", text:"The conversation that changed my approach to {t}"},
+            {cat:"Story", text:"How rock bottom led to {b_ing}"},
+            {cat:"Story", text:"The mentor who taught me to {b_root}"},
+            {cat:"Story", text:"My embarrassing {p_ing} story"},
+            {cat:"Story", text:"The bet that forced me to {b_root}"},
+            {cat:"Story", text:"When I realized {t} was the answer"},
+            {cat:"Story", text:"The breakdown that became a breakthrough"},
+            {cat:"Story", text:"How losing everything taught me to {b_root}"},
+            {cat:"Story", text:"The stranger who showed me how to {b_root}"},
+            {cat:"Story", text:"My first attempt at {b_ing} (and what went wrong)"},
+            {cat:"Story", text:"The {t} experiment that changed my life"},
+            {cat:"Story", text:"When I stopped making excuses and started {b_ing}"},
+
+            // QUESTION (10)
+            {cat:"Question", text:"Are you still {p_ing}? Here's why you should stop."},
+            {cat:"Question", text:"What if {b_ing} is easier than you think?"},
+            {cat:"Question", text:"Why aren't more {a} {b_ing}?"},
+            {cat:"Question", text:"Is {t} worth it for {a}?"},
+            {cat:"Question", text:"What's stopping you from {b_ing}?"},
+            {cat:"Question", text:"Could {p_ing} be sabotaging your success?"},
+            {cat:"Question", text:"Ready to stop {p_ing} and start {b_ing}?"},
+            {cat:"Question", text:"What would happen if you {b_ed} tomorrow?"},
+            {cat:"Question", text:"Is your {t} strategy actually {p_ing}?"},
+            {cat:"Question", text:"What if everything you know about {b_ing} is wrong?"}
+        ];
+
+        // --- STORAGE ---
+        function saveToStorage() {
+            localStorage.setItem('hookgym_topic', document.getElementById('input-topic').value);
+            localStorage.setItem('hookgym_audience', document.getElementById('input-audience').value);
+            localStorage.setItem('hookgym_benefit', document.getElementById('input-benefit').value);
+            localStorage.setItem('hookgym_pain', document.getElementById('input-pain').value);
+        }
+
+        function loadFromStorage() {
+            document.getElementById('input-topic').value = localStorage.getItem('hookgym_topic') || '';
+            document.getElementById('input-audience').value = localStorage.getItem('hookgym_audience') || '';
+            document.getElementById('input-benefit').value = localStorage.getItem('hookgym_benefit') || '';
+            document.getElementById('input-pain').value = localStorage.getItem('hookgym_pain') || '';
+        }
+
+        function clearInputs() {
+            document.getElementById('input-topic').value = '';
+            document.getElementById('input-audience').value = '';
+            document.getElementById('input-benefit').value = '';
+            document.getElementById('input-pain').value = '';
+            localStorage.removeItem('hookgym_topic');
+            localStorage.removeItem('hookgym_audience');
+            localStorage.removeItem('hookgym_benefit');
+            localStorage.removeItem('hookgym_pain');
+        }
+
+        window.addEventListener('DOMContentLoaded', loadFromStorage);
+
+        // --- FIXED CONJUGATION FUNCTION ---
+        function getVars(phrase, mode = 'auto') {
+            if (!phrase) return { root: '...', ing: '...', ed: '...' };
+            
+            const words = phrase.split(' ');
+            const first = words[0];
+            const rest = words.slice(1).join(' ');
+            
+            let result = { root: phrase, ing: phrase, ed: phrase };
+            
+            // If mode is 'noun', return everything as-is (no conjugation)
+            if (mode === 'noun') {
+                return result;
+            }
+            
+            // If mode is 'verb' OR 'auto', attempt conjugation
+            if (mode === 'verb' || mode === 'auto') {
+                // Check if compromise library is loaded
+                const doc = window.nlp ? window.nlp(first) : null;
+                const isVerb = doc && doc.verbs().length > 0;
+                
+                // Only conjugate if it's actually a verb (or if forced via 'verb' mode)
+                if (isVerb || mode === 'verb') {
+                    if (doc && doc.verbs().length > 0) {
+                        const conjugated = doc.verbs().conjugate()[0];
+                        if (conjugated) {
+                            result.root = (conjugated.Infinitive || first) + (rest ? ' ' + rest : '');
+                            result.ing = (conjugated.Gerund || first + 'ing') + (rest ? ' ' + rest : '');
+                            result.ed = (conjugated.PastTense || first + 'ed') + (rest ? ' ' + rest : '');
+                        }
+                    } else {
+                        // Fallback conjugation if NLP fails or word not found
+                        // Simple heuristic fallbacks
+                        let ing = first;
+                        let ed = first;
+                        if(first.endsWith('e')) {
+                             ing = first.slice(0, -1) + 'ing';
+                             ed = first + 'd';
+                        } else {
+                            ing = first + 'ing';
+                            ed = first + 'ed';
+                        }
+
+                        result.ing = ing + (rest ? ' ' + rest : '');
+                        result.ed = ed + (rest ? ' ' + rest : '');
+                    }
+                }
+            }
+            
+            return result;
+        }
+
+        // --- GENERATION ---
+        function spinTheWheel() {
+            saveToStorage();
+
+            const shuffled = [...templateVault]; 
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            const selectedHooks = shuffled.slice(0, 20);
+
+            const grid = document.getElementById('hooks-grid');
+            const resultsArea = document.getElementById('results-area');
+            grid.innerHTML = '';
+            resultsArea.classList.remove('hidden');
+
+            setTimeout(() => { resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+
+            selectedHooks.forEach((template, index) => {
+                const card = createCard(template, index);
+                grid.appendChild(card);
+                updateCardText(card, 'auto', 'auto'); 
+            });
+        }
+
+        function createCard(template, index) {
+            const card = document.createElement('div');
+            card.className = "hook-card glass-panel p-5 rounded-xl border border-white/5 animate-fadeIn";
+            card.style.animationDelay = `${index * 0.05}s`;
+            
+            card.dataset.template = JSON.stringify(template);
+            card.dataset.benMode = 'auto';
+            card.dataset.painMode = 'auto';
+
+            let tagColor = "text-gray-400 bg-white/5 border border-white/10";
+            if(template.cat === 'Contrarian') tagColor = "text-red-400 bg-red-400/10 border border-red-400/20";
+            if(template.cat === 'How-To') tagColor = "text-green-400 bg-green-400/10 border border-green-400/20";
+            if(template.cat === 'Urgency') tagColor = "text-calico-yellow bg-yellow-400/10 border border-yellow-400/20";
+            if(template.cat === 'Trust') tagColor = "text-calico-accent bg-cyan-400/10 border border-cyan-400/20";
+            if(template.cat === 'List') tagColor = "text-purple-400 bg-purple-400/10 border border-purple-400/20";
+            if(template.cat === 'Story') tagColor = "text-orange-400 bg-orange-400/10 border border-orange-400/20";
+            if(template.cat === 'Question') tagColor = "text-pink-400 bg-pink-400/10 border border-pink-400/20";
+
+            card.innerHTML = `
+                <div class="flex justify-between items-center mb-3">
+                    <span class="hook-category text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded ${tagColor}">${template.cat}</span>
+                    <button class="text-white/20 hover:text-white transition-colors" onclick="copySingleCard(this)" title="Copy Text">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                
+                <p class="text-md md:text-lg leading-snug text-gray-200 font-medium font-sans mb-4 hook-text select-text">
+                    Loading...
+                </p>
+
+                <!-- Logic Console -->
+                <div class="logic-console">
+                    <div class="logic-group">
+                        <span class="logic-label text-calico-accent">Act</span>
+                        <button class="logic-btn active action" onclick="toggleCardMode(this, 'ben', 'auto')">Auto</button>
+                        <button class="logic-btn" onclick="toggleCardMode(this, 'ben', 'verb')">Verb</button>
+                        <button class="logic-btn" onclick="toggleCardMode(this, 'ben', 'noun')">Noun</button>
+                    </div>
+                    <div class="logic-group">
+                        <span class="logic-label text-calico-danger">Pain</span>
+                        <button class="logic-btn active action" onclick="toggleCardMode(this, 'pain', 'auto')">Auto</button>
+                        <button class="logic-btn" onclick="toggleCardMode(this, 'pain', 'verb')">Verb</button>
+                        <button class="logic-btn" onclick="toggleCardMode(this, 'pain', 'noun')">Noun</button>
+                    </div>
+                </div>
+
+                <div class="copied-overlay">COPIED!</div>
+            `;
+            return card;
+        }
+
+        function toggleCardMode(btn, type, mode) {
+            const card = btn.closest('.hook-card');
+            
+            // UI Update
+            const group = btn.parentElement;
+            Array.from(group.children).forEach(b => {
+                if(b.tagName === 'BUTTON') {
+                    b.className = 'logic-btn'; 
+                    if(b === btn) {
+                        if(mode === 'auto') b.className += ' active action'; 
+                        if(mode === 'verb' && type === 'ben') b.className += ' active action';
+                        if(mode === 'noun' && type === 'ben') b.className += ' active noun';
+                        if(mode === 'verb' && type === 'pain') b.className += ' active pain';
+                        if(mode === 'noun' && type === 'pain') b.className += ' active noun';
+                    }
+                }
+            });
+
+            if(type === 'ben') card.dataset.benMode = mode;
+            if(type === 'pain') card.dataset.painMode = mode;
+
+            updateCardText(card, card.dataset.benMode, card.dataset.painMode);
+        }
+
+        function updateCardText(card, benMode, painMode) {
+            const template = JSON.parse(card.dataset.template);
+            
+            // LIVE READ from Inputs
+            const liveTopic = document.getElementById('input-topic').value.trim() || "Marketing";
+            const liveAudience = document.getElementById('input-audience').value.trim() || "Founders";
+            const livePain = document.getElementById('input-pain').value.trim() || "Waste Money";
+            const liveBen = document.getElementById('input-benefit').value.trim() || "Save Time";
+
+            const benVars = getVars(liveBen, benMode);
+            const painVars = getVars(livePain, painMode);
+
+            let displayHtml = template.text
+                .replace(/{t}/g, `<span class="highlight">${liveTopic}</span>`)
+                .replace(/{a}/g, `<span class="highlight">${liveAudience}</span>`)
+                .replace(/{p_root}/g, `<span class="highlight text-calico-danger">${painVars.root}</span>`)
+                .replace(/{p_ing}/g, `<span class="highlight text-calico-danger">${painVars.ing}</span>`)
+                .replace(/{p_ed}/g, `<span class="highlight text-calico-danger">${painVars.ed}</span>`)
+                .replace(/{b_root}/g, `<span class="highlight text-calico-accent">${benVars.root}</span>`)
+                .replace(/{b_ing}/g, `<span class="highlight text-purple-400">${benVars.ing}</span>`)
+                .replace(/{b_ed}/g, `<span class="highlight text-green-400">${benVars.ed}</span>`);
+
+            card.querySelector('.hook-text').innerHTML = displayHtml;
+        }
+
+        function copySingleCard(btn) {
+            const card = btn.closest('.hook-card');
+            const text = card.querySelector('.hook-text').innerText;
+            navigator.clipboard.writeText(text);
+            
+            card.classList.add('copied');
+            setTimeout(() => card.classList.remove('copied'), 1500);
+            showToast("Hook Copied!");
+        }
+
+        function copyAllHooks() {
+            const cards = document.querySelectorAll('.hook-card');
+            if(cards.length === 0) return;
+
+            let clipboardText = "";
+            let count = 1;
+            
+            cards.forEach(card => {
+                const text = card.querySelector('.hook-text').innerText;
+                const cat = card.querySelector('.hook-category').innerText;
+                clipboardText += `${count}. [${cat}] ${text}\n`;
+                count++;
+            });
+
+            navigator.clipboard.writeText(clipboardText);
+            showToast(`Copied List of ${cards.length}!`);
+        }
+
+        function exportToCSV() {
+            const hooks = [];
+            // Header
+            hooks.push(["Category", "Hook"]);
+
+            const cards = document.querySelectorAll('.hook-card');
+            if(cards.length === 0) return;
+
+            cards.forEach(card => {
+                const category = card.querySelector('.hook-category').innerText;
+                const text = card.querySelector('.hook-text').innerText;
+                // Escape quotes for CSV format
+                hooks.push([category, `"${text.replace(/"/g, '""')}"`]);
+            });
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            hooks.forEach(row => {
+                csvContent += row.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Velocity_Hooks_Export.csv");
+            document.body.appendChild(link); // Required for FF
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast("CSV Downloaded!");
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+
+

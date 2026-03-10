@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CaliCo Workspace</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0
+0 100 100'><text y='.9em' font-size='90'>🪚</text></svg>">
+<link
+href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Op
+en+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root {
+--purple: #4B0082;
+--dark-purple: #2E0057;
+--deepest: #0F0518;
+--card: #1A0B2E;
+--yellow: #FFD700;
+--accent: #00D4FF;
+--green: #00FF88;
+--red: #FF4466;
+--text: #E8E0F0;
+--muted: #7A6A8A;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: 'Open Sans', sans-serif;
+background-color: var(--deepest);
+background-image: radial-gradient(ellipse at top, #2E0057 0%, #0F0518 70%);
+background-attachment: fixed;
+color: var(--text);
+min-height: 100vh;
+overflow-x: hidden;
+}
+h1, h2, h3, h4, .heading { font-family: 'Montserrat', sans-serif; }
+.glass-panel {
+background: rgba(255,255,255,0.03);
+
+backdrop-filter: blur(12px);
+border: 1px solid rgba(255,255,255,0.07);
+box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+.glass-input {
+background: rgba(0,0,0,0.35);
+border: 1px solid rgba(255,255,255,0.1);
+color: white;
+font-family: 'Open Sans', sans-serif;
+font-size: 14px;
+padding: 12px 16px;
+border-radius: 12px;
+width: 100%;
+outline: none;
+transition: all 0.2s;
+resize: vertical;
+}
+.glass-input:focus {
+border-color: var(--yellow);
+box-shadow: 0 0 12px rgba(255,215,0,0.12);
+}
+textarea.glass-input { min-height: 64px; }
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0F0518; }
+::-webkit-scrollbar-thumb { background: #2E0057; border-radius: 4px; }
+/* LAYOUT */
+.workspace { max-width: 1200px; margin: 0 auto; padding: 32px 20px 80px; }
+/* HEADER */
+.site-header {
+text-align: center;
+padding: 56px 0 40px;
+border-bottom: 1px solid rgba(255,215,0,0.1);
+margin-bottom: 40px;
+animation: fadeIn 0.6s ease both;
+}
+.brand-badge {
+
+display: inline-block;
+font-size: 10px;
+font-family: 'Montserrat', sans-serif;
+font-weight: 800;
+letter-spacing: 0.4em;
+text-transform: uppercase;
+color: var(--accent);
+border: 1px solid rgba(0,212,255,0.3);
+padding: 6px 18px;
+border-radius: 40px;
+margin-bottom: 20px;
+}
+.site-title {
+font-family: 'Montserrat', sans-serif;
+font-weight: 900;
+font-size: clamp(36px, 6vw, 68px);
+background: linear-gradient(135deg, var(--yellow) 0%, #fff 50%, var(--accent) 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+line-height: 1.05;
+letter-spacing: -0.02em;
+}
+.site-sub {
+font-size: 12px;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(--muted);
+margin-top: 12px;
+}
+.live-time {
+font-family: 'Montserrat', sans-serif;
+font-size: 11px;
+color: var(--yellow);
+letter-spacing: 0.2em;
+margin-top: 16px;
+opacity: 0.7;
+}
+/* PROGRESS STRIP */
+.progress-strip {
+
+display: flex;
+gap: 6px;
+margin-bottom: 36px;
+animation: fadeIn 0.6s 0.1s ease both;
+}
+.prog-seg {
+flex: 1;
+height: 4px;
+border-radius: 2px;
+background: rgba(255,255,255,0.06);
+transition: background 0.4s;
+cursor: pointer;
+position: relative;
+}
+.prog-seg::after {
+content: attr(data-label);
+position: absolute;
+top: 10px;
+left: 50%;
+transform: translateX(-50%);
+font-size: 8px;
+font-family: 'Montserrat', sans-serif;
+font-weight: 800;
+letter-spacing: 0.2em;
+color: var(--muted);
+white-space: nowrap;
+opacity: 0;
+transition: opacity 0.2s;
+}
+.prog-seg:hover::after { opacity: 1; }
+.prog-seg.active { background: var(--yellow); }
+.prog-seg.done { background: var(--green); }
+/* BLOCKS */
+.block {
+border-radius: 20px;
+overflow: hidden;
+margin-bottom: 20px;
+animation: fadeIn 0.5s ease both;
+}
+
+.block:nth-child(1) { animation-delay: 0.05s; }
+.block:nth-child(2) { animation-delay: 0.1s; }
+.block:nth-child(3) { animation-delay: 0.15s; }
+.block:nth-child(4) { animation-delay: 0.2s; }
+.block:nth-child(5) { animation-delay: 0.25s; }
+.block-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 18px 24px;
+cursor: pointer;
+user-select: none;
+transition: opacity 0.2s;
+border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.block-header:hover { opacity: 0.88; }
+.block-header-left { display: flex; align-items: center; gap: 14px; }
+.block-num {
+font-family: 'Montserrat', sans-serif;
+font-weight: 900;
+font-size: 10px;
+letter-spacing: 0.3em;
+opacity: 0.45;
+}
+.block-title {
+font-family: 'Montserrat', sans-serif;
+font-weight: 800;
+font-size: 15px;
+color: white;
+}
+.block-pill {
+font-size: 10px;
+font-family: 'Montserrat', sans-serif;
+font-weight: 700;
+letter-spacing: 0.15em;
+padding: 4px 12px;
+border-radius: 20px;
+opacity: 0.7;
+
+}
+.block-right { display: flex; align-items: center; gap: 12px; }
+.block-check {
+width: 30px;
+height: 30px;
+border-radius: 50%;
+border: 2px solid rgba(255,255,255,0.15);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 13px;
+cursor: pointer;
+transition: all 0.25s;
+flex-shrink: 0;
+}
+.block-check.done { background: var(--green); border-color: var(--green); color: #000; }
+.block-body {
+padding: 28px;
+background: rgba(0,0,0,0.2);
+display: none;
+}
+.block-body.open { display: block; }
+/* BLOCK THEMES */
+.b1 .block-header { background: rgba(75,0,130,0.6); }
+.b1 { border-left: 3px solid var(--accent); }
+.b1 .block-num, .b1 .block-pill { color: var(--accent); }
+.b1 .block-pill { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); }
+.b2 .block-header { background: rgba(139,105,20,0.4); }
+.b2 { border-left: 3px solid var(--yellow); }
+.b2 .block-num, .b2 .block-pill { color: var(--yellow); }
+.b2 .block-pill { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.2); }
+.b3 .block-header { background: rgba(0,100,180,0.4); }
+.b3 { border-left: 3px solid #5DADE2; }
+.b3 .block-num, .b3 .block-pill { color: #5DADE2; }
+.b3 .block-pill { background: rgba(93,173,226,0.08); border: 1px solid rgba(93,173,226,0.2); }
+
+.b4 .block-header { background: rgba(0,100,50,0.4); }
+.b4 { border-left: 3px solid var(--green); }
+.b4 .block-num, .b4 .block-pill { color: var(--green); }
+.b4 .block-pill { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2); }
+.b5 .block-header { background: rgba(150,20,50,0.4); }
+.b5 { border-left: 3px solid var(--red); }
+.b5 .block-num, .b5 .block-pill { color: var(--red); }
+.b5 .block-pill { background: rgba(255,68,102,0.08); border: 1px solid rgba(255,68,102,0.2); }
+/* FORM */
+.field { margin-bottom: 20px; }
+.field-label {
+display: block;
+font-family: 'Montserrat', sans-serif;
+font-weight: 800;
+font-size: 9px;
+letter-spacing: 0.35em;
+text-transform: uppercase;
+color: var(--muted);
+margin-bottom: 8px;
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+/* OUTREACH */
+.outreach-header {
+display: grid;
+grid-template-columns: 32px 1fr 1fr 38px;
+gap: 8px;
+padding: 0 12px 8px;
+font-family: 'Montserrat', sans-serif;
+font-size: 8px;
+font-weight: 800;
+letter-spacing: 0.3em;
+color: var(--muted);
+text-transform: uppercase;
+}
+.outreach-row {
+display: grid;
+grid-template-columns: 32px 1fr 1fr 38px;
+gap: 8px;
+
+align-items: center;
+padding: 8px 12px;
+border-radius: 10px;
+margin-bottom: 5px;
+background: rgba(255,255,255,0.02);
+border: 1px solid rgba(255,255,255,0.04);
+transition: background 0.2s;
+}
+.outreach-row:hover { background: rgba(255,255,255,0.04); }
+.outreach-row.big-name {
+background: rgba(255,215,0,0.06);
+border-color: rgba(255,215,0,0.15);
+}
+.outreach-row.sent { opacity: 0.45; }
+.out-num {
+font-family: 'Montserrat', sans-serif;
+font-size: 10px;
+font-weight: 800;
+color: var(--muted);
+text-align: center;
+}
+.outreach-row.big-name .out-num { color: var(--yellow); }
+.out-input {
+background: rgba(0,0,0,0.3);
+border: 1px solid rgba(255,255,255,0.06);
+color: white;
+font-family: 'Open Sans', sans-serif;
+font-size: 12px;
+padding: 6px 10px;
+border-radius: 8px;
+outline: none;
+width: 100%;
+transition: border-color 0.2s;
+}
+.out-input:focus { border-color: var(--yellow); }
+.send-btn {
+
+width: 32px;
+height: 32px;
+border-radius: 50%;
+border: 1px solid rgba(255,255,255,0.1);
+background: transparent;
+color: var(--muted);
+cursor: pointer;
+font-size: 13px;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.send-btn:hover { border-color: var(--green); color: var(--green); }
+.send-btn.sent { background: var(--green); border-color: var(--green); color: #000; }
+/* COUNTERS */
+.counter-bar {
+display: flex;
+gap: 20px;
+align-items: center;
+padding: 16px 20px;
+border-radius: 14px;
+background: rgba(255,215,0,0.05);
+border: 1px solid rgba(255,215,0,0.1);
+margin-bottom: 20px;
+}
+.counter-val {
+font-family: 'Montserrat', sans-serif;
+font-weight: 900;
+font-size: 30px;
+color: var(--yellow);
+line-height: 1;
+}
+.counter-lbl {
+font-size: 10px;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(--muted);
+margin-top: 4px;
+}
+
+.counter-div { width: 1px; height: 40px; background: rgba(255,255,255,0.08); }
+.prog-bar-wrap {
+flex: 1;
+background: rgba(255,255,255,0.05);
+height: 6px;
+border-radius: 3px;
+overflow: hidden;
+}
+.prog-bar-fill {
+height: 100%;
+background: linear-gradient(90deg, var(--yellow), var(--accent));
+border-radius: 3px;
+transition: width 0.4s ease;
+width: 0%;
+}
+/* PIPELINE */
+.stage-grid {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 12px;
+margin-bottom: 24px;
+}
+.stage-card {
+padding: 18px 12px;
+border-radius: 14px;
+text-align: center;
+}
+.stage-card-1 { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2); }
+.stage-card-2 { background: rgba(93,173,226,0.08); border: 1px solid rgba(93,173,226,0.2); }
+.stage-card-3 { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.2); }
+.stage-card-4 { background: rgba(255,68,102,0.08); border: 1px solid rgba(255,68,102,0.2); }
+.stage-num {
+font-family: 'Montserrat', sans-serif;
+font-weight: 900;
+font-size: 36px;
+line-height: 1;
+outline: none;
+
+}
+.stage-card-1 .stage-num { color: var(--green); }
+.stage-card-2 .stage-num { color: #5DADE2; }
+.stage-card-3 .stage-num { color: var(--yellow); }
+.stage-card-4 .stage-num { color: var(--red); }
+.stage-lbl {
+font-family: 'Montserrat', sans-serif;
+font-size: 9px;
+font-weight: 700;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(--muted);
+margin-top: 6px;
+}
+/* CONTENT FORMAT PILLS */
+.format-pills {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin-top: 4px;
+}
+.format-pill input { display: none; }
+.format-pill label {
+display: inline-block;
+padding: 6px 14px;
+border-radius: 20px;
+font-family: 'Montserrat', sans-serif;
+font-size: 9px;
+font-weight: 800;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+cursor: pointer;
+border: 1px solid rgba(255,255,255,0.1);
+color: var(--muted);
+transition: all 0.2s;
+}
+.format-pill input:checked + label {
+background: var(--yellow);
+
+border-color: var(--yellow);
+color: #000;
+}
+/* STREAK */
+.streak-grid {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+margin-bottom: 20px;
+}
+.streak-day {
+width: 44px;
+height: 44px;
+border-radius: 10px;
+border: 1px solid rgba(255,255,255,0.08);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s;
+gap: 2px;
+}
+.streak-day .s-icon { font-size: 14px; color: var(--muted); }
+.streak-day .s-lbl { font-family: 'Montserrat', sans-serif; font-size: 8px; font-weight: 700;
+letter-spacing: 0.1em; color: var(--muted); }
+.streak-day.done { background: rgba(0,255,136,0.12); border-color: rgba(0,255,136,0.3); }
+.streak-day.done .s-icon { color: var(--green); }
+.streak-day.done .s-lbl { color: var(--green); }
+/* MANTRA */
+.mantra-strip {
+text-align: center;
+padding: 36px 20px;
+margin: 36px 0;
+border-top: 1px solid rgba(255,215,0,0.08);
+border-bottom: 1px solid rgba(255,215,0,0.08);
+}
+.mantra-text {
+font-family: 'Montserrat', sans-serif;
+
+font-weight: 800;
+font-size: clamp(14px, 2.5vw, 22px);
+background: linear-gradient(135deg, var(--yellow), var(--accent));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+letter-spacing: 0.05em;
+opacity: 0.75;
+}
+/* RULE BOX */
+.rule-box {
+background: rgba(255,215,0,0.04);
+border: 1px solid rgba(255,215,0,0.15);
+border-radius: 12px;
+padding: 14px 18px;
+margin-top: 16px;
+}
+.rule-label {
+font-family: 'Montserrat', sans-serif;
+font-size: 8px;
+font-weight: 800;
+letter-spacing: 0.35em;
+color: var(--yellow);
+text-transform: uppercase;
+margin-bottom: 6px;
+opacity: 0.8;
+}
+.rule-text {
+font-size: 13px;
+font-style: italic;
+color: rgba(232,224,240,0.55);
+line-height: 1.5;
+}
+/* BUTTONS */
+.btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; }
+.btn {
+padding: 12px 28px;
+border-radius: 12px;
+font-family: 'Montserrat', sans-serif;
+
+font-weight: 800;
+font-size: 11px;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+cursor: pointer;
+transition: all 0.2s;
+border: none;
+}
+.btn-primary {
+background: var(--yellow);
+color: #000;
+}
+.btn-primary:hover {
+background: #fff;
+transform: scale(1.02);
+box-shadow: 0 0 20px rgba(255,215,0,0.3);
+}
+.btn-export {
+background: transparent;
+color: var(--green);
+border: 1px solid rgba(0,255,136,0.3);
+}
+.btn-export:hover {
+background: rgba(0,255,136,0.1);
+border-color: var(--green);
+transform: scale(1.02);
+}
+.btn-ghost {
+background: transparent;
+color: var(--muted);
+border: 1px solid rgba(255,255,255,0.1);
+}
+.btn-ghost:hover { border-color: var(--red); color: var(--red); }
+/* TOAST */
+.toast {
+position: fixed;
+bottom: 28px;
+
+right: 28px;
+background: var(--green);
+color: #000;
+padding: 12px 22px;
+border-radius: 12px;
+font-family: 'Montserrat', sans-serif;
+font-weight: 800;
+font-size: 11px;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+transform: translateY(70px);
+opacity: 0;
+transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+z-index: 999;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+/* FOOTER */
+footer {
+text-align: center;
+padding: 28px;
+font-family: 'Montserrat', sans-serif;
+font-size: 9px;
+letter-spacing: 0.35em;
+text-transform: uppercase;
+color: var(--muted);
+border-top: 1px solid rgba(255,255,255,0.04);
+opacity: 0.6;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(12px); }
+to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 640px) {
+.grid-2 { grid-template-columns: 1fr; }
+.stage-grid { grid-template-columns: repeat(2, 1fr); }
+.outreach-header, .outreach-row { grid-template-columns: 28px 1fr 38px; }
+.outreach-row .out-input:nth-child(3) { display: none; }
+.outreach-header span:nth-child(3) { display: none; }
+}
+</style>
+
+</head>
+<body>
+<div class="workspace">
+<!-- HEADER -->
+<div class="site-header">
+<div class="brand-badge">🪚 AI Driven · Artist Approved</div>
+<div class="site-title">CaliCo Workspace</div>
+<div class="site-sub">Daily Command Center · Secure Session</div>
+<div class="live-time" id="liveTime"></div>
+</div>
+<!-- PROGRESS STRIP -->
+<div class="progress-strip">
+<div class="prog-seg" data-label="OPENER" id="ps1"></div>
+<div class="prog-seg" data-label="OUTREACH" id="ps2"></div>
+<div class="prog-seg" data-label="PIPELINE" id="ps3"></div>
+<div class="prog-seg" data-label="CONTENT" id="ps4"></div>
+<div class="prog-seg" data-label="CLOSER" id="ps5"></div>
+</div>
+<!-- BLOCK 1: MORNING OPENER -->
+<div class="glass-panel block b1" id="block-1">
+<div class="block-header" onclick="toggleBlock(1)">
+<div class="block-header-left">
+<span class="block-num">01</span>
+<span class="block-title">Morning Opener</span>
+<span class="block-pill">15 MIN</span>
+</div>
+<div class="block-right">
+<div class="block-check" id="check-1" onclick="completeBlock(event,1)">○</div>
+</div>
+</div>
+<div class="block-body open" id="body-1">
+<div class="grid-2" style="margin-bottom:20px">
+<div class="field">
+<label class="field-label">Today's Date</label>
+<input type="date" class="glass-input" id="todayDate">
+</div>
+<div class="field">
+<label class="field-label">Industry Target</label>
+<input type="text" class="glass-input" id="industryTarget" placeholder="e.g. Dental
+Practices">
+
+</div>
+</div>
+<div class="field">
+<label class="field-label">One non-negotiable I will accomplish today</label>
+<textarea class="glass-input" id="intention1" placeholder="Be specific. Vague intentions
+don't ship."></textarea>
+</div>
+<div class="field">
+<label class="field-label">One fear I'm choosing to act through today</label>
+<textarea class="glass-input" id="intention2" placeholder="Name it. Named fears
+shrink."></textarea>
+</div>
+<div class="field">
+<label class="field-label">One person I'm showing up for today</label>
+<textarea class="glass-input" id="intention3" placeholder="Even if it's just you."
+style="min-height:50px"></textarea>
+</div>
+</div>
+</div>
+<!-- BLOCK 2: OUTREACH -->
+<div class="glass-panel block b2" id="block-2">
+<div class="block-header" onclick="toggleBlock(2)">
+<div class="block-header-left">
+<span class="block-num">02</span>
+<span class="block-title">Outreach Block</span>
+<span class="block-pill">30 MIN</span>
+</div>
+<div class="block-right">
+<div class="block-check" id="check-2" onclick="completeBlock(event,2)">○</div>
+</div>
+</div>
+<div class="block-body" id="body-2">
+<div class="counter-bar">
+<div>
+<div class="counter-val" id="sentCount">0</div>
+<div class="counter-lbl">of 20 sent</div>
+</div>
+<div class="counter-div"></div>
+<div>
+<div class="counter-val" id="replyCount" style="cursor:pointer" onclick="editReplies()"
+title="Click to edit">0</div>
+<div class="counter-lbl">replies logged</div>
+</div>
+
+<div class="counter-div"></div>
+<div style="flex:1">
+<div class="prog-bar-wrap"><div class="prog-bar-fill" id="progFill"></div></div>
+<div class="counter-lbl" style="margin-top:6px">daily progress</div>
+</div>
+</div>
+<div class="outreach-header">
+<span>#</span><span>Company</span><span>Email</span><span>✓</span>
+</div>
+<div id="outreachGrid"></div>
+<div class="rule-box">
+<div class="rule-label">The Rule</div>
+<div class="rule-text">No links in the opener. Ever. You are a researcher — not a
+salesperson. Not yet.</div>
+</div>
+</div>
+</div>
+<!-- BLOCK 3: PIPELINE -->
+<div class="glass-panel block b3" id="block-3">
+<div class="block-header" onclick="toggleBlock(3)">
+<div class="block-header-left">
+<span class="block-num">03</span>
+<span class="block-title">Pipeline Check</span>
+<span class="block-pill">15 MIN</span>
+</div>
+<div class="block-right">
+<div class="block-check" id="check-3" onclick="completeBlock(event,3)">○</div>
+</div>
+</div>
+<div class="block-body" id="body-3">
+<div class="stage-grid">
+<div class="stage-card stage-card-1">
+<div class="stage-num" id="s1" contenteditable="true" onblur="saveData()">0</div>
+<div class="stage-lbl">Curious</div>
+</div>
+<div class="stage-card stage-card-2">
+<div class="stage-num" id="s2" contenteditable="true" onblur="saveData()">0</div>
+<div class="stage-lbl">Skeptical</div>
+</div>
+<div class="stage-card stage-card-3">
+<div class="stage-num" id="s3" contenteditable="true" onblur="saveData()">0</div>
+
+<div class="stage-lbl">Warm Lead</div>
+</div>
+<div class="stage-card stage-card-4">
+<div class="stage-num" id="s4" contenteditable="true" onblur="saveData()">0</div>
+<div class="stage-lbl">Gone Cold</div>
+</div>
+</div>
+<div class="field">
+<label class="field-label">Replies in last 48hrs — name them</label>
+<textarea class="glass-input" id="recentReplies" placeholder="Who replied? What did they
+say?"></textarea>
+</div>
+<div class="field">
+<label class="field-label">Leads stuck in Stage 1–2 over 5 days — move or close</label>
+<textarea class="glass-input" id="stuckLeads" placeholder="Name them. Decide now:
+advance or release." style="min-height:50px"></textarea>
+</div>
+<div class="field">
+<label class="field-label">Big Name Day 7 or Day 21 follow-ups due?</label>
+<textarea class="glass-input" id="bigFollowup" placeholder="Who and which template?"
+style="min-height:50px"></textarea>
+</div>
+</div>
+</div>
+<!-- BLOCK 4: CONTENT -->
+<div class="glass-panel block b4" id="block-4">
+<div class="block-header" onclick="toggleBlock(4)">
+<div class="block-header-left">
+<span class="block-num">04</span>
+<span class="block-title">Content & Visibility</span>
+<span class="block-pill">20 MIN</span>
+</div>
+<div class="block-right">
+<div class="block-check" id="check-4" onclick="completeBlock(event,4)">○</div>
+</div>
+</div>
+<div class="block-body" id="body-4">
+<div class="field">
+<label class="field-label">Today's Format</label>
+<div class="format-pills">
+<div class="format-pill"><input type="radio" name="fmt" id="fmt1" value="pain"><label
+for="fmt1">Pain Post</label></div>
+
+<div class="format-pill"><input type="radio" name="fmt" id="fmt2" value="obs"><label
+for="fmt2">Observation</label></div>
+<div class="format-pill"><input type="radio" name="fmt" id="fmt3" value="bts"><label
+for="fmt3">Behind the Scenes</label></div>
+<div class="format-pill"><input type="radio" name="fmt" id="fmt4" value="result"><label
+for="fmt4">The Result</label></div>
+<div class="format-pill"><input type="radio" name="fmt" id="fmt5" value="invite"><label
+for="fmt5">Direct Invite</label></div>
+</div>
+</div>
+<div class="field">
+<label class="field-label">Topic Angle</label>
+<input type="text" class="glass-input" id="contentTopic" placeholder="What are you writing
+about today?">
+</div>
+<div class="field">
+<label class="field-label">Hook Line — write your first sentence only</label>
+<textarea class="glass-input" id="hookLine" placeholder="This is the only line that decides
+if anyone reads the rest."></textarea>
+</div>
+<div class="field">
+<label class="field-label">Full Draft</label>
+<textarea class="glass-input" id="fullDraft" style="min-height:120px" placeholder="Write it
+here before you post. Read it twice."></textarea>
+</div>
+<div style="display:flex;gap:20px;align-items:center;margin-top:8px;flex-wrap:wrap">
+<label
+style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:rgba(232,224,2
+40,0.6)">
+<input type="checkbox" id="postedCheck" onchange="saveData()"> Posted live today
+</label>
+<label
+style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:rgba(232,224,2
+40,0.6)">
+<input type="checkbox" id="draftCheck" onchange="saveData()"> Saved as draft
+</label>
+</div>
+</div>
+</div>
+<!-- BLOCK 5: EVENING CLOSER -->
+<div class="glass-panel block b5" id="block-5">
+<div class="block-header" onclick="toggleBlock(5)">
+<div class="block-header-left">
+
+<span class="block-num">05</span>
+<span class="block-title">Evening Closer</span>
+<span class="block-pill">10 MIN</span>
+</div>
+<div class="block-right">
+<div class="block-check" id="check-5" onclick="completeBlock(event,5)">○</div>
+</div>
+</div>
+<div class="block-body" id="body-5">
+<div class="field">
+<label class="field-label">This Week's Outreach Streak</label>
+<div class="streak-grid" id="streakGrid"></div>
+</div>
+<div class="field">
+<label class="field-label">Win of the day</label>
+<textarea class="glass-input" id="winToday" placeholder="Something that moved — even
+slightly. Even finishing this routine."></textarea>
+</div>
+<div class="field">
+<label class="field-label">What I learned today</label>
+<textarea class="glass-input" id="learnedToday" placeholder="One sentence. One thing
+you know now that you didn't this morning." style="min-height:50px"></textarea>
+</div>
+<div class="field">
+<label class="field-label">What I'm leaving here — not carrying into tomorrow</label>
+<textarea class="glass-input" id="releaseToday" placeholder="Name it and put it down."
+style="min-height:50px"></textarea>
+</div>
+<div class="field">
+<label class="field-label">Tomorrow's #1 task</label>
+<textarea class="glass-input" id="tomorrowTask" placeholder="One thing. Not a list."
+style="min-height:50px"></textarea>
+</div>
+</div>
+</div>
+<div class="mantra-strip">
+<div class="mantra-text">AI DRIVEN · ARTIST APPROVED · THE BUSINESS IS REAL ·
+YOU ARE READY</div>
+</div>
+<div class="btn-row">
+<button class="btn btn-ghost" onclick="clearDay()">Clear Day</button>
+
+<button class="btn btn-export" onclick="exportXLS()"><i class="fas fa-file-excel"
+style="margin-right:6px"></i>Export XLS</button>
+<button class="btn btn-primary" onclick="saveData()">Save Session</button>
+</div>
+</div>
+<footer>Built with 🪚 by CaliCo Branding Solutions · Workspace v1.0</footer>
+<div class="toast" id="toast">SESSION SAVED ✓</div>
+<script>
+const DAYS = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+const today = new Date();
+const todayKey = today.toISOString().split('T')[0];
+// TIME
+function updateTime() {
+const opts = { weekday:'long', month:'long', day:'numeric', year:'numeric' };
+document.getElementById('liveTime').textContent =
+new Date().toLocaleDateString('en-US', opts).toUpperCase();
+}
+updateTime();
+// OUTREACH GRID
+function buildGrid() {
+const grid = document.getElementById('outreachGrid');
+grid.innerHTML = '';
+const saved = JSON.parse(localStorage.getItem('out_' + todayKey) || '[]');
+for (let i = 0; i < 20; i++) {
+const d = saved[i] || { c:'', e:'', sent:false };
+const big = i === 19;
+const row = document.createElement('div');
+row.className = 'outreach-row' + (big ? ' big-name' : '') + (d.sent ? ' sent' : '');
+row.innerHTML = `
+<div class="out-num">${big ? '★' : i+1}</div>
+<input class="out-input" type="text" placeholder="${big ? 'Big Name' : 'Company'}"
+value="${d.c}" onchange="saveGrid()">
+<input class="out-input" type="text" placeholder="email@..." value="${d.e}"
+onchange="saveGrid()">
+<button class="send-btn ${d.sent ? 'sent' : ''}" onclick="toggleSent(${i})">✓</button>
+`;
+grid.appendChild(row);
+}
+updateCount();
+
+}
+function toggleSent(i) {
+const saved = JSON.parse(localStorage.getItem('out_' + todayKey) || '[]');
+if (!saved[i]) saved[i] = { c:'', e:'', sent:false };
+const rows = document.querySelectorAll('.outreach-row');
+const ins = rows[i].querySelectorAll('input');
+saved[i].c = ins[0]?.value || '';
+saved[i].e = ins[1]?.value || '';
+saved[i].sent = !saved[i].sent;
+localStorage.setItem('out_' + todayKey, JSON.stringify(saved));
+buildGrid();
+}
+function saveGrid() {
+const rows = document.querySelectorAll('.outreach-row');
+const saved = JSON.parse(localStorage.getItem('out_' + todayKey) || '[]');
+rows.forEach((row, i) => {
+const ins = row.querySelectorAll('input');
+if (!saved[i]) saved[i] = { c:'', e:'', sent:false };
+saved[i].c = ins[0]?.value || '';
+saved[i].e = ins[1]?.value || '';
+});
+localStorage.setItem('out_' + todayKey, JSON.stringify(saved));
+updateCount();
+}
+function updateCount() {
+const saved = JSON.parse(localStorage.getItem('out_' + todayKey) || '[]');
+const n = saved.filter(r => r?.sent).length;
+document.getElementById('sentCount').textContent = n;
+document.getElementById('progFill').style.width = (n / 20 * 100) + '%';
+updateProgress();
+}
+// STREAK
+function buildStreak() {
+const g = document.getElementById('streakGrid');
+g.innerHTML = '';
+const ws = new Date(today);
+ws.setDate(today.getDate() - today.getDay());
+for (let i = 0; i < 7; i++) {
+const d = new Date(ws);
+d.setDate(ws.getDate() + i);
+
+const key = d.toISOString().split('T')[0];
+const sent = JSON.parse(localStorage.getItem('out_' + key) || '[]');
+const hasSent = sent.filter(r => r?.sent).length > 0;
+const el = document.createElement('div');
+el.className = 'streak-day' + (hasSent ? ' done' : '');
+el.innerHTML = `<span class="s-icon">${hasSent ? '✓' : '·'}</span><span
+class="s-lbl">${DAYS[i]}</span>`;
+g.appendChild(el);
+}
+}
+// BLOCKS
+function toggleBlock(n) {
+document.getElementById('body-' + n).classList.toggle('open');
+}
+function completeBlock(e, n) {
+e.stopPropagation();
+const c = document.getElementById('check-' + n);
+const done = c.classList.toggle('done');
+c.textContent = done ? '✓' : '○';
+const b = JSON.parse(localStorage.getItem('blocks_' + todayKey) || '{}');
+b[n] = done;
+localStorage.setItem('blocks_' + todayKey, JSON.stringify(b));
+updateProgress();
+saveData();
+}
+function updateProgress() {
+const b = JSON.parse(localStorage.getItem('blocks_' + todayKey) || '{}');
+for (let i = 1; i <= 5; i++) {
+const seg = document.getElementById('ps' + i);
+seg.classList.remove('active', 'done');
+if (b[i]) seg.classList.add('done');
+}
+for (let i = 1; i <= 5; i++) {
+if (!b[i]) { document.getElementById('ps' + i).classList.add('active'); break; }
+}
+}
+// SAVE / LOAD
+const TEXT_IDS = ['todayDate','industryTarget','intention1','intention2','intention3',
+'recentReplies','stuckLeads','bigFollowup','contentTopic','hookLine','fullDraft',
+'winToday','learnedToday','releaseToday','tomorrowTask'];
+
+const CE_IDS = ['s1','s2','s3','s4'];
+function saveData() {
+const data = {};
+TEXT_IDS.forEach(id => {
+const el = document.getElementById(id);
+if (el) data[id] = el.value || '';
+});
+CE_IDS.forEach(id => {
+const el = document.getElementById(id);
+if (el) data[id] = el.textContent || '0';
+});
+const fmt = document.querySelector('input[name="fmt"]:checked');
+data.fmt = fmt ? fmt.value : '';
+data.posted = document.getElementById('postedCheck').checked;
+data.draft = document.getElementById('draftCheck').checked;
+data.replies = document.getElementById('replyCount').textContent;
+localStorage.setItem('day_' + todayKey, JSON.stringify(data));
+saveGrid();
+showToast();
+}
+function loadData() {
+const data = JSON.parse(localStorage.getItem('day_' + todayKey) || '{}');
+TEXT_IDS.forEach(id => {
+const el = document.getElementById(id);
+if (el && data[id] !== undefined) el.value = data[id];
+});
+CE_IDS.forEach(id => {
+const el = document.getElementById(id);
+if (el && data[id]) el.textContent = data[id];
+});
+if (data.fmt) {
+const r = document.querySelector(`input[name="fmt"][value="${data.fmt}"]`);
+if (r) r.checked = true;
+}
+if (data.posted) document.getElementById('postedCheck').checked = true;
+if (data.draft) document.getElementById('draftCheck').checked = true;
+if (data.replies) document.getElementById('replyCount').textContent = data.replies;
+const dateEl = document.getElementById('todayDate');
+if (dateEl && !dateEl.value) dateEl.value = todayKey;
+
+const b = JSON.parse(localStorage.getItem('blocks_' + todayKey) || '{}');
+Object.keys(b).forEach(n => {
+if (b[n]) {
+const c = document.getElementById('check-' + n);
+if (c) { c.classList.add('done'); c.textContent = '✓'; }
+}
+});
+updateProgress();
+updateCount();
+}
+function clearDay() {
+if (!confirm('Clear today\'s session? This cannot be undone.')) return;
+['day_','out_','blocks_'].forEach(p => localStorage.removeItem(p + todayKey));
+location.reload();
+}
+function editReplies() {
+const el = document.getElementById('replyCount');
+const v = prompt('Update reply count:', el.textContent);
+if (v !== null && !isNaN(parseInt(v))) { el.textContent = parseInt(v); saveData(); }
+}
+function showToast() {
+const t = document.getElementById('toast');
+t.classList.add('show');
+setTimeout(() => t.classList.remove('show'), 2000);
+}
+// AUTO-SAVE
+document.querySelectorAll('textarea, input[type="text"], input[type="date"]')
+.forEach(el => el.addEventListener('blur', saveData));
+// EXPORT TO XLS
+function exportXLS() {
+const data = JSON.parse(localStorage.getItem('day_' + todayKey) || '{}');
+const outreach = JSON.parse(localStorage.getItem('out_' + todayKey) || '[]');
+const wb = XLSX.utils.book_new();
+// SHEET 1: DAILY SESSION
+const sessionRows = [
+['CALICO WORKSPACE — DAILY SESSION EXPORT'],
+['Date', data.todayDate || todayKey],
+
+['Industry Target', data.industryTarget || ''],
+[],
+['MORNING OPENER'],
+['Non-Negotiable Today', data.intention1 || ''],
+['Fear Acting Through', data.intention2 || ''],
+['Showing Up For', data.intention3 || ''],
+[],
+['PIPELINE COUNTS'],
+['Curious (Stage 1)', document.getElementById('s1')?.textContent || '0'],
+['Skeptical (Stage 2)', document.getElementById('s2')?.textContent || '0'],
+['Warm Lead (Stage 3)', document.getElementById('s3')?.textContent || '0'],
+['Gone Cold (Stage 4)', document.getElementById('s4')?.textContent || '0'],
+['Replies Logged', document.getElementById('replyCount')?.textContent || '0'],
+[],
+['PIPELINE NOTES'],
+['Recent Replies', data.recentReplies || ''],
+['Stuck Leads', data.stuckLeads || ''],
+['Big Name Follow-Ups Due', data.bigFollowup || ''],
+[],
+['CONTENT'],
+['Format', data.fmt || ''],
+['Topic Angle', data.contentTopic || ''],
+['Hook Line', data.hookLine || ''],
+['Full Draft', data.fullDraft || ''],
+['Posted Live', data.posted ? 'Yes' : 'No'],
+['Saved as Draft', data.draft ? 'Yes' : 'No'],
+[],
+['EVENING CLOSER'],
+['Win of the Day', data.winToday || ''],
+['What I Learned', data.learnedToday || ''],
+['What I\'m Releasing', data.releaseToday || ''],
+['Tomorrow\'s #1 Task', data.tomorrowTask || ''],
+];
+const ws1 = XLSX.utils.aoa_to_sheet(sessionRows);
+ws1['!cols'] = [{ wch: 28 }, { wch: 60 }];
+XLSX.utils.book_append_sheet(wb, ws1, 'Daily Session');
+// SHEET 2: OUTREACH LOG
+const outRows = [['#', 'Company', 'Email', 'Sent', 'Type']];
+outreach.forEach((r, i) => {
+if (r) outRows.push([
+i === 19 ? '★' : i + 1,
+r.c || '',
+r.e || '',
+
+r.sent ? 'Yes' : 'No',
+i === 19 ? 'BIG NAME' : 'Standard'
+]);
+});
+const ws2 = XLSX.utils.aoa_to_sheet(outRows);
+ws2['!cols'] = [{ wch: 5 }, { wch: 30 }, { wch: 35 }, { wch: 8 }, { wch: 12 }];
+XLSX.utils.book_append_sheet(wb, ws2, 'Outreach Log');
+XLSX.writeFile(wb, `CaliCo_Session_${todayKey}.xlsx`);
+// Toast feedback
+const t = document.getElementById('toast');
+t.textContent = 'XLS EXPORTED ✓';
+t.classList.add('show');
+setTimeout(() => { t.classList.remove('show'); t.textContent = 'SESSION SAVED ✓'; }, 2500);
+}
+// INIT
+buildGrid();
+buildStreak();
+loadData();
+</script>
+</body>
+</html>
