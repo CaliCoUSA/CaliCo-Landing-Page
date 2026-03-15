@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CaliCo | AI Driven · Artist Approved</title>
+<title>CaliCo | How We Build · AI Driven · Artist Approved</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -107,6 +107,52 @@
     filter: drop-shadow(0 8px 24px rgba(75,0,130,0.4));
   }
 
+  /* Process pipeline styles */
+  .pipeline-step {
+    position: relative;
+  }
+  .pipeline-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -2rem;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 2rem;
+    background: linear-gradient(to bottom, #FFD700, rgba(255,215,0,0.2));
+  }
+  @media (min-width: 1024px) {
+    .pipeline-step:not(:last-child)::after { display: none; }
+    .pipeline-connector { display: flex; }
+  }
+  .pipeline-connector {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .tool-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .tool-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(75,0,130,0.22);
+  }
+  .gate-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,215,0,0.12);
+    border: 1px solid rgba(255,215,0,0.35);
+    color: #FFD700;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
   /* Scroll-in animation */
   .fade-up {
     opacity: 0;
@@ -137,6 +183,7 @@
     <div class="hidden md:flex items-center space-x-7">
       <a href="#giveaway" class="text-calico-yellow font-bold text-sm uppercase tracking-wide hover:opacity-80 transition">Free Tracks</a>
       <a href="#services" class="hover:text-calico-yellow transition font-semibold text-sm uppercase tracking-wide">Services</a>
+      <a href="#process" class="hover:text-calico-yellow transition font-semibold text-sm uppercase tracking-wide">How We Build</a>
       <a href="#calculator" class="hover:text-calico-yellow transition font-semibold text-sm uppercase tracking-wide">Calculator</a>
       <a href="#about" class="hover:text-calico-yellow transition font-semibold text-sm uppercase tracking-wide">About</a>
       <a href="https://koalendar.com/e/meet-with-spencer-moore" target="_blank"
@@ -155,6 +202,7 @@
   <div id="mobile-menu" class="flex-col bg-calico-darkPurple border-t border-calico-yellow/30 px-6 py-4 space-y-3 md:hidden">
     <a href="#giveaway" onclick="toggleMenu()" class="block text-calico-yellow font-bold text-sm uppercase tracking-wide">Free Tracks</a>
     <a href="#services" onclick="toggleMenu()" class="block text-white hover:text-calico-yellow font-semibold text-sm uppercase tracking-wide">Services</a>
+    <a href="#process" onclick="toggleMenu()" class="block text-white hover:text-calico-yellow font-semibold text-sm uppercase tracking-wide">How We Build</a>
     <a href="#calculator" onclick="toggleMenu()" class="block text-white hover:text-calico-yellow font-semibold text-sm uppercase tracking-wide">Calculator</a>
     <a href="#about" onclick="toggleMenu()" class="block text-white hover:text-calico-yellow font-semibold text-sm uppercase tracking-wide">About</a>
     <a href="https://koalendar.com/e/meet-with-spencer-moore" target="_blank"
@@ -184,22 +232,22 @@
       </div>
 
       <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight">
-        One Brief.<br>
-        <span class="text-calico-yellow text-glow">Every Asset.<br>All Aligned.</span>
+        Your Brief.<br>
+        <span class="text-calico-yellow text-glow">A Documented System.<br>Work That Holds Together.</span>
       </h1>
 
       <p class="text-lg text-gray-200 font-light max-w-lg leading-relaxed">
-        CaliCo builds the foundational creative assets your brand needs — logo, audio, video, voice — under a single brief, at a fixed price, with one point of contact. No vendor coordination. No guesswork. Just the work.
+        CaliCo builds brand identity assets — logo, audio, video, voice — using a documented production system with a defined human review gate on every deliverable. You submit one brief. We run the system. Spencer approves the output before it reaches you.
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 pt-2">
-        <a href="#services"
+        <a href="#process"
            class="bg-calico-yellow text-calico-darkPurple px-8 py-4 rounded-lg font-bold text-center hover:bg-white transition transform hover:-translate-y-1 shadow-[0_0_15px_rgba(255,215,0,0.35)]">
-          See Our Services
-        </a>
-        <a href="#calculator"
-           class="border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-center hover:bg-white hover:text-calico-purple transition">
           See How It Works
+        </a>
+        <a href="#services"
+           class="border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-center hover:bg-white hover:text-calico-purple transition">
+          Our Services
         </a>
       </div>
 
@@ -212,7 +260,7 @@
       <div class="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-calico-yellow/25 bg-black aspect-video">
         <iframe
           width="560" height="315"
-          src="https://www.youtube.com/embed/96RGqppP5xM?si=jPTYTXnLqHINiRpd"
+          src="https://www.youtube.com/embed/KKF0Mdx3knc?si=pvk_v9qhyB9PtLXa"
           title="CaliCo — AI Driven, Artist Approved"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -297,9 +345,9 @@
 
     <div class="text-center mb-16 fade-up">
       <span class="accent-rule"></span>
-      <h2 class="text-3xl md:text-4xl font-black text-calico-darkPurple mb-4">What We Build</h2>
+      <h2 class="text-3xl md:text-4xl font-black text-calico-darkPurple mb-4">What the System Produces</h2>
       <p class="text-gray-500 text-lg max-w-2xl mx-auto">
-        Every service is available individually or as part of a bundle. One brief covers all of it — no separate vendor relationships, no creative inconsistency.
+        Five services. Each one runs through the same documented production pipeline. Each one carries the same Artist Approved standard before delivery. Available individually or as a coordinated bundle built from a single brief.
       </p>
     </div>
 
@@ -409,6 +457,207 @@
 
 
 <!-- ============================================================
+     HOW A PROJECT WORKS — PROCESS SECTION
+============================================================ -->
+<section id="process" class="py-24 bg-calico-darkPurple text-white relative overflow-hidden">
+
+  <!-- Background geometry -->
+  <div class="absolute inset-0 pointer-events-none opacity-[0.03]">
+    <div class="absolute top-0 left-1/4 w-px h-full bg-white"></div>
+    <div class="absolute top-0 left-2/4 w-px h-full bg-white"></div>
+    <div class="absolute top-0 left-3/4 w-px h-full bg-white"></div>
+  </div>
+
+  <div class="container mx-auto px-6 relative z-10">
+
+    <!-- Header -->
+    <div class="text-center mb-16 fade-up">
+      <span class="accent-rule"></span>
+      <h2 class="text-3xl md:text-4xl font-black mb-4">How a Project Works</h2>
+      <p class="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
+        "AI Driven · Artist Approved" is not a tagline. It is a documented production pipeline with defined stages, defined tools, and a mandatory human review gate before anything reaches you. Below is exactly what happens — from the moment you submit a brief to the moment files land in your hands.
+      </p>
+    </div>
+
+    <!-- Pipeline: 5 stages — vertical on mobile, horizontal on desktop -->
+    <div class="flex flex-col lg:flex-row items-stretch justify-center gap-0 mb-24 fade-up">
+
+      <!-- Stage 1: Brief Intake -->
+      <div class="pipeline-step flex-1 bg-white/[0.05] border border-white/10 rounded-2xl p-7 lg:rounded-r-none lg:border-r-0 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-calico-yellow text-calico-darkPurple font-black text-sm flex items-center justify-center flex-shrink-0">1</div>
+          <h3 class="font-black text-sm uppercase tracking-widest text-calico-yellow">Brief Intake</h3>
+        </div>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          Every project begins with a structured brief — not a freeform email, not a phone call. You provide your brand name, your audience, your core offer, your tone, and the assets you need. This intake is the single source of truth for the entire project. Every tool, every module, every production decision downstream is anchored to it. The more precise the brief, the less back-and-forth exists later. We ask specific questions because generic inputs produce generic outputs.
+        </p>
+        <div class="mt-auto pt-2">
+          <span class="gate-badge"><i class="fa-solid fa-file-lines text-[10px]"></i> Client Input</span>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="pipeline-connector w-8 text-calico-yellow/40 text-xl">
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
+      <!-- Stage 2: Velocity Engine -->
+      <div class="pipeline-step flex-1 bg-white/[0.05] border border-white/10 rounded-2xl p-7 lg:rounded-none lg:border-x-0 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-calico-yellow text-calico-darkPurple font-black text-sm flex items-center justify-center flex-shrink-0">2</div>
+          <h3 class="font-black text-sm uppercase tracking-widest text-calico-yellow">Velocity Engine</h3>
+        </div>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          Your brief enters the Velocity Engine — CaliCo's proprietary intake and campaign architecture tool. The Engine processes your brand context, audience profile, and asset scope and generates a Campaign Dossier: a structured master document that defines the creative direction for every module in your project simultaneously. Copy framework, visual parameters, audio direction, voice specifications — all derived from the same brief, all internally consistent. This is the document that ensures a logo, a jingle, and a voiceover produced under the same project feel like they belong to the same brand. Without this step, assets are built in isolation. The Engine is what makes the system a system.
+        </p>
+        <div class="mt-auto pt-2">
+          <span class="gate-badge"><i class="fa-solid fa-bolt text-[10px]"></i> CaliCo Proprietary Tool</span>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="pipeline-connector w-8 text-calico-yellow/40 text-xl">
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
+      <!-- Stage 3: Asset Production -->
+      <div class="pipeline-step flex-1 bg-white/[0.05] border border-white/10 rounded-2xl p-7 lg:rounded-none lg:border-x-0 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-calico-yellow text-calico-darkPurple font-black text-sm flex items-center justify-center flex-shrink-0">3</div>
+          <h3 class="font-black text-sm uppercase tracking-widest text-calico-yellow">Asset Production</h3>
+        </div>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          The Dossier routes to the relevant production modules based on your service scope. Visual assets go through image generation and design tools guided by the Engine's visual parameters. Audio assets run through Genre Architect for sonic definition, then into AI music production and FL Studio for mixing, mastering, and final export. Voiceovers are scripted from the Engine's voice module and produced through ElevenLabs with performance parameters specified. Video is built from a shot list produced by the motion module, then assembled and finished. Each module operates from the same brief — the same brand identity, the same tone, the same audience. That parallel structure is what produces a set of assets that feel cohesive rather than assembled from different vendors with different interpretations of who you are.
+        </p>
+        <div class="mt-auto pt-2">
+          <span class="gate-badge"><i class="fa-solid fa-layer-group text-[10px]"></i> AI Production Layer</span>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="pipeline-connector w-8 text-calico-yellow/40 text-xl">
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
+      <!-- Stage 4: Artist Approved Gate -->
+      <div class="pipeline-step flex-1 bg-calico-yellow/[0.08] border border-calico-yellow/30 rounded-2xl p-7 lg:rounded-none lg:border-x-0 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-calico-yellow text-calico-darkPurple font-black text-sm flex items-center justify-center flex-shrink-0">4</div>
+          <h3 class="font-black text-sm uppercase tracking-widest text-calico-yellow">Artist Approved Gate</h3>
+        </div>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          Every output — at every stage — goes to Spencer before it advances to the next step or reaches the client. This is not a final quality check at the end of production. It is a gate built into the production chain itself. Spencer reviews each asset against five criteria: does it feel right for the brand, not just technically match the brief; does it hold together with the other assets produced in the same project; is the copy honest and free of overstatement; is the technical execution clean; and does it actually solve the client's underlying need, not just the brief as written. If an asset fails any of these, it goes back into production. The client never sees a draft that has not cleared this gate. That is what "Artist Approved" means in practice.
+        </p>
+        <div class="mt-auto pt-2">
+          <span class="gate-badge"><i class="fa-solid fa-circle-check text-[10px]"></i> Human Review — Spencer Moore</span>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="pipeline-connector w-8 text-calico-yellow/40 text-xl">
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
+      <!-- Stage 5: Delivery & IP Transfer -->
+      <div class="pipeline-step flex-1 bg-white/[0.05] border border-white/10 rounded-2xl p-7 lg:rounded-l-none lg:border-l-0 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-calico-yellow text-calico-darkPurple font-black text-sm flex items-center justify-center flex-shrink-0">5</div>
+          <h3 class="font-black text-sm uppercase tracking-widest text-calico-yellow">Delivery & IP Transfer</h3>
+        </div>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          Approved files are delivered in full production formats: PNG, JPG, and vector for logos; WAV and MP3 for audio; MP4 (H.264, high-resolution) for video; WAV and MP3 for voiceovers; full access credentials for ad campaign setups. Full intellectual property ownership transfers to you on final payment. This is documented as Work Made for Hire — not a license, not a usage agreement, not a rental. The work becomes legally and entirely yours. You can broadcast it, modify it, resell products built on it, and use it in any commercial context without restriction or ongoing obligation to CaliCo.
+        </p>
+        <div class="mt-auto pt-2">
+          <span class="gate-badge"><i class="fa-solid fa-lock-open text-[10px]"></i> Full Client Ownership</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- The Velocity Toolkit -->
+    <div class="fade-up">
+      <div class="text-center mb-12">
+        <h3 class="text-2xl font-black mb-3">The Velocity Toolkit</h3>
+        <p class="text-gray-300 text-base max-w-2xl mx-auto leading-relaxed">
+          Stage 3 runs on four proprietary tools built and maintained by CaliCo. Each one handles a specific function in the production chain. They are not general-purpose AI tools repurposed for brand work — they are instruments purpose-engineered for the specific problem of producing multiple brand assets from a single brief, consistently, at a fixed price.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+        <!-- Velocity Engine -->
+        <div class="tool-card bg-white/[0.06] border border-white/10 rounded-2xl p-7 flex flex-col gap-4">
+          <div class="w-12 h-12 bg-calico-yellow/10 rounded-xl flex items-center justify-center text-calico-yellow text-2xl">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div>
+            <h4 class="font-black text-base text-white mb-1">Velocity Engine</h4>
+            <div class="text-xs text-calico-yellow/70 font-bold uppercase tracking-wider mb-3">Brief → Campaign Dossier</div>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed flex-grow">
+            The Engine is the starting point for every CaliCo project. It takes your brand brief — audience, offer, tone, asset scope — and produces a Campaign Dossier: a structured master document that defines the creative direction for every production module simultaneously. Copy framework, visual parameters, audio direction, voiceover specifications — all derived from the same inputs, all cross-referenced against each other. The Dossier is what ensures a logo and a jingle produced in the same project feel like they come from the same brand. It runs in two modes: Client Mode for external projects, and Agency Mode for CaliCo's own content, with different production constraints applied to each. Every other tool in the Velocity Toolkit either works from the Dossier directly or operates in parallel with it.
+          </p>
+        </div>
+
+        <!-- Genre Architect -->
+        <div class="tool-card bg-white/[0.06] border border-white/10 rounded-2xl p-7 flex flex-col gap-4">
+          <div class="w-12 h-12 bg-calico-yellow/10 rounded-xl flex items-center justify-center text-calico-yellow text-2xl">
+            <i class="fa-solid fa-music"></i>
+          </div>
+          <div>
+            <h4 class="font-black text-base text-white mb-1">Genre Architect</h4>
+            <div class="text-xs text-calico-yellow/70 font-bold uppercase tracking-wider mb-3">Brief → Sonic Parameters</div>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed flex-grow">
+            Genre Architect is an audio identity tool with one specific function: it produces a complete, structured sonic parameter manifest that defines every element of a musical composition before production begins. Tempo. Instrumentation stack. Rhythm stack. Dynamic profile. Forbidden elements — the sonic characteristics explicitly excluded from the genre. It draws from a library of 30 fully defined genre profiles, each with its own complete parameter set. For projects where the brief calls for something that doesn't fit cleanly into a single genre, Genre Architect operates in Custom Hybrid mode: you select an Identity Anchor, Audio Characteristics, Instrumentation Stack, and Rhythm Stack independently from different genre sources, and the tool produces a single hybrid manifest that combines them. The output feeds directly into music production, ensuring the audio is right by design — not by trial and error.
+          </p>
+        </div>
+
+        <!-- Velocity Hooks -->
+        <div class="tool-card bg-white/[0.06] border border-white/10 rounded-2xl p-7 flex flex-col gap-4">
+          <div class="w-12 h-12 bg-calico-yellow/10 rounded-xl flex items-center justify-center text-calico-yellow text-2xl">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <div>
+            <h4 class="font-black text-base text-white mb-1">Velocity Hooks</h4>
+            <div class="text-xs text-calico-yellow/70 font-bold uppercase tracking-wider mb-3">Brief → Anchor Messaging</div>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed flex-grow">
+            Velocity Hooks is a hook generation and selection tool used on any project where ad copy or social content is in scope. It generates 20 candidate hooks per run, drawn from a vault of 250+ frameworks across seven strategic categories: Contrarian, How-To, Urgency, Trust, List, Story, and Question. Each category serves a different campaign purpose — authority-building, conversion, engagement, and so on. The tool's four inputs are Topic, Audience, Benefit, and Pain — all sourced directly from the Campaign Dossier, which ensures the hooks are built on accurate brand intelligence rather than generic placeholder variables. The winning hook — selected for specificity, honesty, and alignment with the campaign goal — becomes the Anchor Hook that the Velocity Planner builds the content strategy around.
+          </p>
+        </div>
+
+        <!-- Velocity Planner -->
+        <div class="tool-card bg-white/[0.06] border border-white/10 rounded-2xl p-7 flex flex-col gap-4">
+          <div class="w-12 h-12 bg-calico-yellow/10 rounded-xl flex items-center justify-center text-calico-yellow text-2xl">
+            <i class="fa-solid fa-calendar-days"></i>
+          </div>
+          <div>
+            <h4 class="font-black text-base text-white mb-1">Velocity Planner</h4>
+            <div class="text-xs text-calico-yellow/70 font-bold uppercase tracking-wider mb-3">Anchor Hook → Campaign Plan</div>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed flex-grow">
+            The Velocity Planner is a content strategy tool used when the project scope includes a campaign — not just a single asset. It takes the Anchor Hook selected from Velocity Hooks and expands it into a structured multi-day content sprint: platform assignment, post format, caption direction, and visual brief for every planned post. The Planner imports strategy data directly from the Campaign Dossier — brand voice, audience definition, core offer, and visual style — to ensure the content plan stays anchored to the same brief that drove production. The result is not a list of content ideas. It is an executable plan with a specific direction for every piece, derived from the same intelligence document that produced the assets it's designed to promote.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Pipeline governing principle -->
+      <div class="mt-12 bg-white/[0.04] border border-calico-yellow/20 rounded-2xl p-8 text-center max-w-3xl mx-auto">
+        <i class="fa-solid fa-scale-balanced text-calico-yellow text-2xl mb-4 block"></i>
+        <p class="text-white font-semibold text-base mb-2">The rule that governs all of it.</p>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          AI makes CaliCo possible at this price point. Human oversight makes CaliCo worth the price. The tools do not have judgment — they have speed, structure, and consistency. Spencer has judgment. Every asset that leaves this system has passed his review. Not as a formality. Not as a final sign-off. As the standard the whole system is built toward.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
      TIME-BACK CALCULATOR
 ============================================================ -->
 <section id="calculator" class="py-24 bg-gray-50">
@@ -418,7 +667,7 @@
       <span class="accent-rule"></span>
       <h2 class="text-3xl md:text-4xl font-black text-calico-darkPurple mb-4">The Time-Back Calculator</h2>
       <p class="text-gray-500 text-lg max-w-xl mx-auto">
-        Select the services you need. See how many hours of vendor management CaliCo removes from your plate.
+        Managing multiple creative vendors independently is a project in itself. Select the services you need and see how much coordination overhead the CaliCo system removes from your workload.
       </p>
     </div>
 
@@ -547,9 +796,9 @@
 
     <div class="fade-up">
       <span class="accent-rule"></span>
-      <h2 class="text-3xl md:text-4xl font-black mb-4">How We Operate</h2>
+      <h2 class="text-3xl md:text-4xl font-black mb-4">The Standards Behind the System</h2>
       <p class="text-gray-300 text-lg max-w-2xl mx-auto mb-16">
-        These aren't aspirational statements. They're the specific standards every CaliCo project is held to.
+        A production system is only as good as the principles it's held to. These are the three standards every CaliCo project is measured against — not aspirationally, but operationally.
       </p>
     </div>
 
@@ -562,7 +811,7 @@
         </div>
         <h3 class="text-xl font-black mb-3">Trust</h3>
         <p class="text-gray-300 text-sm leading-relaxed">
-          Every deliverable has a defined turnaround window. If CaliCo misses it, you receive a 10% credit on your final balance for each business day of delay — up to 30%. No excuses. Just accountability.
+          Every service has a defined turnaround window. If CaliCo misses it, you receive a 10% credit on your final balance for each business day of delay — up to 30%. This policy exists because commitments without consequences are not commitments. It is documented, non-negotiable, and applies to every project.
         </p>
       </div>
 
@@ -573,7 +822,7 @@
         </div>
         <h3 class="text-xl font-black mb-3">Integrity</h3>
         <p class="text-gray-300 text-sm leading-relaxed">
-          "AI Driven, Artist Approved" is a production standard, not a tagline. AI handles speed and efficiency. Spencer reviews every asset before it reaches you. We don't hide the tools we use — we explain them.
+          "AI Driven, Artist Approved" is a production standard with two defined layers. The AI layer handles speed, structure, and output volume. Spencer's review gate handles judgment — whether the work actually fits the brand, feels right, and serves the client's real need. We are transparent about which tools we use because the honest story is more compelling than the alternative.
         </p>
       </div>
 
@@ -584,7 +833,7 @@
         </div>
         <h3 class="text-xl font-black mb-3">Transparency</h3>
         <p class="text-gray-300 text-sm leading-relaxed">
-          Fixed pricing. No hidden fees. You receive full IP ownership on final payment — the work is legally yours. Revision rounds are defined upfront. You always know exactly where your project stands.
+          Fixed pricing. No hidden fees. Revision rounds defined before production begins. Full IP ownership transfers to you on final payment — documented, not implied. You know what you are paying for, what you will receive, and when. If something changes, you hear it from us first.
         </p>
       </div>
 
@@ -622,10 +871,13 @@
           </div>
           <h2 class="text-3xl font-black text-calico-darkPurple">Spencer Moore</h2>
           <p class="text-gray-600 text-sm leading-relaxed">
-            Spencer founded CaliCo in 2020 and is the creative director on every deliverable. The "Artist Approved" half of CaliCo's production standard is Spencer — every asset that leaves CaliCo has passed through his judgment before it reaches the client.
+            Spencer founded CaliCo in 2020 and serves as creative director and final decision-maker on every deliverable. In the production pipeline, he is the Artist Approved gate — the human judgment layer that every asset passes through before it reaches the client. Not as a formality. As the standard.
           </p>
           <p class="text-gray-600 text-sm leading-relaxed">
-            He built the production system, developed the proprietary tool stack, and established the values that govern how CaliCo operates. CaliCo is fully remote and USA-based — intentionally lean, with every process documented and every decision with a defined owner.
+            He built the Velocity Toolkit, designed the production system, and established the values that govern how CaliCo operates. His review covers brand alignment, technical quality, emotional accuracy, and consistency across assets. If something passes the system but fails the judgment, it goes back. That is the whole point.
+          </p>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            CaliCo is fully remote and USA-based — intentionally lean, with every process documented and every decision with a defined owner.
           </p>
           <p class="text-gray-500 text-sm leading-relaxed italic border-l-4 border-calico-yellow pl-4">
             "We don't hide the AI. We explain it. And we let the work speak for itself."
@@ -674,9 +926,12 @@
 
       <div class="relative z-10">
         <span class="accent-rule"></span>
-        <h2 class="text-3xl md:text-5xl font-black text-white mb-5">Let's Talk About<br>Your Brand.</h2>
-        <p class="text-gray-200 text-lg mb-8 max-w-xl mx-auto leading-relaxed">
-          No pressure. No artificial deadlines. Just a straightforward conversation about what you're building and whether CaliCo is the right fit.
+        <h2 class="text-3xl md:text-5xl font-black text-white mb-5">Ready to Start?<br>Here's What Happens Next.</h2>
+        <p class="text-gray-200 text-lg mb-3 max-w-xl mx-auto leading-relaxed">
+          You book a call. We ask a few questions to understand what you're building and what you actually need. If there's a service or bundle that fits, we present it clearly with full pricing. If there isn't, we'll tell you that too.
+        </p>
+        <p class="text-gray-300 text-sm mb-8 max-w-lg mx-auto">
+          No pressure. No artificial deadlines. No scripts designed to close you before you're ready.
         </p>
         <a href="https://koalendar.com/e/meet-with-spencer-moore" target="_blank"
            class="inline-block bg-calico-yellow text-calico-darkPurple text-lg px-10 py-5 rounded-full font-black hover:bg-white hover:scale-105 transition transform shadow-lg">
@@ -700,6 +955,7 @@
       <div class="flex items-center gap-3 mb-4">
         <img src="logo9_9_23650.png" alt="CaliCo" class="h-10 w-auto object-contain"
              onerror="this.style.display='none'">
+        <span class="text-calico-yellow font-black text-xl italic">CaliCo</span>
       </div>
       <p class="mb-2 max-w-sm text-sm leading-relaxed">
         Brand identity built right the first time. AI-assisted production with human creative oversight on every deliverable.
@@ -734,6 +990,7 @@
         <li><a href="#services" class="hover:text-white transition">Video Content</a></li>
         <li><a href="#services" class="hover:text-white transition">Professional Voiceover</a></li>
         <li><a href="#services" class="hover:text-white transition">Ad Copy & Management</a></li>
+        <li><a href="#process" class="hover:text-white transition">How We Build</a></li>
         <li><a href="#giveaway" class="hover:text-calico-yellow transition font-medium">Free Music Bundle</a></li>
       </ul>
     </div>
@@ -802,7 +1059,7 @@
         entry.target.classList.add('visible');
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
