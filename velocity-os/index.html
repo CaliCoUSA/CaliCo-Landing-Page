@@ -3,29 +3,28 @@
 Velocity OS v1.1 — CaliCo Unified Access Hub
 Vibe-Coding Protocol · AI Driven · Artist Approved
 Deploy at: https://www.calico-usa.com/velocity-os
+
+PATCH 1.3 CHANGES:
+— Workspace section moved above Velocity Toolkit in sidebar
+— Genre Architect icon: fa-waveform-lines → fa-music (free CDN)
+— Velocity Pulse added to Workspace (Coming Soon)
+— Velocity Intake added to Toolkit (Coming Soon, before Velocity Engine)
+— All disabled tools appear in ⌘K search (not clickable)
+— Disabled tools: hover tooltip (desktop) / long-press tooltip (mobile/touch)
+— TOOLS array updated throughout
+
 SANDBOX POLICY:
 allow-scripts — tools can run JavaScript
 allow-forms — tools can submit forms
 allow-same-origin — tools can read their own cookies/storage
 allow-popups — tools can open new tabs
 allow-top-navigation-by-user-activation — user-initiated nav only
-To tighten security later: remove allow-same-origin.
-To loosen: add allow-same-origin (already present).
+
 DATA BRIDGE:
 Scans localStorage for keys whose values contain:
 "dossier" | "json manifest" | "strategy prism" (case-insensitive).
 Listens for postMessage from iframes — if payload contains those
 keywords, auto-saves with key: vos_{toolname}_{timestamp}.
-Tools can send data back by posting to parent window:
-parent.postMessage({ source: 'velocity-tool', data: {...} }, '*')
-REACT CONVERSION NOTES:
-— TOOLS array → convert to prop or context
-— showToast() → replace with a toast context/hook
-— localStorage → replace with useEffect + useState
-— iframe load → use ref + onLoad handler
-PATCH 1.2 CHANGES:
-— Velocity Launchpad tile activated (was: Coming Soon)
-— TOOLS array entry updated: active, correct name and URL
 ============================================================
 -->
 <!DOCTYPE html>
@@ -34,885 +33,410 @@ PATCH 1.2 CHANGES:
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Velocity OS · CaliCo</title>
-<!-- Tailwind CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- Font Awesome 6 -->
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-crossorigin="anonymous" />
-<!-- Fonts: Syne (display/headings) + DM Mono (code/labels) + Outfit (body) -->
-<link
-href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <script>
 tailwind.config = {
   theme: {
     extend: {
       colors: {
-        'v-void': '#05000d',
-        'v-deep': '#0c0020',
-        'v-panel': '#110028',
-        'v-purple': '#7c3aed',
-        'v-mid': '#a855f7',
-        'v-light': '#c084fc',
-        'v-teal': '#22d3ee',
-        'v-gold': '#fbbf24',
-        'v-rose': '#fb7185',
+        'v-void':'#05000d','v-deep':'#0c0020','v-panel':'#110028',
+        'v-purple':'#7c3aed','v-mid':'#a855f7','v-light':'#c084fc',
+        'v-teal':'#22d3ee','v-gold':'#fbbf24','v-rose':'#fb7185',
       },
       fontFamily: {
-        display: ['Syne', 'sans-serif'],
-        body: ['Outfit', 'sans-serif'],
-        mono: ['DM Mono', 'monospace'],
+        display:['Syne','sans-serif'],
+        body:['Outfit','sans-serif'],
+        mono:['DM Mono','monospace'],
       }
     }
   }
 }
 </script>
 <style>
-/* ── Reset & Base ───────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  height: 100%; overflow: hidden;
-  font-family: 'Outfit', sans-serif;
-  background: #05000d;
-  color: #ddd0f0;
-  -webkit-font-smoothing: antialiased;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background:#05000d;color:#ddd0f0;-webkit-font-smoothing:antialiased}
+
+:root{
+  --header-h:54px;--footer-h:46px;--sidebar-w:268px;
+  --purple:#a855f7;--purple-dk:#7c3aed;--teal:#22d3ee;--gold:#fbbf24;
+  --glass-bg:rgba(255,255,255,0.035);--glass-bdr:rgba(168,85,247,0.18);--glow:rgba(168,85,247,0.25);
 }
-/* ── CSS Variables ──────────────────────────────────── */
-:root {
-  --header-h: 54px;
-  --footer-h: 46px;
-  --sidebar-w: 268px;
-  --purple: #a855f7;
-  --purple-dk: #7c3aed;
-  --teal: #22d3ee;
-  --gold: #fbbf24;
-  --glass-bg: rgba(255,255,255,0.035);
-  --glass-bdr: rgba(168,85,247,0.18);
-  --glow: rgba(168,85,247,0.25);
-}
-/* ── Animated Mesh Background ───────────────────────── */
-#mesh {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  overflow: hidden;
-}
-#mesh::before {
-  content: '';
-  position: absolute; inset: 0;
+
+/* ── Mesh background ── */
+#mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#mesh::before{
+  content:'';position:absolute;inset:0;
   background:
-    radial-gradient(ellipse 70% 55% at 8% 15%, rgba(124,58,237,0.22) 0%, transparent 65%),
-    radial-gradient(ellipse 55% 45% at 92% 85%, rgba(34,211,238,0.11) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 35% at 55% 45%, rgba(168,85,247,0.08) 0%, transparent 70%),
-    radial-gradient(ellipse 80% 30% at 50% 100%, rgba(124,58,237,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 55% at 8% 15%,rgba(124,58,237,0.22) 0%,transparent 65%),
+    radial-gradient(ellipse 55% 45% at 92% 85%,rgba(34,211,238,0.11) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 35% at 55% 45%,rgba(168,85,247,0.08) 0%,transparent 70%),
+    radial-gradient(ellipse 80% 30% at 50% 100%,rgba(124,58,237,0.06) 0%,transparent 50%),
     #05000d;
-  animation: meshDrift 25s ease-in-out infinite alternate;
+  animation:meshDrift 25s ease-in-out infinite alternate;
 }
-#mesh::after {
-  content: '';
-  position: absolute; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M0 0h60v60H0z' fill='none'/%3E%3Ccircle cx='30' cy='30' r='0.6' fill='rgba(168,85,247,0.12)'/%3E%3C/svg%3E");
-  opacity: 0.6;
+#mesh::after{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='0.6' fill='rgba(168,85,247,0.12)'/%3E%3C/svg%3E");
+  opacity:0.6;
 }
-@keyframes meshDrift {
-  0% { transform: scale(1) rotate(0deg); opacity: 1; }
-  50% { transform: scale(1.05) rotate(1.5deg); opacity: 0.85;}
-  100% { transform: scale(1.02) rotate(-1deg); opacity: 0.95;}
+@keyframes meshDrift{0%{transform:scale(1) rotate(0deg);opacity:1}50%{transform:scale(1.05) rotate(1.5deg);opacity:0.85}100%{transform:scale(1.02) rotate(-1deg);opacity:0.95}}
+
+/* ── Glass ── */
+.glass{background:var(--glass-bg);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);border:1px solid var(--glass-bdr)}
+
+/* ── Layout ── */
+#header{position:fixed;top:0;left:0;right:0;height:var(--header-h);z-index:60;border-bottom:1px solid rgba(168,85,247,0.18)}
+#sidebar{position:fixed;left:0;top:var(--header-h);bottom:var(--footer-h);width:var(--sidebar-w);z-index:40;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,0.25) transparent;border-right:1px solid rgba(168,85,247,0.13)}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:rgba(168,85,247,0.25);border-radius:2px}
+#main{position:fixed;left:var(--sidebar-w);top:var(--header-h);right:0;bottom:var(--footer-h);z-index:10}
+#footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer-h);z-index:60;border-top:1px solid rgba(168,85,247,0.15)}
+
+/* ── Sidebar tiles ── */
+.section-label{padding:16px 18px 5px;font-size:8.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(168,85,247,0.35);font-family:'DM Mono',monospace}
+.divider{height:1px;background:rgba(168,85,247,0.08);margin:5px 16px}
+.tile{position:relative;width:100%;display:flex;align-items:center;gap:12px;padding:11px 16px;border:none;background:transparent;cursor:pointer;text-align:left;transition:background 0.18s,border-color 0.18s;border-left:2px solid transparent;outline:none}
+.tile:focus-visible{background:rgba(168,85,247,0.08);outline:2px solid rgba(168,85,247,0.4);outline-offset:-2px}
+.tile:hover:not(.tile--off){background:rgba(168,85,247,0.08);border-left-color:rgba(168,85,247,0.4)}
+.tile:hover:not(.tile--off) .tile__icon{background:rgba(168,85,247,0.2);border-color:rgba(168,85,247,0.45);color:#c084fc}
+.tile.tile--active{background:rgba(168,85,247,0.12);border-left-color:var(--purple)}
+.tile.tile--active .tile__icon{background:rgba(168,85,247,0.25);border-color:rgba(168,85,247,0.55);color:#c084fc;box-shadow:0 0 14px rgba(168,85,247,0.35)}
+.tile.tile--active .tile__name{color:#e4d4f8}
+.tile.tile--off{opacity:0.42;cursor:not-allowed}
+.tile__icon{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(124,58,237,0.12);border:1px solid rgba(168,85,247,0.18);font-size:13px;color:#9b72c8;flex-shrink:0;transition:all 0.18s}
+.tile__name{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:600;color:#b8a8ce;line-height:1.2;transition:color 0.18s}
+.tile__sub{font-size:9.5px;color:rgba(168,85,247,0.35);font-family:'DM Mono',monospace;margin-top:1px}
+.tile__badge{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:7.5px;font-weight:700;letter-spacing:0.8px;padding:2px 7px;border-radius:4px;text-transform:uppercase;font-family:'DM Mono',monospace}
+.badge--alpha{background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.28)}
+.badge--soon{background:rgba(34,211,238,0.10);color:#22d3ee;border:1px solid rgba(34,211,238,0.22)}
+
+/* ── Hover/hold tooltip for disabled tiles ── */
+#tip{
+  position:fixed;z-index:9500;width:230px;
+  padding:13px 15px;
+  background:rgba(11,0,26,0.97);
+  border:1px solid rgba(168,85,247,0.38);
+  border-radius:11px;
+  backdrop-filter:blur(28px);
+  box-shadow:0 10px 40px rgba(0,0,0,0.7),0 0 0 1px rgba(168,85,247,0.1);
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(4px);
+  transition:opacity 0.18s ease,transform 0.18s ease;
 }
-/* ── Glass utility ──────────────────────────────────── */
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(22px) saturate(150%);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
-  border: 1px solid var(--glass-bdr);
+#tip.show{opacity:1;transform:translateY(0)}
+#tip-name{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:#e4d4f8;margin-bottom:6px;line-height:1.3}
+#tip-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:7.5px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-bottom:8px;background:rgba(34,211,238,0.10);color:#22d3ee;border:1px solid rgba(34,211,238,0.22)}
+#tip-badge.alpha{background:rgba(251,191,36,0.12);color:#fbbf24;border-color:rgba(251,191,36,0.28)}
+#tip-body{font-family:'Outfit',sans-serif;font-size:10.5px;color:rgba(200,175,235,0.7);line-height:1.6}
+#tip-arrow{position:absolute;width:8px;height:8px;background:rgba(11,0,26,0.97);border:1px solid rgba(168,85,247,0.38);transform:rotate(45deg)}
+
+/* ── Iframe ── */
+#tool-iframe{width:100%;height:100%;border:none;display:block;opacity:0;transition:opacity 0.38s ease}
+#tool-iframe.visible{opacity:1}
+#frame-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#05000d;z-index:20;pointer-events:none;opacity:0;transition:opacity 0.2s}
+#frame-overlay.show{opacity:1;pointer-events:all}
+#welcome{position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#05000d;transition:opacity 0.4s}
+#welcome.gone{opacity:0;pointer-events:none}
+
+/* ── Spinner ── */
+.spinner{width:32px;height:32px;border:2.5px solid rgba(168,85,247,0.18);border-top-color:#a855f7;border-radius:50%;animation:spin 0.75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Data Bridge panel ── */
+#bridge-panel{position:fixed;top:var(--header-h);right:0;width:340px;max-height:500px;overflow-y:auto;background:rgba(11,0,26,0.97);backdrop-filter:blur(40px);border:1px solid rgba(168,85,247,0.22);border-top:none;border-right:none;border-radius:0 0 0 16px;z-index:200;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,0.2) transparent;transform:translateY(-8px);opacity:0;pointer-events:none;transition:transform 0.22s ease,opacity 0.22s ease}
+#bridge-panel.open{transform:translateY(0);opacity:1;pointer-events:all}
+#bridge-panel::-webkit-scrollbar{width:3px}
+#bridge-panel::-webkit-scrollbar-thumb{background:rgba(168,85,247,0.2)}
+.bridge-item{padding:12px 15px;border-bottom:1px solid rgba(168,85,247,0.08);transition:background 0.12s}
+.bridge-item:hover{background:rgba(168,85,247,0.05)}
+.bridge-item:last-child{border-bottom:none}
+
+/* ── Toasts ── */
+#toasts{position:fixed;bottom:calc(var(--footer-h) + 12px);right:20px;z-index:9999;display:flex;flex-direction:column-reverse;gap:7px;pointer-events:none}
+.toast{pointer-events:all;display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;font-size:12.5px;font-weight:500;font-family:'Outfit',sans-serif;backdrop-filter:blur(14px);box-shadow:0 4px 28px rgba(0,0,0,0.5);animation:tIn 0.28s ease,tOut 0.3s ease 2.6s forwards;white-space:nowrap}
+.toast-default{background:rgba(124,58,237,0.88);border:1px solid rgba(168,85,247,0.6);color:#fff}
+.toast-success{background:rgba(16,185,129,0.88);border:1px solid rgba(16,185,129,0.5);color:#fff}
+.toast-info{background:rgba(14,165,233,0.88);border:1px solid rgba(34,211,238,0.5);color:#fff}
+.toast-warn{background:rgba(245,158,11,0.9);border:1px solid rgba(251,191,36,0.5);color:#1a0533}
+.toast-error{background:rgba(239,68,68,0.88);border:1px solid rgba(248,113,113,0.5);color:#fff}
+@keyframes tIn{from{transform:translateX(30px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes tOut{from{opacity:1}to{opacity:0;transform:translateX(20px)}}
+
+/* ── Command palette ── */
+#cmd{position:fixed;inset:0;z-index:8000;background:rgba(5,0,13,0.82);backdrop-filter:blur(10px);display:flex;align-items:flex-start;justify-content:center;padding-top:14vh;opacity:0;pointer-events:none;transition:opacity 0.18s}
+#cmd.open{opacity:1;pointer-events:all}
+#cmd-box{width:560px;max-width:92vw;border-radius:16px;overflow:hidden;background:rgba(11,0,26,0.97);box-shadow:0 28px 90px rgba(0,0,0,0.85),0 0 0 1px rgba(168,85,247,0.28)}
+#cmd-search-row{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(168,85,247,0.15)}
+#cmd-input{flex:1;border:none;outline:none;background:transparent;font-size:15px;font-family:'Outfit',sans-serif;color:#e9d5ff}
+#cmd-input::placeholder{color:rgba(168,85,247,0.35)}
+#cmd-results{max-height:320px;overflow-y:auto;padding:5px 0}
+#cmd-results::-webkit-scrollbar{width:3px}
+#cmd-results::-webkit-scrollbar-thumb{background:rgba(168,85,247,0.2)}
+.cmd-item{display:flex;align-items:center;gap:13px;padding:10px 20px;cursor:pointer;transition:background 0.1s}
+.cmd-item:hover,.cmd-item.hi{background:rgba(168,85,247,0.12)}
+.cmd-item.cmd-off{opacity:0.45;cursor:not-allowed}
+.cmd-item__icon{width:30px;height:30px;border-radius:7px;background:rgba(124,58,237,0.14);border:1px solid rgba(168,85,247,0.2);display:flex;align-items:center;justify-content:center;color:#a855f7;font-size:12px;flex-shrink:0}
+.cmd-item__name{font-family:'Syne',sans-serif;font-weight:600;font-size:13px;color:#e4d4f8}
+.cmd-item__sub{font-size:9.5px;color:rgba(168,85,247,0.4);font-family:'DM Mono',monospace}
+.cmd-footer{padding:7px 20px;border-top:1px solid rgba(168,85,247,0.1);display:flex;gap:14px}
+.cmd-key{font-size:9.5px;color:rgba(168,85,247,0.35);display:flex;align-items:center;gap:5px}
+kbd{background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.22);border-radius:4px;padding:1px 6px;font-family:'DM Mono',monospace;font-size:9px;color:rgba(168,85,247,0.6)}
+
+/* ── Group export modal ── */
+#group-modal{position:fixed;inset:0;z-index:7000;background:rgba(5,0,13,0.85);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center}
+#group-modal.show{display:flex}
+#group-box{background:rgba(11,0,26,0.98);border:1px solid rgba(168,85,247,0.28);border-radius:16px;padding:26px;width:400px;max-width:92vw}
+.gchk{display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;font-size:13px;color:#c4b5d4}
+.gchk input{accent-color:var(--purple);width:14px;height:14px;cursor:pointer}
+
+/* ── Buttons ── */
+.xbtn{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:7px;font-size:11px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;transition:all 0.18s;border:1px solid rgba(168,85,247,0.25);background:rgba(124,58,237,0.08);color:#b084e8;white-space:nowrap;outline:none}
+.xbtn:hover{background:rgba(168,85,247,0.18);border-color:rgba(168,85,247,0.45);color:#e9d5ff}
+.xbtn:focus-visible{outline:2px solid rgba(168,85,247,0.5);outline-offset:2px}
+.xbtn--teal{border-color:rgba(34,211,238,0.25);background:rgba(34,211,238,0.05);color:#5ee8f8}
+.xbtn--teal:hover{background:rgba(34,211,238,0.14);border-color:rgba(34,211,238,0.45);color:#bef7ff}
+.xbtn--danger{border-color:rgba(239,68,68,0.2);background:rgba(239,68,68,0.04);color:#fc8c8c}
+.xbtn--danger:hover{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.4);color:#fca5a5}
+.xbtn--ghost{border-color:transparent;background:transparent;color:rgba(168,85,247,0.5)}
+.xbtn--ghost:hover{background:rgba(168,85,247,0.08);color:#b084e8}
+
+/* ── Pulse dot ── */
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 4px rgba(168,85,247,0.5)}50%{opacity:0.5;box-shadow:0 0 10px rgba(168,85,247,0.9)}}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:#a855f7;animation:pulse 2.5s ease-in-out infinite;flex-shrink:0}
+.pulse-dot--off{background:rgba(168,85,247,0.2);animation:none}
+
+/* ── Welcome cards ── */
+.wcard{text-align:left;padding:12px 14px;border-radius:12px;border:1px solid rgba(168,85,247,0.13);background:rgba(124,58,237,0.05);cursor:pointer;transition:all 0.18s;display:flex;align-items:center;gap:10px}
+.wcard:hover{background:rgba(124,58,237,0.11);border-color:rgba(168,85,247,0.28)}
+
+/* ── Mobile export menu ── */
+#mobile-export-menu{position:fixed;bottom:calc(var(--footer-h) + 6px);right:12px;z-index:500;background:rgba(11,0,26,0.97);backdrop-filter:blur(28px);border:1px solid rgba(168,85,247,0.25);border-radius:12px;overflow:hidden;box-shadow:0 12px 50px rgba(0,0,0,0.7);min-width:190px;transform:translateY(8px);opacity:0;pointer-events:none;transition:transform 0.2s ease,opacity 0.2s ease}
+#mobile-export-menu.open{transform:translateY(0);opacity:1;pointer-events:all}
+.mob-export-item{display:flex;align-items:center;gap:10px;padding:12px 16px;border:none;width:100%;text-align:left;background:transparent;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:#c4b5d4;border-bottom:1px solid rgba(168,85,247,0.08);transition:background 0.12s}
+.mob-export-item:last-child{border-bottom:none}
+.mob-export-item:hover{background:rgba(168,85,247,0.09);color:#e4d4f8}
+.mob-export-item i{color:#7c3aed;width:14px;text-align:center;flex-shrink:0}
+
+/* ── Mobile responsive ── */
+@media(max-width:768px){
+  :root{--sidebar-w:0px;--mobile-nav-h:72px}
+  #sidebar{top:var(--header-h);left:0;right:0;bottom:auto;width:100%;height:var(--mobile-nav-h);display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:8px 10px;gap:7px;border-right:none;border-bottom:1px solid rgba(168,85,247,0.13);scrollbar-width:none}
+  #sidebar::-webkit-scrollbar{display:none}
+  .section-label,.divider{display:none}
+  .tile{flex-direction:column;align-items:center;min-width:62px;padding:8px 7px;border-left:none;border-bottom:2px solid transparent;border-radius:10px;gap:5px}
+  .tile:hover:not(.tile--off){border-left-color:transparent;border-bottom-color:rgba(168,85,247,0.45)}
+  .tile.tile--active{border-left-color:transparent;border-bottom-color:var(--purple)}
+  .tile__name{font-size:9px;text-align:center}
+  .tile__sub,.tile__badge{display:none}
+  #main{left:0;top:calc(var(--header-h) + var(--mobile-nav-h))}
+  #hdr-label{font-size:9.5px;max-width:110px}
+  #mobile-search-btn{display:flex !important}
+  #footer-desktop-exports{display:none !important}
+  #footer-mobile-exports{display:flex !important}
+  #bridge-panel{width:100%;border-radius:0}
+  #toasts{right:10px;left:10px}
+  #welcome-grid{grid-template-columns:1fr !important}
+  /* Tooltip on mobile anchors below the tile */
+  #tip{max-width:calc(100vw - 24px)}
 }
-.glass-strong {
-  background: rgba(255,255,255,0.055);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  border: 1px solid rgba(168,85,247,0.28);
-}
-/* ── Layout Shells ──────────────────────────────────── */
-#header {
-  position: fixed; top: 0; left: 0; right: 0;
-  height: var(--header-h); z-index: 60;
-  border-top: none; border-left: none; border-right: none;
-  border-bottom: 1px solid rgba(168,85,247,0.18);
-}
-#sidebar {
-  position: fixed;
-  left: 0;
-  top: var(--header-h);
-  bottom: var(--footer-h);
-  width: var(--sidebar-w);
-  z-index: 40;
-  overflow-y: auto; overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(168,85,247,0.25) transparent;
-  border-top: none; border-left: none; border-bottom: none;
-  border-right: 1px solid rgba(168,85,247,0.13);
-}
-#sidebar::-webkit-scrollbar { width: 3px; }
-#sidebar::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.25); border-radius: 2px; }
-#main {
-  position: fixed;
-  left: var(--sidebar-w);
-  top: var(--header-h);
-  right: 0;
-  bottom: var(--footer-h);
-  z-index: 10;
-}
-#footer {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  height: var(--footer-h); z-index: 60;
-  border-bottom: none; border-left: none; border-right: none;
-  border-top: 1px solid rgba(168,85,247,0.15);
-}
-/* ── Sidebar Tiles ──────────────────────────────────── */
-.section-label {
-  padding: 16px 18px 5px;
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: rgba(168,85,247,0.35);
-  font-family: 'DM Mono', monospace;
-}
-.divider {
-  height: 1px;
-  background: rgba(168,85,247,0.08);
-  margin: 5px 16px;
-}
-.tile {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 16px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.18s, border-color 0.18s;
-  border-left: 2px solid transparent;
-  outline: none;
-}
-.tile:focus-visible {
-  background: rgba(168,85,247,0.08);
-  outline: 2px solid rgba(168,85,247,0.4);
-  outline-offset: -2px;
-}
-.tile:hover:not(.tile--off) {
-  background: rgba(168,85,247,0.08);
-  border-left-color: rgba(168,85,247,0.4);
-}
-.tile:hover:not(.tile--off) .tile__icon {
-  background: rgba(168,85,247,0.2);
-  border-color: rgba(168,85,247,0.45);
-  color: #c084fc;
-}
-.tile.tile--active {
-  background: rgba(168,85,247,0.12);
-  border-left-color: var(--purple);
-}
-.tile.tile--active .tile__icon {
-  background: rgba(168,85,247,0.25);
-  border-color: rgba(168,85,247,0.55);
-  color: #c084fc;
-  box-shadow: 0 0 14px rgba(168,85,247,0.35);
-}
-.tile.tile--active .tile__name { color: #e4d4f8; }
-.tile.tile--off {
-  opacity: 0.38;
-  cursor: not-allowed;
-}
-.tile__icon {
-  width: 34px; height: 34px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 9px;
-  background: rgba(124,58,237,0.12);
-  border: 1px solid rgba(168,85,247,0.18);
-  font-size: 13px;
-  color: #9b72c8;
-  flex-shrink: 0;
-  transition: all 0.18s;
-}
-.tile__name {
-  font-family: 'Syne', sans-serif;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #b8a8ce;
-  line-height: 1.2;
-  transition: color 0.18s;
-}
-.tile__sub {
-  font-size: 9.5px;
-  color: rgba(168,85,247,0.35);
-  font-family: 'DM Mono', monospace;
-  margin-top: 1px;
-}
-.tile__badge {
-  position: absolute;
-  right: 12px; top: 50%;
-  transform: translateY(-50%);
-  font-size: 7.5px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  font-family: 'DM Mono', monospace;
-}
-.badge--alpha { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.28); }
-.badge--soon { background: rgba(34,211,238,0.10); color: #22d3ee; border: 1px solid rgba(34,211,238,0.22); }
-/* ── Iframe & Transitions ───────────────────────────── */
-#tool-iframe {
-  width: 100%; height: 100%;
-  border: none; display: block;
-  opacity: 0;
-  transition: opacity 0.38s ease;
-}
-#tool-iframe.visible { opacity: 1; }
-/* Loading / error overlay */
-#frame-overlay {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  background: #05000d;
-  z-index: 20;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-#frame-overlay.show { opacity: 1; pointer-events: all; }
-/* Welcome screen */
-#welcome {
-  position: absolute; inset: 0; z-index: 15;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  background: #05000d;
-  transition: opacity 0.4s;
-}
-#welcome.gone { opacity: 0; pointer-events: none; }
-/* ── Loading Spinner ────────────────────────────────── */
-.spinner {
-  width: 32px; height: 32px;
-  border: 2.5px solid rgba(168,85,247,0.18);
-  border-top-color: #a855f7;
-  border-radius: 50%;
-  animation: spin 0.75s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-/* ── Data Bridge Panel ──────────────────────────────── */
-#bridge-panel {
-  position: fixed;
-  top: var(--header-h); right: 0;
-  width: 340px; max-height: 500px;
-  overflow-y: auto;
-  background: rgba(11,0,26,0.97);
-  backdrop-filter: blur(40px);
-  border: 1px solid rgba(168,85,247,0.22);
-  border-top: none; border-right: none;
-  border-radius: 0 0 0 16px;
-  z-index: 200;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(168,85,247,0.2) transparent;
-  transform: translateY(-8px);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.22s ease, opacity 0.22s ease;
-}
-#bridge-panel.open {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: all;
-}
-#bridge-panel::-webkit-scrollbar { width: 3px; }
-#bridge-panel::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.2); }
-.bridge-item {
-  padding: 12px 15px;
-  border-bottom: 1px solid rgba(168,85,247,0.08);
-  transition: background 0.12s;
-}
-.bridge-item:hover { background: rgba(168,85,247,0.05); }
-.bridge-item:last-child { border-bottom: none; }
-/* ── Toast ──────────────────────────────────────────── */
-#toasts {
-  position: fixed;
-  bottom: calc(var(--footer-h) + 12px); right: 20px;
-  z-index: 9999;
-  display: flex; flex-direction: column-reverse; gap: 7px;
-  pointer-events: none;
-}
-.toast {
-  pointer-events: all;
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 16px;
-  border-radius: 10px;
-  font-size: 12.5px; font-weight: 500;
-  font-family: 'Outfit', sans-serif;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 4px 28px rgba(0,0,0,0.5);
-  animation: tIn 0.28s ease, tOut 0.3s ease 2.6s forwards;
-  white-space: nowrap;
-}
-.toast-default { background: rgba(124,58,237,0.88); border: 1px solid rgba(168,85,247,0.6); color: #fff; }
-.toast-success { background: rgba(16,185,129,0.88); border: 1px solid rgba(16,185,129,0.5); color: #fff; }
-.toast-info { background: rgba(14,165,233,0.88); border: 1px solid rgba(34,211,238,0.5); color: #fff; }
-.toast-warn { background: rgba(245,158,11,0.9); border: 1px solid rgba(251,191,36,0.5); color: #1a0533; }
-.toast-error { background: rgba(239,68,68,0.88); border: 1px solid rgba(248,113,113,0.5); color: #fff; }
-@keyframes tIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes tOut { from { opacity: 1; } to { opacity: 0; transform: translateX(20px); } }
-/* ── Command Palette ────────────────────────────────── */
-#cmd {
-  position: fixed; inset: 0; z-index: 8000;
-  background: rgba(5,0,13,0.82);
-  backdrop-filter: blur(10px);
-  display: flex; align-items: flex-start; justify-content: center;
-  padding-top: 14vh;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.18s;
-}
-#cmd.open { opacity: 1; pointer-events: all; }
-#cmd-box {
-  width: 560px; max-width: 92vw;
-  border-radius: 16px;
-  overflow: hidden;
-  background: rgba(11,0,26,0.97);
-  box-shadow: 0 28px 90px rgba(0,0,0,0.85), 0 0 0 1px rgba(168,85,247,0.28);
-}
-#cmd-search-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(168,85,247,0.15);
-}
-#cmd-input {
-  flex: 1; border: none; outline: none;
-  background: transparent;
-  font-size: 15px; font-family: 'Outfit', sans-serif;
-  color: #e9d5ff;
-}
-#cmd-input::placeholder { color: rgba(168,85,247,0.35); }
-#cmd-results { max-height: 320px; overflow-y: auto; padding: 5px 0; }
-#cmd-results::-webkit-scrollbar { width: 3px; }
-#cmd-results::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.2); }
-.cmd-item {
-  display: flex; align-items: center; gap: 13px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.1s;
-}
-.cmd-item:hover, .cmd-item.hi {
-  background: rgba(168,85,247,0.12);
-}
-.cmd-item.cmd-off { opacity: 0.38; cursor: not-allowed; }
-.cmd-item__icon {
-  width: 30px; height: 30px; border-radius: 7px;
-  background: rgba(124,58,237,0.14);
-  border: 1px solid rgba(168,85,247,0.2);
-  display: flex; align-items: center; justify-content: center;
-  color: #a855f7; font-size: 12px; flex-shrink: 0;
-}
-.cmd-item__name { font-family: 'Syne',sans-serif; font-weight:600; font-size:13px; color:#e4d4f8; }
-.cmd-item__sub { font-size:9.5px; color:rgba(168,85,247,0.4); font-family:'DM Mono',monospace; }
-.cmd-footer {
-  padding: 7px 20px;
-  border-top: 1px solid rgba(168,85,247,0.1);
-  display: flex; gap: 14px;
-}
-.cmd-key {
-  font-size: 9.5px; color: rgba(168,85,247,0.35);
-  display: flex; align-items: center; gap: 5px;
-}
-kbd {
-  background: rgba(168,85,247,0.1);
-  border: 1px solid rgba(168,85,247,0.22);
-  border-radius: 4px;
-  padding: 1px 6px;
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: rgba(168,85,247,0.6);
-}
-/* ── Group Export Modal ─────────────────────────────── */
-#group-modal {
-  position: fixed; inset: 0; z-index: 7000;
-  background: rgba(5,0,13,0.85); backdrop-filter: blur(10px);
-  display: none; align-items: center; justify-content: center;
-}
-#group-modal.show { display: flex; }
-#group-box {
-  background: rgba(11,0,26,0.98);
-  border: 1px solid rgba(168,85,247,0.28);
-  border-radius: 16px;
-  padding: 26px;
-  width: 400px; max-width: 92vw;
-}
-.gchk {
-  display: flex; align-items: center; gap: 10px;
-  padding: 7px 0; cursor: pointer;
-  font-size: 13px; color: #c4b5d4;
-}
-.gchk input { accent-color: var(--purple); width: 14px; height: 14px; cursor: pointer; }
-/* ── Export / Action Buttons ────────────────────────── */
-.xbtn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 5px 13px;
-  border-radius: 7px;
-  font-size: 11px; font-weight: 600;
-  font-family: 'Syne', sans-serif;
-  cursor: pointer;
-  transition: all 0.18s;
-  border: 1px solid rgba(168,85,247,0.25);
-  background: rgba(124,58,237,0.08);
-  color: #b084e8;
-  white-space: nowrap;
-  outline: none;
-}
-.xbtn:hover {
-  background: rgba(168,85,247,0.18);
-  border-color: rgba(168,85,247,0.45);
-  color: #e9d5ff;
-}
-.xbtn:focus-visible { outline: 2px solid rgba(168,85,247,0.5); outline-offset: 2px; }
-.xbtn--teal {
-  border-color: rgba(34,211,238,0.25);
-  background: rgba(34,211,238,0.05);
-  color: #5ee8f8;
-}
-.xbtn--teal:hover {
-  background: rgba(34,211,238,0.14);
-  border-color: rgba(34,211,238,0.45);
-  color: #bef7ff;
-}
-.xbtn--danger {
-  border-color: rgba(239,68,68,0.2);
-  background: rgba(239,68,68,0.04);
-  color: #fc8c8c;
-}
-.xbtn--danger:hover {
-  background: rgba(239,68,68,0.12);
-  border-color: rgba(239,68,68,0.4);
-  color: #fca5a5;
-}
-.xbtn--ghost {
-  border-color: transparent;
-  background: transparent;
-  color: rgba(168,85,247,0.5);
-}
-.xbtn--ghost:hover { background: rgba(168,85,247,0.08); color: #b084e8; }
-/* ── Pulse dot ──────────────────────────────────────── */
-@keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 4px rgba(168,85,247,0.5)} 50%{opacity:0.5;box-shadow:0 0 10px rgba(168,85,247,0.9)} }
-.pulse-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: #a855f7;
-  animation: pulse 2.5s ease-in-out infinite;
-  flex-shrink: 0;
-}
-.pulse-dot--off { background: rgba(168,85,247,0.2); animation: none; }
-/* ── Welcome grid cards ─────────────────────────────── */
-.wcard {
-  text-align: left; padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(168,85,247,0.13);
-  background: rgba(124,58,237,0.05);
-  cursor: pointer;
-  transition: all 0.18s;
-  display: flex; align-items: center; gap: 10px;
-}
-.wcard:hover {
-  background: rgba(124,58,237,0.11);
-  border-color: rgba(168,85,247,0.28);
-}
-/* ── Mobile Export Overflow Menu ───────────────────── */
-#mobile-export-menu {
-  position: fixed;
-  bottom: calc(var(--footer-h) + 6px);
-  right: 12px;
-  z-index: 500;
-  background: rgba(11,0,26,0.97);
-  backdrop-filter: blur(28px);
-  border: 1px solid rgba(168,85,247,0.25);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 12px 50px rgba(0,0,0,0.7);
-  min-width: 190px;
-  transform: translateY(8px);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-#mobile-export-menu.open {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: all;
-}
-.mob-export-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 16px;
-  border: none; width: 100%; text-align: left;
-  background: transparent; cursor: pointer;
-  font-family: 'Outfit', sans-serif; font-size: 13px;
-  color: #c4b5d4;
-  border-bottom: 1px solid rgba(168,85,247,0.08);
-  transition: background 0.12s;
-}
-.mob-export-item:last-child { border-bottom: none; }
-.mob-export-item:hover { background: rgba(168,85,247,0.09); color: #e4d4f8; }
-.mob-export-item i { color: #7c3aed; width: 14px; text-align: center; flex-shrink: 0; }
-/* ── Mobile responsive ──────────────────────────────── */
-@media (max-width: 768px) {
-  :root {
-    --sidebar-w: 0px;
-    --mobile-nav-h: 72px;
-  }
-  #sidebar {
-    top: var(--header-h); left: 0; right: 0; bottom: auto;
-    width: 100%; height: var(--mobile-nav-h);
-    display: flex; flex-direction: row;
-    overflow-x: auto; overflow-y: hidden;
-    padding: 8px 10px; gap: 7px;
-    border-right: none;
-    border-bottom: 1px solid rgba(168,85,247,0.13);
-    scrollbar-width: none;
-  }
-  #sidebar::-webkit-scrollbar { display: none; }
-  .section-label, .divider { display: none; }
-  .tile {
-    flex-direction: column; align-items: center;
-    min-width: 62px; padding: 8px 7px;
-    border-left: none; border-bottom: 2px solid transparent;
-    border-radius: 10px; gap: 5px;
-  }
-  .tile:hover:not(.tile--off) { border-left-color: transparent; border-bottom-color: rgba(168,85,247,0.45); }
-  .tile.tile--active { border-left-color: transparent; border-bottom-color: var(--purple); }
-  .tile__name { font-size: 9px; text-align: center; }
-  .tile__sub, .tile__badge { display: none; }
-  #main {
-    left: 0;
-    top: calc(var(--header-h) + var(--mobile-nav-h));
-  }
-  #hdr-label {
-    font-size: 9.5px;
-    max-width: 110px;
-  }
-  #mobile-search-btn {
-    display: flex !important;
-  }
-  #footer-desktop-exports { display: none !important; }
-  #footer-mobile-exports { display: flex !important; }
-  #bridge-panel { width: 100%; border-radius: 0; }
-  #toasts { right: 10px; left: 10px; }
-  #welcome-grid { grid-template-columns: 1fr !important; }
-}
-@media (max-width: 400px) {
-  #hdr-dot, #hdr-label { display: none !important; }
-}
+@media(max-width:400px){#hdr-dot,#hdr-label{display:none !important}}
 </style>
 </head>
 <body>
-<!-- ── Ambient Background ─────────────────────────────── -->
 <div id="mesh" aria-hidden="true"></div>
 
-<!-- ╔══════════════════════════════════════════╗
-     ║           H E A D E R                   ║
-     ╚══════════════════════════════════════════╝ -->
+<!-- ── HEADER ───────────────────────────────────────────── -->
 <header id="header" class="glass">
-  <div style="display:flex; align-items:center; height:100%; padding:0 18px; gap:14px;">
-    <!-- Logo + wordmark -->
-    <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
-      <img src="https://calico-usa.com/logo9_9_23650.png" alt="CaliCo"
-           style="height:26px; width:auto;"
-           onerror="this.style.display='none'" />
+  <div style="display:flex;align-items:center;height:100%;padding:0 18px;gap:14px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+      <img src="https://calico-usa.com/logo9_9_23650.png" alt="CaliCo" style="height:26px;width:auto;" onerror="this.style.display='none'" />
       <div>
-        <div style="font-family:'Syne',sans-serif; font-weight:800; font-size:14px; color:#fff; letter-spacing:0.5px; line-height:1;">
-          VELOCITY <span style="color:#a855f7;">OS</span>
-        </div>
-        <div style="font-family:'DM Mono',monospace; font-size:7.5px; color:rgba(168,85,247,0.4); letter-spacing:1.5px; text-transform:uppercase; margin-top:1px;">
-          AI Driven · Artist Approved
-        </div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff;letter-spacing:0.5px;line-height:1;">VELOCITY <span style="color:#a855f7;">OS</span></div>
+        <div style="font-family:'DM Mono',monospace;font-size:7.5px;color:rgba(168,85,247,0.4);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;">AI Driven · Artist Approved</div>
       </div>
     </div>
-    <!-- Sep -->
-    <div style="width:1px; height:24px; background:rgba(168,85,247,0.15); flex-shrink:0;"></div>
-    <!-- Active tool indicator -->
-    <div style="display:flex; align-items:center; gap:7px; flex:1; min-width:0;">
+    <div style="width:1px;height:24px;background:rgba(168,85,247,0.15);flex-shrink:0;"></div>
+    <div style="display:flex;align-items:center;gap:7px;flex:1;min-width:0;">
       <div id="hdr-dot" class="pulse-dot pulse-dot--off"></div>
-      <span id="hdr-label" style="font-size:11.5px; color:rgba(168,85,247,0.4); font-family:'DM Mono',monospace; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-        No tool loaded — select from sidebar
-      </span>
+      <span id="hdr-label" style="font-size:11.5px;color:rgba(168,85,247,0.4);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">No tool loaded — select from sidebar</span>
     </div>
-    <!-- Keyboard hint (desktop only) -->
-    <div class="hidden md:flex" style="align-items:center; gap:5px; flex-shrink:0;">
-      <kbd>⌘K</kbd>
-      <span style="font-size:9.5px; color:rgba(168,85,247,0.3);">search</span>
-    </div>
-    <!-- Mobile search icon -->
-    <button id="mobile-search-btn" onclick="openCmd()"
-            class="md:hidden"
-            style="display:none; align-items:center; justify-content:center;
-                   width:32px; height:32px; flex-shrink:0;
-                   background:rgba(124,58,237,0.1); border:1px solid rgba(168,85,247,0.22);
-                   border-radius:8px; cursor:pointer; color:#a855f7;
-                   transition:all 0.18s;"
-            title="Search tools" aria-label="Search tools">
+    <div class="hidden md:flex" style="align-items:center;gap:5px;flex-shrink:0;"><kbd>⌘K</kbd><span style="font-size:9.5px;color:rgba(168,85,247,0.3);">search</span></div>
+    <button id="mobile-search-btn" onclick="openCmd()" class="md:hidden" style="display:none;align-items:center;justify-content:center;width:32px;height:32px;flex-shrink:0;background:rgba(124,58,237,0.1);border:1px solid rgba(168,85,247,0.22);border-radius:8px;cursor:pointer;color:#a855f7;transition:all 0.18s;" title="Search tools" aria-label="Search tools">
       <i class="fa-solid fa-magnifying-glass" style="font-size:12px;"></i>
     </button>
-    <!-- Data Bridge Button -->
-    <button id="bridge-btn" onclick="toggleBridge()"
-            style="display:flex; align-items:center; gap:7px; padding:5px 12px;
-                   background:rgba(124,58,237,0.1); border:1px solid rgba(168,85,247,0.22);
-                   border-radius:8px; cursor:pointer; color:#a855f7; font-family:'Syne',sans-serif;
-                   font-weight:600; font-size:11px; transition:all 0.18s; flex-shrink:0;"
-            title="Open Data Bridge">
+    <button id="bridge-btn" onclick="toggleBridge()" style="display:flex;align-items:center;gap:7px;padding:5px 12px;background:rgba(124,58,237,0.1);border:1px solid rgba(168,85,247,0.22);border-radius:8px;cursor:pointer;color:#a855f7;font-family:'Syne',sans-serif;font-weight:600;font-size:11px;transition:all 0.18s;flex-shrink:0;" title="Open Data Bridge">
       <i class="fa-solid fa-database" style="font-size:11px;"></i>
       <span>Data Bridge</span>
-      <span id="bridge-count" style="display:none; background:rgba(168,85,247,0.22);
-             border:1px solid rgba(168,85,247,0.35); border-radius:4px; padding:0 5px;
-             font-size:9px; color:#c084fc;"></span>
+      <span id="bridge-count" style="display:none;background:rgba(168,85,247,0.22);border:1px solid rgba(168,85,247,0.35);border-radius:4px;padding:0 5px;font-size:9px;color:#c084fc;"></span>
     </button>
   </div>
 </header>
 
-<!-- ── Data Bridge Panel ──────────────────────────────── -->
+<!-- ── DATA BRIDGE PANEL ─────────────────────────────────── -->
 <aside id="bridge-panel" role="dialog" aria-label="Data Bridge">
-  <div style="display:flex; justify-content:space-between; align-items:center;
-       padding:13px 15px; border-bottom:1px solid rgba(168,85,247,0.12); position:sticky; top:0;
-       background:rgba(11,0,26,0.99); z-index:1;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border-bottom:1px solid rgba(168,85,247,0.12);position:sticky;top:0;background:rgba(11,0,26,0.99);z-index:1;">
     <div>
-      <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:#e4d4f8;">Data Bridge</div>
-      <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(168,85,247,0.38); margin-top:2px;">
-        Auto-detects Dossier · JSON Manifest · Strategy Prism
-      </div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#e4d4f8;">Data Bridge</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(168,85,247,0.38);margin-top:2px;">Auto-detects Dossier · JSON Manifest · Strategy Prism</div>
     </div>
-    <div style="display:flex; gap:6px; align-items:center;">
-      <button onclick="clearAllData()" class="xbtn xbtn--danger" style="font-size:9px; padding:3px 9px;">
-        <i class="fa-solid fa-trash-can"></i> Clear Data
-      </button>
-      <button onclick="fullReset()" class="xbtn xbtn--danger" style="font-size:9px; padding:3px 9px;">
-        <i class="fa-solid fa-rotate"></i> Full Reset OS
-      </button>
-      <button onclick="toggleBridge()" class="xbtn xbtn--ghost" style="padding:4px 7px;">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button onclick="clearAllData()" class="xbtn xbtn--danger" style="font-size:9px;padding:3px 9px;"><i class="fa-solid fa-trash-can"></i> Clear Data</button>
+      <button onclick="fullReset()" class="xbtn xbtn--danger" style="font-size:9px;padding:3px 9px;"><i class="fa-solid fa-rotate"></i> Full Reset OS</button>
+      <button onclick="toggleBridge()" class="xbtn xbtn--ghost" style="padding:4px 7px;"><i class="fa-solid fa-xmark"></i></button>
     </div>
   </div>
   <div id="bridge-items"></div>
 </aside>
 
-<!-- ╔══════════════════════════════════════════╗
-     ║           S I D E B A R                 ║
-     ╚══════════════════════════════════════════╝ -->
+<!-- ── TOOLTIP (disabled tiles) ─────────────────────────── -->
+<div id="tip" role="tooltip" aria-hidden="true">
+  <div id="tip-name"></div>
+  <div id="tip-badge"></div>
+  <div id="tip-body"></div>
+</div>
+
+<!-- ── SIDEBAR ───────────────────────────────────────────── -->
 <nav id="sidebar" class="glass" role="navigation" aria-label="Velocity Tools">
 
-  <div class="section-label">Velocity Toolkit</div>
-
-  <button class="tile" onclick="loadTool('https://www.calico-usa.com/velocity-engine','Velocity Engine','Brief → Campaign Dossier')" data-name="Velocity Engine" aria-label="Open Velocity Engine">
-    <div class="tile__icon"><i class="fa-solid fa-bolt"></i></div>
-    <div>
-      <div class="tile__name">Velocity Engine</div>
-      <div class="tile__sub">Brief → Campaign Dossier</div>
-    </div>
-  </button>
-
-  <button class="tile" onclick="loadTool('https://www.calico-usa.com/genre-architect','Genre Architect','Brief → Sonic Parameters')" data-name="Genre Architect" aria-label="Open Genre Architect">
-    <div class="tile__icon"><i class="fa-solid fa-waveform-lines"></i></div>
-    <div>
-      <div class="tile__name">Genre Architect</div>
-      <div class="tile__sub">Brief → Sonic Parameters</div>
-    </div>
-  </button>
-
-  <button class="tile" onclick="loadTool('https://www.calico-usa.com/velocity-hooks','Velocity Hooks','Brief → Anchor Messaging')" data-name="Velocity Hooks" aria-label="Open Velocity Hooks">
-    <div class="tile__icon"><i class="fa-solid fa-anchor"></i></div>
-    <div>
-      <div class="tile__name">Velocity Hooks</div>
-      <div class="tile__sub">Brief → Anchor Messaging</div>
-    </div>
-  </button>
-
-  <button class="tile" onclick="loadTool('https://www.calico-usa.com/velocity-planner','Velocity Planner','Hook → Campaign Plan')" data-name="Velocity Planner" aria-label="Open Velocity Planner">
-    <div class="tile__icon"><i class="fa-solid fa-calendar-check"></i></div>
-    <div>
-      <div class="tile__name">Velocity Planner</div>
-      <div class="tile__sub">Hook → Campaign Plan</div>
-    </div>
-  </button>
-
-  <button class="tile" onclick="loadTool('https://www.calico-usa.com/velocity-builder','Velocity Builder','Asset Production Tool')" data-name="Velocity Builder" aria-label="Open Velocity Builder">
-    <div class="tile__icon"><i class="fa-solid fa-hammer"></i></div>
-    <div>
-      <div class="tile__name">Velocity Builder</div>
-      <div class="tile__sub">Asset Production Tool</div>
-    </div>
-  </button>
-
-  <!-- DISABLED — Alpha -->
-  <button class="tile tile--off" tabindex="-1" aria-disabled="true"
-          title="https://www.calico-usa.com/velocity-clipper — activate when production-ready">
-    <div class="tile__icon"><i class="fa-solid fa-scissors"></i></div>
-    <div>
-      <div class="tile__name">Velocity Clipper</div>
-      <div class="tile__sub">calico-usa.com/velocity-clipper</div>
-    </div>
-    <span class="tile__badge badge--alpha">Alpha · Dev</span>
-  </button>
-
-  <div class="divider"></div>
+  <!-- ── WORKSPACE (first) ── -->
   <div class="section-label">Workspace</div>
 
   <button class="tile" onclick="loadTool('https://www.calico-usa.com/calico-workspace','Calico Workspace','Project Hub')" data-name="Calico Workspace" aria-label="Open Calico Workspace">
     <div class="tile__icon"><i class="fa-solid fa-briefcase"></i></div>
-    <div>
-      <div class="tile__name">Calico Workspace</div>
-      <div class="tile__sub">Project Hub</div>
-    </div>
+    <div><div class="tile__name">Calico Workspace</div><div class="tile__sub">Project Hub</div></div>
   </button>
 
   <button class="tile" onclick="loadTool('https://www.calico-usa.com','Home / Main Site','calico-usa.com')" data-name="Home / Main Site" aria-label="Open CaliCo Main Site">
     <div class="tile__icon"><i class="fa-solid fa-house"></i></div>
-    <div>
-      <div class="tile__name">Home / Main Site</div>
-      <div class="tile__sub">calico-usa.com</div>
-    </div>
+    <div><div class="tile__name">Home / Main Site</div><div class="tile__sub">calico-usa.com</div></div>
   </button>
 
-  <!-- PATCH 1.2 — Velocity Launchpad: activated (was: Coming Soon) -->
+  <!-- COMING SOON — Velocity Pulse -->
+  <button class="tile tile--off" tabindex="0" aria-disabled="true" data-tip-id="velocity-pulse">
+    <div class="tile__icon"><i class="fa-solid fa-headset"></i></div>
+    <div><div class="tile__name">Velocity Pulse</div><div class="tile__sub">Inbound / Outbound Call Tool</div></div>
+    <span class="tile__badge badge--soon">Soon</span>
+  </button>
+
   <button class="tile" onclick="loadTool('https://www.calico-usa.com/velocity-launchpad','Velocity Launchpad','AI Tool Stack · Quick Launch Hub')" data-name="Velocity Launchpad" aria-label="Open Velocity Launchpad">
     <div class="tile__icon"><i class="fa-solid fa-rocket"></i></div>
-    <div>
-      <div class="tile__name">Velocity Launchpad</div>
-      <div class="tile__sub">AI Tool Stack · Quick Launch Hub</div>
-    </div>
+    <div><div class="tile__name">Velocity Launchpad</div><div class="tile__sub">AI Tool Stack · Quick Launch Hub</div></div>
   </button>
 
-  <!-- Spacer -->
+  <div class="divider"></div>
+
+  <!-- ── VELOCITY TOOLKIT (second) ── -->
+  <div class="section-label">Velocity Toolkit</div>
+
+  <!-- COMING SOON — Velocity Intake -->
+  <button class="tile tile--off" tabindex="0" aria-disabled="true" data-tip-id="velocity-intake">
+    <div class="tile__icon"><i class="fa-solid fa-file-pen"></i></div>
+    <div><div class="tile__name">Velocity Intake</div><div class="tile__sub">Single Entry · Full Stack Prefill</div></div>
+    <span class="tile__badge badge--soon">Soon</span>
+  </button>
+
+  <button class="tile" onclick="loadTool('https://www.calico-usa.com/velocity-engine','Velocity Engine','Brief → Campaign Dossier')" data-name="Velocity Engine" aria-label="Open Velocity Engine">
+    <div class="tile__icon"><i class="fa-solid fa-bolt"></i></div>
+    <div><div class="tile__name">Velocity Engine</div><div class="tile__sub">Brief → Campaign Dossier</div></div>
+  </button>
+
+  <!-- PATCH 1.3: fa-music replaces fa-waveform-lines (Pro icon) -->
+  <button class="tile" onclick="loadTool('https://www.calico-usa.com/genre-architect','Genre Architect','Brief → Sonic Parameters')" data-name="Genre Architect" aria-label="Open Genre Architect">
+    <div class="tile__icon"><i class="fa-solid fa-music"></i></div>
+    <div><div class="tile__name">Genre Architect</div><div class="tile__sub">Brief → Sonic Parameters</div></div>
+  </button>
+
+  <button class="tile" onclick="loadTool('https://www.calico-usa.com/velocity-hooks','Velocity Hooks','Brief → Anchor Messaging')" data-name="Velocity Hooks" aria-label="Open Velocity Hooks">
+    <div class="tile__icon"><i class="fa-solid fa-anchor"></i></div>
+    <div><div class="tile__name">Velocity Hooks</div><div class="tile__sub">Brief → Anchor Messaging</div></div>
+  </button>
+
+  <button class="tile" onclick="loadTool('https://www.calico-usa.com/velocity-planner','Velocity Planner','Hook → Campaign Plan')" data-name="Velocity Planner" aria-label="Open Velocity Planner">
+    <div class="tile__icon"><i class="fa-solid fa-calendar-check"></i></div>
+    <div><div class="tile__name">Velocity Planner</div><div class="tile__sub">Hook → Campaign Plan</div></div>
+  </button>
+
+  <button class="tile" onclick="loadTool('https://www.calico-usa.com/velocity-builder','Velocity Builder','Asset Production Tool')" data-name="Velocity Builder" aria-label="Open Velocity Builder">
+    <div class="tile__icon"><i class="fa-solid fa-hammer"></i></div>
+    <div><div class="tile__name">Velocity Builder</div><div class="tile__sub">Asset Production Tool</div></div>
+  </button>
+
+  <!-- DISABLED — Alpha -->
+  <button class="tile tile--off" tabindex="0" aria-disabled="true" data-tip-id="velocity-clipper">
+    <div class="tile__icon"><i class="fa-solid fa-scissors"></i></div>
+    <div><div class="tile__name">Velocity Clipper</div><div class="tile__sub">calico-usa.com/velocity-clipper</div></div>
+    <span class="tile__badge badge--alpha">Alpha · Dev</span>
+  </button>
+
   <div style="height:16px;"></div>
 </nav>
 
-<!-- ╔══════════════════════════════════════════╗
-     ║        M A I N  C O N T E N T           ║
-     ╚══════════════════════════════════════════╝ -->
+<!-- ── MAIN ──────────────────────────────────────────────── -->
 <main id="main">
-  <!-- Welcome Screen -->
   <div id="welcome">
-    <div style="text-align:center; max-width:480px; padding:0 28px;">
+    <div style="text-align:center;max-width:480px;padding:0 28px;">
       <div style="margin-bottom:20px;">
-        <div style="display:inline-flex; align-items:center; justify-content:center;
-             width:72px; height:72px; border-radius:20px;
-             background:rgba(124,58,237,0.15); border:1px solid rgba(168,85,247,0.28);
-             box-shadow: 0 0 40px rgba(124,58,237,0.2);">
-          <i class="fa-solid fa-bolt" style="font-size:28px; color:#a855f7;"></i>
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:20px;background:rgba(124,58,237,0.15);border:1px solid rgba(168,85,247,0.28);box-shadow:0 0 40px rgba(124,58,237,0.2);">
+          <i class="fa-solid fa-bolt" style="font-size:28px;color:#a855f7;"></i>
         </div>
       </div>
-      <h1 style="font-family:'Syne',sans-serif; font-weight:800; font-size:30px;
-          color:#fff; line-height:1.05; margin-bottom:10px; letter-spacing:-0.5px;">
-        Velocity <span style="color:#a855f7;">OS</span>
-      </h1>
-      <p style="font-size:12.5px; color:rgba(168,85,247,0.45); margin-bottom:8px;
-          font-family:'DM Mono',monospace; letter-spacing:1px; text-transform:uppercase;">
-        Unified Access Hub · CaliCo
-      </p>
-      <p style="color:rgba(180,160,210,0.6); font-size:13px; line-height:1.75;
-          margin-bottom:28px; max-width:380px; margin-left:auto; margin-right:auto;">
-        Select any tool from the sidebar to load it here, or press
-        <kbd>⌘K</kbd> to search. Data from all tools is bridged automatically.
-      </p>
-      <div id="welcome-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; text-align:left;"></div>
-      <div style="margin-top:22px; font-family:'DM Mono',monospace; font-size:8.5px;
-           color:rgba(168,85,247,0.22); letter-spacing:1.8px; text-transform:uppercase;">
-        AI Driven · Artist Approved · Vibe-Coding Protocol v1.1
-      </div>
+      <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:30px;color:#fff;line-height:1.05;margin-bottom:10px;letter-spacing:-0.5px;">Velocity <span style="color:#a855f7;">OS</span></h1>
+      <p style="font-size:12.5px;color:rgba(168,85,247,0.45);margin-bottom:8px;font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;">Unified Access Hub · CaliCo</p>
+      <p style="color:rgba(180,160,210,0.6);font-size:13px;line-height:1.75;margin-bottom:28px;max-width:380px;margin-left:auto;margin-right:auto;">Select any tool from the sidebar to load it here, or press <kbd>⌘K</kbd> to search. Data from all tools is bridged automatically.</p>
+      <div id="welcome-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left;"></div>
+      <div style="margin-top:22px;font-family:'DM Mono',monospace;font-size:8.5px;color:rgba(168,85,247,0.22);letter-spacing:1.8px;text-transform:uppercase;">AI Driven · Artist Approved · Vibe-Coding Protocol v1.1</div>
     </div>
   </div>
-
-  <!-- Loading / Error Overlay -->
   <div id="frame-overlay">
     <div class="spinner" style="margin-bottom:14px;"></div>
-    <div style="font-size:12px; color:rgba(168,85,247,0.45); font-family:'DM Mono',monospace;">Loading tool…</div>
-    <button id="overlay-newtab" onclick="openNewTab()" style="display:none; margin-top:16px;" class="xbtn xbtn--teal">
-      <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in New Tab
-    </button>
+    <div style="font-size:12px;color:rgba(168,85,247,0.45);font-family:'DM Mono',monospace;">Loading tool…</div>
+    <button id="overlay-newtab" onclick="openNewTab()" style="display:none;margin-top:16px;" class="xbtn xbtn--teal"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open in New Tab</button>
   </div>
-
-  <!-- The iframe -->
-  <iframe id="tool-iframe"
-          src="about:blank"
-          title="Velocity Tool"
-          sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
-          allow="clipboard-write"
-  ></iframe>
+  <iframe id="tool-iframe" src="about:blank" title="Velocity Tool"
+    sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
+    allow="clipboard-write"></iframe>
 </main>
 
-<!-- ╔══════════════════════════════════════════╗
-     ║     F O O T E R  (Export Bar)            ║
-     ╚══════════════════════════════════════════╝ -->
+<!-- ── FOOTER ────────────────────────────────────────────── -->
 <footer id="footer" class="glass">
-  <div style="display:flex; align-items:center; height:100%; padding:0 16px; gap:10px;">
-    <div style="font-family:'DM Mono',monospace; font-size:8.5px; color:rgba(168,85,247,0.28); letter-spacing:0.5px; flex-shrink:0; white-space:nowrap;">
-      Built with <span style="color:rgba(124,58,237,0.7); font-weight:500;">Vibe-Coding Protocol</span> · v1.1
+  <div style="display:flex;align-items:center;height:100%;padding:0 16px;gap:10px;">
+    <div style="font-family:'DM Mono',monospace;font-size:8.5px;color:rgba(168,85,247,0.28);letter-spacing:0.5px;flex-shrink:0;white-space:nowrap;">Built with <span style="color:rgba(124,58,237,0.7);font-weight:500;">Vibe-Coding Protocol</span> · v1.1</div>
+    <div id="footer-desktop-exports" style="display:flex;align-items:center;gap:10px;flex:1;">
+      <div style="width:1px;height:18px;background:rgba(168,85,247,0.1);flex-shrink:0;"></div>
+      <button onclick="exportAll('json')" class="xbtn"><i class="fa-solid fa-file-code"></i> All (JSON)</button>
+      <button onclick="exportAll('csv')" class="xbtn"><i class="fa-solid fa-file-csv"></i> All (CSV)</button>
+      <button onclick="exportSelected()" class="xbtn"><i class="fa-solid fa-file-export"></i> Current Tool</button>
+      <button onclick="showGroupModal()" class="xbtn"><i class="fa-solid fa-layer-group"></i> Export Group</button>
+      <div style="flex:1;min-width:8px;"></div>
+      <button onclick="openNewTab()" class="xbtn xbtn--teal" style="flex-shrink:0;"><i class="fa-solid fa-arrow-up-right-from-square"></i> New Tab</button>
     </div>
-    <!-- DESKTOP: full export strip -->
-    <div id="footer-desktop-exports" style="display:flex; align-items:center; gap:10px; flex:1;">
-      <div style="width:1px; height:18px; background:rgba(168,85,247,0.1); flex-shrink:0;"></div>
-      <button onclick="exportAll('json')" class="xbtn" title="Export all localStorage data as JSON">
-        <i class="fa-solid fa-file-code"></i> All (JSON)
-      </button>
-      <button onclick="exportAll('csv')" class="xbtn" title="Export all localStorage data as CSV">
-        <i class="fa-solid fa-file-csv"></i> All (CSV)
-      </button>
-      <button onclick="exportSelected()" class="xbtn" title="Export data for the current tool">
-        <i class="fa-solid fa-file-export"></i> Current Tool
-      </button>
-      <button onclick="showGroupModal()" class="xbtn" title="Choose which tools to include in export">
-        <i class="fa-solid fa-layer-group"></i> Export Group
-      </button>
-      <div style="flex:1; min-width:8px;"></div>
-      <button onclick="openNewTab()" class="xbtn xbtn--teal" style="flex-shrink:0;" title="Open current tool in new browser tab">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i> New Tab
-      </button>
-    </div>
-    <!-- MOBILE: overflow menu + new tab -->
-    <div id="footer-mobile-exports" style="display:none; align-items:center; gap:8px; flex:1; justify-content:flex-end;">
-      <button onclick="openNewTab()" class="xbtn xbtn--teal" style="flex-shrink:0;">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i> New Tab
-      </button>
-      <button onclick="toggleMobileExport()" class="xbtn" style="flex-shrink:0;" aria-label="Export options" title="Export options">
-        <i class="fa-solid fa-ellipsis"></i> Export
-      </button>
+    <div id="footer-mobile-exports" style="display:none;align-items:center;gap:8px;flex:1;justify-content:flex-end;">
+      <button onclick="openNewTab()" class="xbtn xbtn--teal" style="flex-shrink:0;"><i class="fa-solid fa-arrow-up-right-from-square"></i> New Tab</button>
+      <button onclick="toggleMobileExport()" class="xbtn" style="flex-shrink:0;" aria-label="Export options"><i class="fa-solid fa-ellipsis"></i> Export</button>
     </div>
   </div>
 </footer>
 
-<!-- ── Mobile Export Overflow Menu ───────────────────── -->
+<!-- ── MOBILE EXPORT MENU ────────────────────────────────── -->
 <div id="mobile-export-menu" role="menu" aria-label="Export options">
-  <div style="padding:9px 16px 6px; border-bottom:1px solid rgba(168,85,247,0.1);">
-    <div style="font-family:'DM Mono',monospace; font-size:8.5px; color:rgba(168,85,247,0.38); text-transform:uppercase; letter-spacing:1px;">Export</div>
-  </div>
-  <button class="mob-export-item" onclick="exportAll('json'); toggleMobileExport();" role="menuitem">
-    <i class="fa-solid fa-file-code"></i> All Data (JSON)
-  </button>
-  <button class="mob-export-item" onclick="exportAll('csv'); toggleMobileExport();" role="menuitem">
-    <i class="fa-solid fa-file-csv"></i> All Data (CSV)
-  </button>
-  <button class="mob-export-item" onclick="exportSelected(); toggleMobileExport();" role="menuitem">
-    <i class="fa-solid fa-file-export"></i> Current Tool
-  </button>
-  <button class="mob-export-item" onclick="showGroupModal(); toggleMobileExport();" role="menuitem">
-    <i class="fa-solid fa-layer-group"></i> Export Group
-  </button>
+  <div style="padding:9px 16px 6px;border-bottom:1px solid rgba(168,85,247,0.1);"><div style="font-family:'DM Mono',monospace;font-size:8.5px;color:rgba(168,85,247,0.38);text-transform:uppercase;letter-spacing:1px;">Export</div></div>
+  <button class="mob-export-item" onclick="exportAll('json');toggleMobileExport();" role="menuitem"><i class="fa-solid fa-file-code"></i> All Data (JSON)</button>
+  <button class="mob-export-item" onclick="exportAll('csv');toggleMobileExport();" role="menuitem"><i class="fa-solid fa-file-csv"></i> All Data (CSV)</button>
+  <button class="mob-export-item" onclick="exportSelected();toggleMobileExport();" role="menuitem"><i class="fa-solid fa-file-export"></i> Current Tool</button>
+  <button class="mob-export-item" onclick="showGroupModal();toggleMobileExport();" role="menuitem"><i class="fa-solid fa-layer-group"></i> Export Group</button>
 </div>
 
-<!-- ── Toast Container ────────────────────────────────── -->
 <div id="toasts" role="status" aria-live="polite"></div>
 
-<!-- ╔══════════════════════════════════════════╗
-     ║      C O M M A N D  P A L E T T E       ║
-     ╚══════════════════════════════════════════╝ -->
+<!-- ── COMMAND PALETTE ───────────────────────────────────── -->
 <div id="cmd" role="dialog" aria-label="Tool Search" onclick="cmdBgClick(event)">
   <div id="cmd-box">
     <div id="cmd-search-row">
-      <i class="fa-solid fa-magnifying-glass" style="color:rgba(168,85,247,0.4); font-size:14px;"></i>
-      <input id="cmd-input" type="search" placeholder="Search tools…" autocomplete="off"
-             oninput="renderCmdResults(this.value)" />
+      <i class="fa-solid fa-magnifying-glass" style="color:rgba(168,85,247,0.4);font-size:14px;"></i>
+      <input id="cmd-input" type="search" placeholder="Search tools…" autocomplete="off" oninput="renderCmdResults(this.value)" />
       <kbd style="flex-shrink:0;">Esc</kbd>
     </div>
     <div id="cmd-results"></div>
@@ -924,94 +448,188 @@ kbd {
   </div>
 </div>
 
-<!-- ╔══════════════════════════════════════════╗
-     ║    G R O U P  E X P O R T  M O D A L    ║
-     ╚══════════════════════════════════════════╝ -->
+<!-- ── GROUP EXPORT MODAL ────────────────────────────────── -->
 <div id="group-modal" role="dialog" aria-label="Group Export">
   <div id="group-box">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <div>
-        <h3 style="font-family:'Syne',sans-serif; font-weight:700; font-size:15px; color:#e4d4f8;">Export Group</h3>
-        <p style="font-size:11px; color:rgba(168,85,247,0.4); margin-top:3px;">Select tools to include in this export.</p>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#e4d4f8;">Export Group</h3>
+        <p style="font-size:11px;color:rgba(168,85,247,0.4);margin-top:3px;">Select tools to include in this export.</p>
       </div>
-      <button onclick="hideGroupModal()" class="xbtn xbtn--ghost" style="padding:5px 8px;">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <button onclick="hideGroupModal()" class="xbtn xbtn--ghost" style="padding:5px 8px;"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div id="group-checks" style="margin-bottom:18px;"></div>
-    <div style="display:flex; justify-content:flex-end; gap:8px;">
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
       <button onclick="hideGroupModal()" class="xbtn xbtn--ghost">Cancel</button>
-      <button onclick="doGroupExport()" class="xbtn" style="background:rgba(168,85,247,0.18); border-color:rgba(168,85,247,0.45); color:#e9d5ff;">
-        <i class="fa-solid fa-download"></i> Export
-      </button>
+      <button onclick="doGroupExport()" class="xbtn" style="background:rgba(168,85,247,0.18);border-color:rgba(168,85,247,0.45);color:#e9d5ff;"><i class="fa-solid fa-download"></i> Export</button>
     </div>
   </div>
 </div>
 
-<!-- ╔══════════════════════════════════════════╗
-     ║         J A V A S C R I P T             ║
-     ╚══════════════════════════════════════════╝ -->
+<!-- ── JAVASCRIPT ────────────────────────────────────────── -->
 <script>
 'use strict';
 
-/* ─── Tool Registry ─────────────────────────────────────── */
-/* PATCH 1.2: Velocity Launchpad — active:true, correct name and URL */
+/* ─── Tool Registry ──────────────────────────────────────
+   Order reflects sidebar order: Workspace first, Toolkit second.
+   All tools appear in ⌘K. active:false = searchable but not clickable.
+   desc: shown in hover/hold tooltip for disabled tools only.
+─────────────────────────────────────────────────────────── */
 const TOOLS = [
-  { id:'velocity-engine',   name:'Velocity Engine',    sub:'Brief → Campaign Dossier',        url:'https://www.calico-usa.com/velocity-engine',      icon:'fa-bolt',          active:true  },
-  { id:'genre-architect',   name:'Genre Architect',    sub:'Brief → Sonic Parameters',        url:'https://www.calico-usa.com/genre-architect',      icon:'fa-waveform-lines',active:true  },
-  { id:'velocity-hooks',    name:'Velocity Hooks',     sub:'Brief → Anchor Messaging',        url:'https://www.calico-usa.com/velocity-hooks',       icon:'fa-anchor',        active:true  },
-  { id:'velocity-planner',  name:'Velocity Planner',   sub:'Hook → Campaign Plan',            url:'https://www.calico-usa.com/velocity-planner',     icon:'fa-calendar-check',active:true  },
-  { id:'velocity-builder',  name:'Velocity Builder',   sub:'Asset Production Tool',           url:'https://www.calico-usa.com/velocity-builder',     icon:'fa-hammer',        active:true  },
-  { id:'velocity-clipper',  name:'Velocity Clipper',   sub:'calico-usa.com/velocity-clipper', url:'https://www.calico-usa.com/velocity-clipper',     icon:'fa-scissors',      active:false, badge:'Alpha · Dev' },
-  { id:'calico-workspace',  name:'Calico Workspace',   sub:'Project Hub',                     url:'https://www.calico-usa.com/calico-workspace',     icon:'fa-briefcase',     active:true  },
-  { id:'main-site',         name:'Home / Main Site',   sub:'calico-usa.com',                  url:'https://www.calico-usa.com',                      icon:'fa-house',         active:true  },
-  { id:'velocity-launchpad',name:'Velocity Launchpad', sub:'AI Tool Stack · Quick Launch Hub',url:'https://www.calico-usa.com/velocity-launchpad',   icon:'fa-rocket',        active:true  },
+  // ── Workspace ──
+  { id:'calico-workspace',   name:'Calico Workspace',   sub:'Project Hub',                        url:'https://www.calico-usa.com/calico-workspace',      icon:'fa-briefcase',     active:true  },
+  { id:'main-site',          name:'Home / Main Site',   sub:'calico-usa.com',                     url:'https://www.calico-usa.com',                       icon:'fa-house',         active:true  },
+  { id:'velocity-pulse',     name:'Velocity Pulse',     sub:'Inbound / Outbound Call Tool',       url:'https://www.calico-usa.com/velocity-pulse',        icon:'fa-headset',       active:false, badge:'Soon',
+    desc:'Inbound and outbound call navigation tool. Guides the founder, agents, or employees through structured call flows to defined outcomes. Designed to replace unscripted calls with a reliable, outcome-driven process.' },
+  { id:'velocity-launchpad', name:'Velocity Launchpad', sub:'AI Tool Stack · Quick Launch Hub',   url:'https://www.calico-usa.com/velocity-launchpad',    icon:'fa-rocket',        active:true  },
+
+  // ── Velocity Toolkit ──
+  { id:'velocity-intake',    name:'Velocity Intake',    sub:'Single Entry · Full Stack Prefill',  url:'https://www.calico-usa.com/velocity-intake',       icon:'fa-file-pen',      active:false, badge:'Soon',
+    desc:'Single-entry intake form that pushes one client brief across all Velocity Toolkit tools simultaneously. Engine, Genre Architect, Hooks, and Planner all pre-filled from one submission — one brief, full stack ready.' },
+  { id:'velocity-engine',    name:'Velocity Engine',    sub:'Brief → Campaign Dossier',           url:'https://www.calico-usa.com/velocity-engine',       icon:'fa-bolt',          active:true  },
+  { id:'genre-architect',    name:'Genre Architect',    sub:'Brief → Sonic Parameters',           url:'https://www.calico-usa.com/genre-architect',       icon:'fa-music',         active:true  },
+  { id:'velocity-hooks',     name:'Velocity Hooks',     sub:'Brief → Anchor Messaging',           url:'https://www.calico-usa.com/velocity-hooks',        icon:'fa-anchor',        active:true  },
+  { id:'velocity-planner',   name:'Velocity Planner',   sub:'Hook → Campaign Plan',               url:'https://www.calico-usa.com/velocity-planner',      icon:'fa-calendar-check',active:true  },
+  { id:'velocity-builder',   name:'Velocity Builder',   sub:'Asset Production Tool',              url:'https://www.calico-usa.com/velocity-builder',      icon:'fa-hammer',        active:true  },
+  { id:'velocity-clipper',   name:'Velocity Clipper',   sub:'calico-usa.com/velocity-clipper',    url:'https://www.calico-usa.com/velocity-clipper',      icon:'fa-scissors',      active:false, badge:'Alpha · Dev',
+    desc:'Post-production clip marking and timeline sequencing tool with AI timestamp import. Core functionality is built. Export rendering via FFmpeg is in active development — not yet production-stable.' },
 ];
 
-/* keywords to match in localStorage values */
 const DATA_KW = ['dossier','json manifest','strategy prism'];
 
-/* ─── State ─────────────────────────────────────────────── */
+/* ─── State ────────────────────────────────────────────── */
 let state = {
   activeTool: null,
   cmdHi: 0,
   loadTimer: null,
+  tipTimer: null,
 };
 
-/* ─── Init ──────────────────────────────────────────────── */
+/* ─── Init ─────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   buildWelcomeGrid();
   buildGroupChecks();
   setupKeyboard();
   setupPostMessageListener();
+  setupDisabledTileTooltips();
   renderBridgeItems();
   setInterval(renderBridgeItems, 3500);
   restoreLastTool();
 });
 
+/* ─── Tooltip system ────────────────────────────────────
+   Desktop: show on mouseenter, hide on mouseleave
+   Mobile/touch: show after 600ms hold, hide on release/move
+─────────────────────────────────────────────────────────── */
+function setupDisabledTileTooltips() {
+  const tip = document.getElementById('tip');
+
+  document.querySelectorAll('.tile--off[data-tip-id]').forEach(tile => {
+    const id = tile.dataset.tipId;
+
+    /* Desktop hover */
+    tile.addEventListener('mouseenter', e => showTip(tile, id));
+    tile.addEventListener('mouseleave', () => hideTip());
+
+    /* Touch / long-press */
+    tile.addEventListener('touchstart', e => {
+      state.tipTimer = setTimeout(() => {
+        showTip(tile, id, true);
+      }, 600);
+    }, { passive: true });
+    tile.addEventListener('touchend', () => {
+      clearTimeout(state.tipTimer);
+      /* small delay so user can read it before it hides */
+      setTimeout(hideTip, 2200);
+    });
+    tile.addEventListener('touchmove', () => {
+      clearTimeout(state.tipTimer);
+      hideTip();
+    }, { passive: true });
+  });
+
+  /* Hide tooltip on scroll (sidebar scroll or page) */
+  document.getElementById('sidebar').addEventListener('scroll', hideTip, { passive: true });
+}
+
+function showTip(el, id, isMobile) {
+  const tool = TOOLS.find(t => t.id === id);
+  if (!tool || !tool.desc) return;
+
+  const tip      = document.getElementById('tip');
+  const tipName  = document.getElementById('tip-name');
+  const tipBadge = document.getElementById('tip-badge');
+  const tipBody  = document.getElementById('tip-body');
+
+  tipName.textContent = tool.name;
+  tipBody.textContent = tool.desc;
+
+  if (tool.badge) {
+    tipBadge.textContent = tool.badge;
+    tipBadge.style.display = 'inline-block';
+    tipBadge.className = tool.badge.toLowerCase().includes('alpha') ? 'alpha' : '';
+  } else {
+    tipBadge.style.display = 'none';
+  }
+
+  /* Temporarily show off-screen to measure height */
+  tip.style.left = '-9999px';
+  tip.style.top  = '-9999px';
+  tip.classList.add('show');
+
+  const rect    = el.getBoundingClientRect();
+  const tipW    = 230;
+  const tipH    = tip.offsetHeight;
+  const mobile  = window.innerWidth <= 768;
+  const pad     = 10;
+
+  let left, top;
+
+  if (mobile) {
+    /* Below tile on mobile horizontal nav bar */
+    left = Math.max(pad, Math.min(rect.left, window.innerWidth - tipW - pad));
+    top  = rect.bottom + 8;
+    /* If it would go below viewport, flip above */
+    if (top + tipH > window.innerHeight - pad) {
+      top = rect.top - tipH - 8;
+    }
+  } else {
+    /* Right of sidebar on desktop */
+    left = rect.right + 12;
+    top  = rect.top + (rect.height / 2) - (tipH / 2);
+    /* Clamp vertically */
+    top  = Math.max(pad, Math.min(top, window.innerHeight - tipH - pad));
+    /* If sidebar is narrow or right edge clips viewport, flip left (unlikely but safe) */
+    if (left + tipW > window.innerWidth - pad) {
+      left = rect.left - tipW - 12;
+    }
+  }
+
+  tip.style.left = left + 'px';
+  tip.style.top  = top  + 'px';
+}
+
+function hideTip() {
+  document.getElementById('tip').classList.remove('show');
+}
+
+/* ─── Mobile export menu ────────────────────────────────── */
 function toggleMobileExport() {
   const menu = document.getElementById('mobile-export-menu');
   const open = menu.classList.toggle('open');
-  if (open && document.getElementById('bridge-panel').classList.contains('open')) {
-    toggleBridge();
-  }
+  if (open && document.getElementById('bridge-panel').classList.contains('open')) toggleBridge();
 }
-
-function closeMobileExport() {
-  document.getElementById('mobile-export-menu').classList.remove('open');
-}
-
-document.addEventListener('click', (e) => {
+function closeMobileExport() { document.getElementById('mobile-export-menu').classList.remove('open'); }
+document.addEventListener('click', e => {
   const menu = document.getElementById('mobile-export-menu');
   if (!menu.classList.contains('open')) return;
-  if (!menu.contains(e.target) && !e.target.closest('[onclick*="toggleMobileExport"]')) {
-    closeMobileExport();
-  }
+  if (!menu.contains(e.target) && !e.target.closest('[onclick*="toggleMobileExport"]')) closeMobileExport();
 });
 
-/* ─── Tool Loading ──────────────────────────────────────── */
+/* ─── Tool loading ──────────────────────────────────────── */
 function loadTool(url, name, sub) {
   if (!url) { toast('This tool is not yet available','warn'); return; }
+  hideTip();
   const iframe   = document.getElementById('tool-iframe');
   const overlay  = document.getElementById('frame-overlay');
   const welcome  = document.getElementById('welcome');
@@ -1055,32 +673,23 @@ function loadTool(url, name, sub) {
 }
 
 function openNewTab() {
-  if (state.activeTool?.url) {
-    window.open(state.activeTool.url, '_blank', 'noopener');
-    toast('Opened in new tab', 'info');
-  } else {
-    toast('No tool currently loaded', 'warn');
-  }
+  if (state.activeTool?.url) { window.open(state.activeTool.url,'_blank','noopener'); toast('Opened in new tab','info'); }
+  else toast('No tool currently loaded','warn');
 }
 
 function restoreLastTool() {
-  try {
-    const s = localStorage.getItem('vos_last');
-    if (s) { const d = JSON.parse(s); loadTool(d.url, d.name, d.sub || ''); }
-  } catch(_) {}
+  try { const s = localStorage.getItem('vos_last'); if (s) { const d = JSON.parse(s); loadTool(d.url,d.name,d.sub||''); } } catch(_) {}
 }
 
 /* ─── Data Bridge ───────────────────────────────────────── */
 function scanBridgeData() {
   const items = [];
-  for (let i = 0; i < localStorage.length; i++) {
+  for (let i=0;i<localStorage.length;i++) {
     const key = localStorage.key(i);
-    if (key === 'vos_last') continue;
+    if (key==='vos_last') continue;
     try {
       const val = localStorage.getItem(key);
-      if (DATA_KW.some(kw => val.toLowerCase().includes(kw))) {
-        items.push({ key, val, size: val.length });
-      }
+      if (DATA_KW.some(kw=>val.toLowerCase().includes(kw))) items.push({key,val,size:val.length});
     } catch(_) {}
   }
   return items;
@@ -1090,333 +699,183 @@ function renderBridgeItems() {
   const items = scanBridgeData();
   const count = document.getElementById('bridge-count');
   const container = document.getElementById('bridge-items');
-
-  if (items.length > 0) {
-    count.textContent = items.length;
-    count.style.display = 'inline';
-  } else {
-    count.style.display = 'none';
-  }
-
+  if (items.length>0) { count.textContent=items.length; count.style.display='inline'; } else { count.style.display='none'; }
   if (!items.length) {
-    container.innerHTML = `
-      <div style="padding:32px 20px; text-align:center; color:rgba(168,85,247,0.28);">
-        <i class="fa-regular fa-circle-dashed" style="font-size:26px; display:block; margin-bottom:10px;"></i>
-        <div style="font-size:11.5px; margin-bottom:6px;">No saved data detected yet.</div>
-        <div style="font-family:'DM Mono',monospace; font-size:9px; line-height:1.7; opacity:0.7;">
-          Tool outputs containing<br>Dossier · JSON Manifest · Strategy Prism<br>will appear here automatically.
-        </div>
-      </div>`;
+    container.innerHTML=`<div style="padding:32px 20px;text-align:center;color:rgba(168,85,247,0.28);"><i class="fa-regular fa-circle-dashed" style="font-size:26px;display:block;margin-bottom:10px;"></i><div style="font-size:11.5px;margin-bottom:6px;">No saved data detected yet.</div><div style="font-family:'DM Mono',monospace;font-size:9px;line-height:1.7;opacity:0.7;">Tool outputs containing<br>Dossier · JSON Manifest · Strategy Prism<br>will appear here automatically.</div></div>`;
     return;
   }
-
-  container.innerHTML = items.map(item => {
-    const preview = esc(item.val.slice(0, 90));
-    const kb = (item.size / 1024).toFixed(1);
-    const dt = extractDate(item.key);
-    return `<div class="bridge-item">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:5px;">
-        <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:11.5px; color:#c084fc; word-break:break-all;">${esc(item.key)}</div>
-        <div style="flex-shrink:0; margin-left:8px;">
-          <span style="font-family:'DM Mono',monospace; font-size:8.5px; color:rgba(168,85,247,0.35);">${kb} KB${dt ? ' · '+dt : ''}</span>
-        </div>
-      </div>
-      <div style="font-family:'DM Mono',monospace; font-size:9.5px; color:rgba(168,85,247,0.35); margin-bottom:8px; word-break:break-all; line-height:1.5;">${preview}…</div>
-      <div style="display:flex; gap:6px; flex-wrap:wrap;">
-        <button onclick="bridgeLoad('${esc(item.key)}')" class="xbtn" style="font-size:9.5px; padding:3px 9px;">
-          <i class="fa-solid fa-paper-plane-top"></i> Load into Tool
-        </button>
-        <button onclick="bridgeDelete('${esc(item.key)}')" class="xbtn xbtn--danger" style="font-size:9.5px; padding:3px 9px;">
-          <i class="fa-solid fa-trash-can"></i> Remove
-        </button>
-      </div>
-    </div>`;
+  container.innerHTML=items.map(item=>{
+    const preview=esc(item.val.slice(0,90));
+    const kb=(item.size/1024).toFixed(1);
+    const dt=extractDate(item.key);
+    return`<div class="bridge-item"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;"><div style="font-family:'Syne',sans-serif;font-weight:600;font-size:11.5px;color:#c084fc;word-break:break-all;">${esc(item.key)}</div><div style="flex-shrink:0;margin-left:8px;"><span style="font-family:'DM Mono',monospace;font-size:8.5px;color:rgba(168,85,247,0.35);">${kb} KB${dt?' · '+dt:''}</span></div></div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:rgba(168,85,247,0.35);margin-bottom:8px;word-break:break-all;line-height:1.5;">${preview}…</div><div style="display:flex;gap:6px;flex-wrap:wrap;"><button onclick="bridgeLoad('${esc(item.key)}')" class="xbtn" style="font-size:9.5px;padding:3px 9px;"><i class="fa-solid fa-paper-plane-top"></i> Load into Tool</button><button onclick="bridgeDelete('${esc(item.key)}')" class="xbtn xbtn--danger" style="font-size:9.5px;padding:3px 9px;"><i class="fa-solid fa-trash-can"></i> Remove</button></div></div>`;
   }).join('');
 }
 
 function bridgeLoad(key) {
-  const val = localStorage.getItem(key);
+  const val=localStorage.getItem(key);
   if (!val) return;
-  if (!state.activeTool) {
-    toast('No tool loaded — open one first', 'warn');
-    toggleBridge();
-    return;
-  }
-  navigator.clipboard.writeText(val)
-    .then(() => toast('Data copied to clipboard ✓', 'success'))
-    .catch(() => toast('Clipboard unavailable', 'warn'));
+  if (!state.activeTool) { toast('No tool loaded — open one first','warn'); toggleBridge(); return; }
+  navigator.clipboard.writeText(val).then(()=>toast('Data copied to clipboard ✓','success')).catch(()=>toast('Clipboard unavailable','warn'));
   try {
-    document.getElementById('tool-iframe').contentWindow.postMessage({
-      source: 'velocity-os',
-      version: '1.0',
-      action: 'load-data',
-      key,
-      data: val
-    }, '*');
-    toast(`Sent "${key}" → ${state.activeTool.name}`, 'info');
-  } catch(e) {
-    console.warn('[VelocityOS] postMessage failed:', e);
-  }
+    document.getElementById('tool-iframe').contentWindow.postMessage({source:'velocity-os',version:'1.0',action:'load-data',key,data:val},'*');
+    toast(`Sent "${key}" → ${state.activeTool.name}`,'info');
+  } catch(e) { console.warn('[VelocityOS] postMessage failed:',e); }
   toggleBridge();
 }
 
-function bridgeDelete(key) {
-  localStorage.removeItem(key);
-  renderBridgeItems();
-  toast(`Removed "${key}"`, 'warn');
-}
+function bridgeDelete(key) { localStorage.removeItem(key); renderBridgeItems(); toast(`Removed "${key}"`,'warn'); }
 
 function clearAllData() {
-  const keysToRemove = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k !== 'vos_last') keysToRemove.push(k);
-  }
-  keysToRemove.forEach(k => localStorage.removeItem(k));
-  renderBridgeItems();
-  toast('All Data Bridge data cleared', 'warn');
+  const keys=[];
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k!=='vos_last')keys.push(k);}
+  keys.forEach(k=>localStorage.removeItem(k));
+  renderBridgeItems(); toast('All Data Bridge data cleared','warn');
 }
 
 function fullReset() {
   if (!confirm('Reset Velocity OS completely?\n\nThis clears ALL data, closes the current tool, and returns to the fresh welcome screen (first-launch state).')) return;
   localStorage.clear();
-  state.activeTool = null;
+  state.activeTool=null;
   document.getElementById('welcome').classList.remove('gone');
-  document.getElementById('tool-iframe').src = 'about:blank';
+  document.getElementById('tool-iframe').src='about:blank';
   document.getElementById('tool-iframe').classList.remove('visible');
   document.getElementById('hdr-dot').classList.add('pulse-dot--off');
-  document.getElementById('hdr-label').textContent = 'No tool loaded — select from sidebar';
-  document.querySelectorAll('.tile').forEach(t => t.classList.remove('tile--active'));
-  renderBridgeItems();
-  toast('Velocity OS reset to first launch ✓', 'success');
+  document.getElementById('hdr-label').textContent='No tool loaded — select from sidebar';
+  document.querySelectorAll('.tile').forEach(t=>t.classList.remove('tile--active'));
+  renderBridgeItems(); toast('Velocity OS reset to first launch ✓','success');
 }
 
 function toggleBridge() {
-  const panel = document.getElementById('bridge-panel');
-  const btn   = document.getElementById('bridge-btn');
-  const open  = panel.classList.toggle('open');
-  btn.style.background   = open ? 'rgba(168,85,247,0.18)' : 'rgba(124,58,237,0.1)';
-  btn.style.borderColor  = open ? 'rgba(168,85,247,0.45)' : 'rgba(168,85,247,0.22)';
-  if (open) renderBridgeItems();
+  const panel=document.getElementById('bridge-panel');
+  const btn=document.getElementById('bridge-btn');
+  const open=panel.classList.toggle('open');
+  btn.style.background=open?'rgba(168,85,247,0.18)':'rgba(124,58,237,0.1)';
+  btn.style.borderColor=open?'rgba(168,85,247,0.45)':'rgba(168,85,247,0.22)';
+  if(open) renderBridgeItems();
 }
 
-/* ─── Auto-save via postMessage from tools ──────────────── */
 function setupPostMessageListener() {
-  window.addEventListener('message', (e) => {
+  window.addEventListener('message',e=>{
     if (!e.data) return;
-    const d = typeof e.data === 'string' ? e.data : JSON.stringify(e.data);
+    const d=typeof e.data==='string'?e.data:JSON.stringify(e.data);
     if (d.includes('"source":"velocity-os"')) return;
-    if (DATA_KW.some(kw => d.toLowerCase().includes(kw))) {
-      const toolSlug = (state.activeTool?.name || 'tool').toLowerCase().replace(/\s+/g,'-');
-      const key = `vos_${toolSlug}_${Date.now()}`;
-      try {
-        localStorage.setItem(key, d);
-        renderBridgeItems();
-        toast('Data saved ✓', 'success');
-      } catch(_) {
-        toast('localStorage full — clear old data', 'error');
-      }
+    if (DATA_KW.some(kw=>d.toLowerCase().includes(kw))) {
+      const toolSlug=(state.activeTool?.name||'tool').toLowerCase().replace(/\s+/g,'-');
+      const key=`vos_${toolSlug}_${Date.now()}`;
+      try { localStorage.setItem(key,d); renderBridgeItems(); toast('Data saved ✓','success'); }
+      catch(_) { toast('localStorage full — clear old data','error'); }
     }
   });
 }
 
 /* ─── Exports ───────────────────────────────────────────── */
-function ts() { return new Date().toISOString().slice(0,10); }
-
-function exportAll(fmt) {
-  const data = {};
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    data[k] = localStorage.getItem(k);
-  }
-  if (fmt === 'json') {
-    dl(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}), `velocity-os-export-${ts()}.json`);
-    toast('Exported all data as JSON','success');
-  } else {
-    const rows = [['Key','Value'], ...Object.entries(data).map(([k,v])=>[csv(k),csv(v)])];
-    dl(new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'}), `velocity-os-export-${ts()}.csv`);
-    toast('Exported all data as CSV','success');
-  }
+function ts(){return new Date().toISOString().slice(0,10);}
+function exportAll(fmt){
+  const data={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);data[k]=localStorage.getItem(k);}
+  if(fmt==='json'){dl(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),`velocity-os-export-${ts()}.json`);toast('Exported all data as JSON','success');}
+  else{const rows=[['Key','Value'],...Object.entries(data).map(([k,v])=>[csv(k),csv(v)])];dl(new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'}),`velocity-os-export-${ts()}.csv`);toast('Exported all data as CSV','success');}
 }
-
-function exportSelected() {
-  if (!state.activeTool) { toast('No tool loaded','warn'); return; }
-  const slug = state.activeTool.name.toLowerCase().replace(/\s+/g,'-');
-  const data = {};
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k.toLowerCase().includes(slug)) data[k] = localStorage.getItem(k);
-  }
-  if (!Object.keys(data).length) { toast('No data found for current tool','warn'); return; }
-  dl(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}), `velocity-os-${slug}-${ts()}.json`);
+function exportSelected(){
+  if(!state.activeTool){toast('No tool loaded','warn');return;}
+  const slug=state.activeTool.name.toLowerCase().replace(/\s+/g,'-');
+  const data={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.toLowerCase().includes(slug))data[k]=localStorage.getItem(k);}
+  if(!Object.keys(data).length){toast('No data found for current tool','warn');return;}
+  dl(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),`velocity-os-${slug}-${ts()}.json`);
   toast(`Exported ${state.activeTool.name} data`,'success');
 }
-
-function buildGroupChecks() {
-  const c = document.getElementById('group-checks');
-  c.innerHTML = TOOLS.filter(t=>t.active).map(t=>`
-    <label class="gchk">
-      <input type="checkbox" value="${t.id}" data-name="${t.name}">
-      <i class="fa-solid ${t.icon}" style="color:#7c3aed; width:14px;"></i>
-      ${t.name}
-    </label>`).join('');
+function buildGroupChecks(){
+  const c=document.getElementById('group-checks');
+  c.innerHTML=TOOLS.filter(t=>t.active).map(t=>`<label class="gchk"><input type="checkbox" value="${t.id}" data-name="${t.name}"><i class="fa-solid ${t.icon}" style="color:#7c3aed;width:14px;"></i>${t.name}</label>`).join('');
 }
-
-function showGroupModal()  { document.getElementById('group-modal').classList.add('show'); }
-function hideGroupModal()  { document.getElementById('group-modal').classList.remove('show'); }
-
-function doGroupExport() {
-  const checked = [...document.querySelectorAll('#group-checks input:checked')];
-  if (!checked.length) { toast('Select at least one tool','warn'); return; }
-  const slugs = checked.map(c=>c.dataset.name.toLowerCase().replace(/\s+/g,'-'));
-  const data = {};
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    const kl = k.toLowerCase();
-    if (slugs.some(s => kl.includes(s))) data[k] = localStorage.getItem(k);
-  }
-  dl(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}), `velocity-os-group-export-${ts()}.json`);
-  hideGroupModal();
-  toast('Group export complete','success');
+function showGroupModal(){document.getElementById('group-modal').classList.add('show');}
+function hideGroupModal(){document.getElementById('group-modal').classList.remove('show');}
+function doGroupExport(){
+  const checked=[...document.querySelectorAll('#group-checks input:checked')];
+  if(!checked.length){toast('Select at least one tool','warn');return;}
+  const slugs=checked.map(c=>c.dataset.name.toLowerCase().replace(/\s+/g,'-'));
+  const data={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);const kl=k.toLowerCase();if(slugs.some(s=>kl.includes(s)))data[k]=localStorage.getItem(k);}
+  dl(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),`velocity-os-group-export-${ts()}.json`);
+  hideGroupModal(); toast('Group export complete','success');
 }
-
-function dl(blob, name) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-function csv(v) { return '"' + String(v ?? '').replace(/"/g,'""') + '"'; }
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href);}
+function csv(v){return'"'+String(v??'').replace(/"/g,'""')+'"';}
 
 /* ─── Command Palette ───────────────────────────────────── */
-function renderCmdResults(q) {
-  const c = document.getElementById('cmd-results');
-  const filtered = TOOLS.filter(t => {
-    const s = q.toLowerCase().trim();
-    return !s || t.name.toLowerCase().includes(s) || t.sub.toLowerCase().includes(s);
-  });
-  state.cmdHi = 0;
-  if (!filtered.length) {
-    c.innerHTML = `<div style="padding:22px; text-align:center; font-size:12px; color:rgba(168,85,247,0.3);">No tools found</div>`;
-    return;
-  }
-  c.innerHTML = filtered.map((t,i)=>`
+/* ALL tools (active and inactive) appear in results. Inactive = not clickable. */
+function renderCmdResults(q){
+  const c=document.getElementById('cmd-results');
+  const s=q.toLowerCase().trim();
+  const filtered=TOOLS.filter(t=>!s||t.name.toLowerCase().includes(s)||t.sub.toLowerCase().includes(s));
+  state.cmdHi=0;
+  if(!filtered.length){c.innerHTML=`<div style="padding:22px;text-align:center;font-size:12px;color:rgba(168,85,247,0.3);">No tools found</div>`;return;}
+  c.innerHTML=filtered.map((t,i)=>`
     <div class="cmd-item ${!t.active?'cmd-off':''} ${i===0?'hi':''}"
          data-idx="${i}" data-url="${t.url||''}" data-name="${t.name}" data-active="${t.active}"
          onclick="cmdSelect('${(t.url||'').replace(/'/g,"\\'")}','${t.name.replace(/'/g,"\\'")}','${t.active}')">
       <div class="cmd-item__icon"><i class="fa-solid ${t.icon}"></i></div>
-      <div>
+      <div style="flex:1;min-width:0;">
         <div class="cmd-item__name">${esc(t.name)}</div>
         <div class="cmd-item__sub">${esc(t.sub)}</div>
+        ${!t.active&&t.desc?`<div style="font-size:9px;color:rgba(168,85,247,0.35);font-family:'Outfit',sans-serif;margin-top:3px;line-height:1.4;white-space:normal;">${esc(t.desc)}</div>`:''}
       </div>
-      ${!t.active ? `<span style="margin-left:auto; font-size:8px; padding:2px 7px;
-        border-radius:4px; background:rgba(251,191,36,0.1); color:#fbbf24; border:1px solid
-        rgba(251,191,36,0.22); font-weight:700; text-transform:uppercase; font-family:'DM Mono',monospace;
-        flex-shrink:0;">${t.badge||'Disabled'}</span>` : ''}
+      ${!t.active?`<span style="margin-left:8px;flex-shrink:0;font-size:8px;padding:2px 7px;border-radius:4px;background:${t.badge&&t.badge.toLowerCase().includes('alpha')?'rgba(251,191,36,0.1)':'rgba(34,211,238,0.10)'};color:${t.badge&&t.badge.toLowerCase().includes('alpha')?'#fbbf24':'#22d3ee'};border:1px solid ${t.badge&&t.badge.toLowerCase().includes('alpha')?'rgba(251,191,36,0.22)':'rgba(34,211,238,0.22)'};font-weight:700;text-transform:uppercase;font-family:'DM Mono',monospace;">${t.badge||'Disabled'}</span>`:''}
     </div>`).join('');
 }
 
-function cmdSelect(url, name, active) {
-  if (active === 'false' || !active || !url) {
-    toast('This tool is not yet available','warn'); return;
-  }
-  closeCmd();
-  loadTool(url, name);
+function cmdSelect(url,name,active){
+  if(active==='false'||!active||!url){toast('This tool is not yet available','warn');return;}
+  closeCmd(); loadTool(url,name);
 }
+function openCmd(){const p=document.getElementById('cmd');const i=document.getElementById('cmd-input');p.classList.add('open');i.value='';renderCmdResults('');setTimeout(()=>i.focus(),40);}
+function closeCmd(){document.getElementById('cmd').classList.remove('open');}
+function cmdBgClick(e){if(e.target===document.getElementById('cmd'))closeCmd();}
 
-function openCmd() {
-  const p = document.getElementById('cmd');
-  const i = document.getElementById('cmd-input');
-  p.classList.add('open');
-  i.value = '';
-  renderCmdResults('');
-  setTimeout(() => i.focus(), 40);
-}
-
-function closeCmd() { document.getElementById('cmd').classList.remove('open'); }
-function cmdBgClick(e) { if (e.target === document.getElementById('cmd')) closeCmd(); }
-
-/* ─── Keyboard Shortcuts ────────────────────────────────── */
-function setupKeyboard() {
-  document.addEventListener('keydown', e => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault(); openCmd(); return;
-    }
-    if (e.key === 'Escape') {
+/* ─── Keyboard shortcuts ────────────────────────────────── */
+function setupKeyboard(){
+  document.addEventListener('keydown',e=>{
+    if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openCmd();return;}
+    if(e.key==='Escape'){
       closeCmd();
-      if (document.getElementById('bridge-panel').classList.contains('open')) toggleBridge();
-      if (document.getElementById('group-modal').classList.contains('show')) hideGroupModal();
-      closeMobileExport();
+      if(document.getElementById('bridge-panel').classList.contains('open'))toggleBridge();
+      if(document.getElementById('group-modal').classList.contains('show'))hideGroupModal();
+      closeMobileExport(); hideTip();
       return;
     }
-    if (!document.getElementById('cmd').classList.contains('open')) return;
-    const items = document.querySelectorAll('.cmd-item');
-    if (!items.length) return;
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      state.cmdHi = Math.min(state.cmdHi + 1, items.length - 1);
-      updateCmdHi(items);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      state.cmdHi = Math.max(state.cmdHi - 1, 0);
-      updateCmdHi(items);
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      const h = items[state.cmdHi];
-      if (h) cmdSelect(h.dataset.url, h.dataset.name, h.dataset.active);
-    }
+    if(!document.getElementById('cmd').classList.contains('open'))return;
+    const items=document.querySelectorAll('.cmd-item');
+    if(!items.length)return;
+    if(e.key==='ArrowDown'){e.preventDefault();state.cmdHi=Math.min(state.cmdHi+1,items.length-1);updateCmdHi(items);}
+    else if(e.key==='ArrowUp'){e.preventDefault();state.cmdHi=Math.max(state.cmdHi-1,0);updateCmdHi(items);}
+    else if(e.key==='Enter'){e.preventDefault();const h=items[state.cmdHi];if(h)cmdSelect(h.dataset.url,h.dataset.name,h.dataset.active);}
   });
 }
+function updateCmdHi(items){items.forEach((it,i)=>it.classList.toggle('hi',i===state.cmdHi));items[state.cmdHi]?.scrollIntoView({block:'nearest'});}
 
-function updateCmdHi(items) {
-  items.forEach((it, i) => it.classList.toggle('hi', i === state.cmdHi));
-  items[state.cmdHi]?.scrollIntoView({ block:'nearest' });
-}
-
-/* ─── Welcome Grid ──────────────────────────────────────── */
-function buildWelcomeGrid() {
-  const g = document.getElementById('welcome-grid');
-  const active = TOOLS.filter(t => t.active && t.url).slice(0, 6);
-  g.innerHTML = active.map(t=>`
-    <button class="wcard" onclick="loadTool('${t.url}','${t.name}','${t.sub}')">
-      <i class="fa-solid ${t.icon}" style="color:#7c3aed; font-size:13px; width:16px; flex-shrink:0;"></i>
-      <div>
-        <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:11px; color:#c4b5d4; line-height:1.2;">${esc(t.name)}</div>
-        <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(168,85,247,0.35); margin-top:2px;">${esc(t.sub)}</div>
-      </div>
-    </button>`).join('');
+/* ─── Welcome grid (active tools only) ─────────────────── */
+function buildWelcomeGrid(){
+  const g=document.getElementById('welcome-grid');
+  const active=TOOLS.filter(t=>t.active&&t.url).slice(0,6);
+  g.innerHTML=active.map(t=>`<button class="wcard" onclick="loadTool('${t.url}','${t.name}','${t.sub}')"><i class="fa-solid ${t.icon}" style="color:#7c3aed;font-size:13px;width:16px;flex-shrink:0;"></i><div><div style="font-family:'Syne',sans-serif;font-weight:600;font-size:11px;color:#c4b5d4;line-height:1.2;">${esc(t.name)}</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(168,85,247,0.35);margin-top:2px;">${esc(t.sub)}</div></div></button>`).join('');
 }
 
 /* ─── Toast ─────────────────────────────────────────────── */
-function toast(msg, type='default') {
-  const c = document.getElementById('toasts');
-  const t = document.createElement('div');
-  const icons = { default:'fa-bolt', success:'fa-circle-check', info:'fa-circle-info', warn:'fa-triangle-exclamation', error:'fa-circle-xmark' };
-  t.className = `toast toast-${type}`;
-  t.innerHTML = `<i class="fa-solid ${icons[type]||'fa-bolt'}"></i> ${esc(msg)}`;
+function toast(msg,type='default'){
+  const c=document.getElementById('toasts');
+  const t=document.createElement('div');
+  const icons={default:'fa-bolt',success:'fa-circle-check',info:'fa-circle-info',warn:'fa-triangle-exclamation',error:'fa-circle-xmark'};
+  t.className=`toast toast-${type}`;
+  t.innerHTML=`<i class="fa-solid ${icons[type]||'fa-bolt'}"></i> ${esc(msg)}`;
   c.appendChild(t);
-  setTimeout(() => t.remove(), 3100);
+  setTimeout(()=>t.remove(),3100);
 }
 
 /* ─── Utilities ─────────────────────────────────────────── */
-function esc(s) {
-  return String(s ?? '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
-}
-
-function extractDate(key) {
-  const m = key.match(/(\d{10,13})$/);
-  if (!m) return null;
-  const d = new Date(m[1].length === 13 ? +m[1] : +m[1]*1000);
-  return isNaN(d) ? null : d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function extractDate(key){const m=key.match(/(\d{10,13})$/);if(!m)return null;const d=new Date(m[1].length===13?+m[1]:+m[1]*1000);return isNaN(d)?null:d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
 </script>
 </body>
 </html>
-
